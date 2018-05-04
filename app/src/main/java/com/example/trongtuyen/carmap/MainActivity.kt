@@ -107,10 +107,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        // Try catch parsing style json file to map
+        // Try catch parsing custom style json file to map
         try {
             // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file.
+            // in a raw resource file: style_json.
             var success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
                             this, R.raw.style_json))
