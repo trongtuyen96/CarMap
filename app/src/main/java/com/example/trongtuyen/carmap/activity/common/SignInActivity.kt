@@ -31,8 +31,6 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_signin)
         ButterKnife.bind(this)
 
-        // Init SharePreference
-        SharePrefs.Initialize(applicationContext)
         initComponents()
     }
 

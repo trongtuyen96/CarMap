@@ -38,13 +38,12 @@
 
         <ImageView
             android:id="@+id/logo"
-            android:layout_marginTop="10dp"
             android:layout_width="200dp"
             android:layout_height="100dp"
-            android:src="@mipmap/ic_launcher"
-            android:layout_centerHorizontal="true"
             android:layout_below="@+id/btnClose"
-            />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/ic_logo" />
 
         <EditText
             android:id="@+id/txtEmail"
