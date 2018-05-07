@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="colorPrimary">#1976d2</color>
+    <color name="colorPrimaryDark">#004BA0</color>
+    <color name="colorPrimaryLight">#63A4FF</color>
+    <color name="colorAccent">#FF9800</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="text_link">#1976D2</color>
+    <color name="dangerous">#f44336</color>
+    <color name="preload_placeholder">#E9E9E9</color>
+    <color name="home_search_box_color">#E9E9E9</color>
+    <color name="background_back">#DCDEE3</color>
+    <color name="background_front">#FFF</color>
+    <color name="button_bg_active">#FFF</color>
+    <color name="button_bg_inactive">#D6D7D7</color>
+    <color name="button_text_active">#FF9800</color>
+    <color name="button_text_inactive">#000</color>
+    <color name="favorite">#EF0149</color>
+    <color name="un_favorite">#FFF</color>
+    <color name="hint_scan">#ffffffcc</color>
+    <color name="bg_call">#00CC6A</color>
+    <color name="bg_sms">#F7630C</color>
+    <color name="bg_messenger">#0084FF</color>
 </resources>
