@@ -43,6 +43,9 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
         //        setResult(Activity.RESULT_OK,returnIntent);
         //        finish();
 
+        // Notify sign in successfully
+        Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+
         // Start Main Activity
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)

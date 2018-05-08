@@ -26,7 +26,7 @@ object AppController {
         get() = userProfile != null && accessToken != null
 
     fun signOut() {
-        userProfile = null
-        accessToken = null
+        this.userProfile = null
+        this.accessToken = ""
     }
 }
