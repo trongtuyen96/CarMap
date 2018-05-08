@@ -124,19 +124,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         map = googleMap
 
         // Try catch parsing custom style json file to map
-        try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file: style_json.
-            var success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json))
-
-            if (!success) {
-                Log.e("Resources", "Style parsing failed.")
-            }
-        } catch (e: Resources.NotFoundException) {
-            Log.e("Resources", "Can't find style. Error: ", e)
-        }
+//        try {
+//            // Customise the styling of the base map using a JSON object defined
+//            // in a raw resource file: style_json.
+//            var success = googleMap.setMapStyle(
+//                    MapStyleOptions.loadRawResourceStyle(
+//                            this, R.raw.style_json))
+//
+//            if (!success) {
+//                Log.e("Resources", "Style parsing failed.")
+//            }
+//        } catch (e: Resources.NotFoundException) {
+//            Log.e("Resources", "Can't find style. Error: ", e)
+//        }
 
         mapReady = true
 
