@@ -28,7 +28,7 @@
             android:src="@drawable/ic_logo" />
 
         <TextView
-            android:id="@+id/txtName"
+            android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/logoSplash"
@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txtName"
+            android:layout_below="@+id/tvName"
             android:layout_centerHorizontal="true"
             android:text="Bản đồ thông minh dành cho tài xế"
             android:textColor="@color/textColorPrimary"
@@ -61,8 +61,8 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/txtName"
-            android:layout_toEndOf="@+id/txtName"
+            android:layout_alignBaseline="@+id/tvName"
+            android:layout_toEndOf="@+id/tvName"
             android:text="v1.0" />
 
     </RelativeLayout>

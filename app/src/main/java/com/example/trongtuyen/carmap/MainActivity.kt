@@ -2,6 +2,7 @@ package com.example.trongtuyen.carmap
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -18,6 +19,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import com.example.trongtuyen.carmap.activity.common.SignInActivity
+import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.services.APIServiceGenerator
+import com.example.trongtuyen.carmap.services.ErrorUtils
+import com.example.trongtuyen.carmap.services.UserService
+import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -31,6 +40,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.nav_header_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -101,6 +114,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         createLocationRequest()
+
+        // Load user profile
+        loadUserProfile()
     }
 
     @SuppressLint("MissingPermission")
@@ -108,19 +124,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         map = googleMap
 
         // Try catch parsing custom style json file to map
-        try {
-            // Customise the styling of the base map using a JSON object defined
-            // in a raw resource file: style_json.
-            var success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            this, R.raw.style_json))
-
-            if (!success) {
-                Log.e("Resources", "Style parsing failed.")
-            }
-        } catch (e: Resources.NotFoundException) {
-            Log.e("Resources", "Can't find style. Error: ", e)
-        }
+//        try {
+//            // Customise the styling of the base map using a JSON object defined
+//            // in a raw resource file: style_json.
+//            var success = googleMap.setMapStyle(
+//                    MapStyleOptions.loadRawResourceStyle(
+//                            this, R.raw.style_json))
+//
+//            if (!success) {
+//                Log.e("Resources", "Style parsing failed.")
+//            }
+//        } catch (e: Resources.NotFoundException) {
+//            Log.e("Resources", "Can't find style. Error: ", e)
+//        }
 
         mapReady = true
 
@@ -210,8 +226,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_share -> {
 
             }
-            R.id.nav_send -> {
-
+            R.id.nav_signout -> {
+                onSignOut()
             }
         }
 
@@ -383,5 +399,43 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // Ignore all other requests.
             }
         }
+    }
+
+    private fun loadUserProfile() {
+        if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
+            val service = APIServiceGenerator.createService(UserService::class.java)
+            val call = service.userProfile
+            call.enqueue(object : Callback<UserProfileResponse> {
+                override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                    if (response.isSuccessful()) {
+                        AppController.userProfile = response.body().user
+                        updateInformation()
+                    } else {
+                        val apiError = ErrorUtils.parseError(response)
+                        Toast.makeText(this@MainActivity, apiError.message(), Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+
+                }
+            })
+        }
+    }
+
+    private fun updateInformation() {
+        val user = AppController.userProfile
+        tvName.text = user?.name
+        tvEmail.text = user?.email
+//        Helper.loadAvatarWithoutPlaceHolder(getActivity(), avatar, user.getAvatar(), net.diadiemmuasam.user.R.drawable.default_avatar)
+    }
+
+    private fun onSignOut() {
+        AppController.signOut()
+        Toast.makeText(this, "Đăng xuất thành công!", Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, SignInActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        this.finish()
     }
 }
