@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
+import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.MainActivity
 import com.example.trongtuyen.carmap.R
@@ -21,7 +23,19 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class SignUpActivity : AppCompatActivity(), View.OnClickListener {
+class SignUpActivity : AppCompatActivity() {
+
+    // Kotlin support this
+    @BindView(R.id.txtEmail_signup)
+    lateinit var txtEmail: EditText
+    @BindView(R.id.txtPassword_signup)
+    lateinit var txtPassword: EditText
+    @BindView(R.id.txtFullName_signup)
+    lateinit var txtFullName: EditText
+    @BindView(R.id.btnSignUp_signup)
+    lateinit var btnSignUp: View
+    @BindView(R.id.btnSignIn_signup)
+    lateinit var btnSignIn: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +46,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initComponents() {
-        btnSignUp_signup.setOnClickListener(this)
-        btnSignIn_signup.setOnClickListener(this)
+        btnSignUp.setOnClickListener { onSignUpWithEmail() }
+        btnSignIn.setOnClickListener { onSignIn() }
     }
 
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.btnSignUp_signup-> onSignUpWithEmail()
-            R.id.btnSignIn_signup-> onSignIn()
-        }
-    }
 
     private fun isEmailValid(email: String): Boolean {
         //TODO: Replace this with your own logic
@@ -55,36 +63,36 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-    internal fun onSignUpWithEmail() {
+    internal fun onSignUpWithEmail(){
         // Reset errors.
-        txtEmail_signup.setError(null)
-        txtPassword_signup.setError(null)
-        txtFullName_signup.setError(null)
+        txtEmail.setError(null)
+        txtPassword.setError(null)
+        txtFullName.setError(null)
 
         // Store values at the time of the login attempt.
-        var email = txtEmail_signup.text.toString()
-        var password = txtPassword_signup.text.toString()
-        var fullName = txtFullName_signup.text.toString()
+        var email = txtEmail.text.toString()
+        var password = txtPassword.text.toString()
+        var fullName = txtFullName.text.toString()
         var isValidateOk = true
 
         // Validate email
         if (TextUtils.isEmpty(email)) {
-            txtEmail_signup.setError("Email không thể bỏ trống!")
+            txtEmail.setError("Email không thể bỏ trống!")
             isValidateOk = false
         } else if (!isEmailValid(email)) {
-            txtEmail_signup.setError("Email không hợp lệ!")
+            txtEmail.setError("Email không hợp lệ!")
             isValidateOk = false
         }
 
         // Validate password
         if (TextUtils.isEmpty(password)) {
-            txtPassword_signup.setError("Password không thể bỏ trống!")
+            txtPassword.setError("Password không thể bỏ trống!")
             isValidateOk = false
         }
 
         // Validate full name
         if (TextUtils.isEmpty(fullName)) {
-            txtFullName_signup.setError("Họ và tên không thể bỏ trống!")
+            txtFullName.setError("Họ và tên không thể bỏ trống!")
             isValidateOk = false
         }
 

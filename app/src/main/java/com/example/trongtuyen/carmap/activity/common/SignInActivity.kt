@@ -16,6 +16,7 @@ import com.example.trongtuyen.carmap.services.AuthenticationResponse
 import com.example.trongtuyen.carmap.services.AuthenticationService
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import kotlinx.android.synthetic.main.activity_signin.*
+import kotlinx.android.synthetic.main.activity_signin.view.*
 import kotlinx.android.synthetic.main.activity_signup.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,7 +26,30 @@ import retrofit2.Response
  * Created by tuyen on 07/05/2018.
  */
 
-class SignInActivity : AppCompatActivity(), View.OnClickListener {
+class SignInActivity : AppCompatActivity() {
+
+    @BindView(R.id.txtEmail_signin)
+    lateinit var txtEmail: EditText
+    @BindView(R.id.txtPassword_signin)
+    lateinit var txtPassword: EditText
+
+    @BindView(R.id.btnSignInWithEmail_signin)
+    lateinit var btnSignInWithEmail: View
+    @BindView(R.id.btnSignInWithFacebook_signin)
+    lateinit var btnSignInWithFacebook: View
+    @BindView(R.id.btnSignInWithGoogle_signin)
+    lateinit var btnSignInWithGoogle: View
+
+    @BindView(R.id.btnClose_signin)
+    lateinit var btnClose: View
+
+    @BindView(R.id.btnSignUp_signin)
+    lateinit var btnSignUp: TextView
+
+    @BindView(R.id.progress1_signin)
+    lateinit var progress1: ProgressBar
+    @BindView(R.id.progress2_signin)
+    lateinit var progress2: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,31 +80,21 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
     private fun initComponents() {
 
         // Sign in buttons
-        btnSignInWithEmail_signin.setOnClickListener(this)
-        btnSignInWithFacebook_signin.setOnClickListener(this)
-        btnSignInWithGoogle_signin.setOnClickListener(this)
+        btnSignInWithEmail.setOnClickListener { onSignInWithEmail() }
+        btnSignInWithFacebook.setOnClickListener { onSignInWithFacebook() }
+        btnSignInWithGoogle.setOnClickListener { onSignInWithGoogle() }
 
         //
-        btnClose_signin.setOnClickListener(this)
-        btnSignUp_signin.setOnClickListener(this)
+        btnClose.setOnClickListener { onClose() }
+        btnSignUp.setOnClickListener { onSignUp() }
 
-        progress1_signin.visibility = View.GONE
-        progress2_signin.visibility = View.GONE
+        progress1.visibility = View.GONE
+        progress2.visibility = View.GONE
     }
 
     private fun isEmailValid(email: String): Boolean {
         //TODO: Replace this with your own logic
         return email.contains("@")
-    }
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.btnSignInWithEmail_signin -> onSignInWithEmail()
-            R.id.btnSignInWithFacebook_signin -> onSignInWithFacebook()
-            R.id.btnSignInWithGoogle_signin -> onSignInWithGoogle()
-            R.id.btnClose_signin -> onClose()
-            R.id.btnSignUp_signin -> onSignUp()
-        }
     }
 
     private fun onClose() {
@@ -102,26 +116,26 @@ class SignInActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun onSignInWithEmail() {
         // Reset errors.
-        txtEmail_signin!!.error = null
-        txtPassword_signin!!.error = null
+        txtEmail.error = null
+        txtPassword.error = null
 
         // Store values at the time of the login attempt.
-        val email = txtEmail_signin!!.text.toString()
-        val password = txtPassword_signin!!.text.toString()
+        val email = txtEmail.text.toString()
+        val password = txtPassword.text.toString()
         var isValidateOk = true
 
         // Validate email
         if (TextUtils.isEmpty(email)) {
-            txtEmail_signin!!.error = "Email không thể bỏ trống!"
+            txtEmail.error = "Email không thể bỏ trống!"
             isValidateOk = false
         } else if (!isEmailValid(email)) {
-            txtEmail_signin!!.error = "Email không hợp lệ!"
+            txtEmail.error = "Email không hợp lệ!"
             isValidateOk = false
         }
 
         // Validate password
         if (TextUtils.isEmpty(password)) {
-            txtPassword_signin!!.error = "Mật khẩu không thể bỏ trống!"
+            txtPassword.error = "Mật khẩu không thể bỏ trống!"
             isValidateOk = false
         }
 

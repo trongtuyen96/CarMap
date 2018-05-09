@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -40,7 +42,8 @@ dependencies {
 
     // Binding Java and View
     implementation 'com.jakewharton:butterknife:8.6.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    // kapt instead of annotationProcessor : fix null in butterknife
+    kapt 'com.jakewharton:butterknife-compiler:8.6.0'
 
     // Retrofit & RxAndroid & RxJava
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
