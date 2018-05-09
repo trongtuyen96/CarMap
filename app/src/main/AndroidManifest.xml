@@ -42,8 +42,10 @@
         <activity
             android:name=".activity.common.SignInActivity"
             android:theme="@style/AppTheme.FullScreen" />
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/AppTheme.FullScreen" />
+        <activity android:name=".activity.common.SignUpActivity"></activity>
     </application>
 
 </manifest>
