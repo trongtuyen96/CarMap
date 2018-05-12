@@ -9,8 +9,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object APIServiceGenerator {
 
-    private val BASE_URL = "https://carmap.herokuapp.com/api-user/v1/" //must have back slash at the end
+//    private val BASE_URL = "https://carmap.herokuapp.com/api-user/v1/" //must have back slash at the end
 
+    private val BASE_URL = "https://carmap-test.herokuapp.com/api-user/v1/" //must have back slash at the end
     private val builder = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

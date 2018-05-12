@@ -29,18 +29,21 @@ class User {
     @SerializedName("createdAt")
     @Expose
     var createdAt: String? = null
-
+    @SerializedName("socketID")
+    @Expose
+    var socketID: String? = null
     @SerializedName("homeLocation")
     @Expose
     var homeLocation: Geometry? = null
 
-    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, homeLocation: Geometry){
+    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, socketID: String, homeLocation: Geometry){
         this.email = email
         this.name = name
         this.avatar = avatar
         this.googleUserID = googleUserID
         this.birthDate = birthDate
         this.createdAt = createdAt
+        this.socketID = socketID
         this.homeLocation = homeLocation
     }
 }
