@@ -26,6 +26,7 @@ import android.widget.Toast
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.models.Geometry
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
-    val options = PolylineOptions()
+    val mPolylineOptions = PolylineOptions()
     private var mapReady = false
     private var mapSetup = false
     private var locationUpdateRunning = false
@@ -69,10 +70,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var placeAutoComplete: PlaceAutocompleteFragment? = null
 
     // Maerket options for set up marker
-    var markerOptions = MarkerOptions()
+    private var markerOptions = MarkerOptions()
 
     // Popup windows
-    var mPopupWindow : PopupWindow? = null
+    private var mPopupWindow : PopupWindow? = null
 
     // List of user of other cars
     lateinit var listUser : List<User>
@@ -120,10 +121,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 super.onLocationResult(p0)
 
                 lastLocation = p0.lastLocation
-                //placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
-                options.add(LatLng(lastLocation.latitude, lastLocation.longitude))
+                moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
+                mPolylineOptions.add(LatLng(lastLocation.latitude, lastLocation.longitude))
                 if (mapReady) {
-                    map.addPolyline(options)
+                    map.addPolyline(mPolylineOptions)
                 }
             }
         }
@@ -180,9 +181,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                //placeMarkerOnMap(currentLatLng)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
-                options.add(currentLatLng)
+
+                // Add Marker
+                markerOptions.position(currentLatLng)
+                markerOptions.title("Current location")
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
+                map.addMarker(markerOptions)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
+
+                mPolylineOptions.add(currentLatLng)
             }
         }
 
@@ -231,10 +238,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_camera -> {
-                // Handle the camera action
+                onGetAllUser()
             }
             R.id.nav_gallery -> {
+                if (::lastLocation.isInitialized) {
+                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
 
+                    val newGeo = Geometry("Point", listGeo)
+                    Log.e("LOC", lastLocation.longitude.toString())
+                    Log.e("LOC", lastLocation.latitude.toString())
+                    val user = User("", "", "", "", "", "", newGeo)
+                    onUpdateHomeLocation(user)
+                }
             }
             R.id.nav_slideshow -> {
 
@@ -488,6 +503,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val markerOptions = MarkerOptions()
         // LatLag điền theo thứ tự latitude, longitude
         // Còn ở server Geo là theo thứ tự longitude, latitude
+        // Random
         val random = Random()
         markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
         markerOptions.title(user.name)
@@ -495,5 +511,64 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat()*360))
         map.addMarker(markerOptions)
     }
+
+    fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
+        marker.position(latLng)
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
+    }
     // ========================================================================
+
+    // ======== API CALL AND LISTENERS ========================================
+    internal fun onGetAllUser(){
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.allUserProfile
+        call.enqueue(object : Callback<List<User>> {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                if (response.isSuccessful) {
+                    onAllUserProfileSuccess(response.body())
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun onAllUserProfileSuccess(response: List<User>) {
+        listUser = response
+        drawOtherUsers()
+    }
+
+    private fun drawOtherUsers(){
+        for (i in 0 until listUser.size){
+            // Except current user
+            if (listUser[i].email != AppController.userProfile!!.email)
+                addUserMarker(listUser[i])
+        }
+    }
+
+    internal fun onUpdateHomeLocation(user : User){
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateHomeLocation(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" +response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+    // =====================================================================
 }
