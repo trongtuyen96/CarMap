@@ -3,6 +3,8 @@ package com.example.trongtuyen.carmap
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.PendingIntent.getActivity
+import android.app.ProgressDialog.show
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -17,12 +19,14 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.widget.Button
+import android.widget.PopupWindow
 import android.widget.Toast
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
+import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.UserService
@@ -44,8 +48,9 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener {
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -62,6 +67,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // PlaceAutoCompleteFragment
     private var placeAutoComplete: PlaceAutocompleteFragment? = null
+
+    // Maerket options for set up marker
+    var markerOptions = MarkerOptions()
+
+    // Popup windows
+    var mPopupWindow : PopupWindow? = null
+
+    // List of user of other cars
+    lateinit var listUser : List<User>
 
     companion object {
         private const val CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION = 1
@@ -142,7 +156,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //map.uiSettings.isZoomControlsEnabled = true
 
+        //Set Custom InfoWindow Adapter
+        var adapter  = CustomInfoWindowAdapter(this)
+        map.setInfoWindowAdapter(adapter);
+
         map.setOnMarkerClickListener(this)
+        map.setOnInfoWindowClickListener(this)
+        map.setOnInfoWindowCloseListener(this)
+
 
         if (!mapSetup) {
             setUpMapWrapper()
@@ -181,8 +202,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         setUpMap()
     }
-
-    override fun onMarkerClick(p0: Marker?) = false
 
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
@@ -401,6 +420,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    // ======== ON NAVIGATION BUTTON EVENT ==================================
     private fun loadUserProfile() {
         if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
             val service = APIServiceGenerator.createService(UserService::class.java)
@@ -438,4 +458,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(intent)
         this.finish()
     }
+    // ======================================================================
+
+    // ======== MARKER CLICK GROUP ==========================================
+    override fun onMarkerClick(p0: Marker): Boolean {
+        p0.showInfoWindow()
+        return false
+    }
+
+    // Sự kiện khi click vào info windows
+    override fun onInfoWindowClick(p0: Marker) {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val customViewPopup = inflater.inflate(R.layout.custom_popup_layout,null)
+        mPopupWindow = PopupWindow(customViewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM,0,0)
+
+        // Phải có con trỏ vào customViewPopup, nếu không sẽ null
+        val btnHello = customViewPopup.findViewById<Button>(R.id.btnHello)
+        btnHello.setOnClickListener { Toast.makeText(this, "Helloooooooooooo", Toast.LENGTH_SHORT).show() }
+    }
+
+    override fun onInfoWindowClose(p0: Marker?) {
+        // Đóng popup windows
+        mPopupWindow!!.dismiss()
+    }
+
+    private fun addUserMarker(user: User){
+        val markerOptions = MarkerOptions()
+        // LatLag điền theo thứ tự latitude, longitude
+        // Còn ở server Geo là theo thứ tự longitude, latitude
+        val random = Random()
+        markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
+        markerOptions.title(user.name)
+        markerOptions.snippet(user.email)
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat()*360))
+        map.addMarker(markerOptions)
+    }
+    // ========================================================================
 }
