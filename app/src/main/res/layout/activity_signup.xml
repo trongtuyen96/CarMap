@@ -31,7 +31,7 @@
             android:layout_height="40dp"
 
             android:tint="@color/colorPrimary"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:padding="5dp"
             android:visibility="invisible"
             />
@@ -52,13 +52,13 @@
             android:layout_below="@+id/logo"
             android:layout_marginTop="32dp"
             android:background="@android:color/transparent"
-
+            android:drawableStart="@drawable/ic_user_login_fixed_size"
             android:drawablePadding="8dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:maxLines="1"
-            android:paddingLeft="0dp"
-            android:paddingRight="8dp" />
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp" />
 
         <View
             android:id="@+id/line1"
@@ -77,21 +77,21 @@
                 android:inputType="textPassword"
                 android:id="@+id/txtPassword_signup"
                 android:background="@android:color/transparent"
-                android:paddingLeft="0dp"
-                android:paddingRight="20dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:hint="Mật khẩu"
                 android:maxLines="1"
-
+                android:drawableStart="@drawable/ic_password_login_fixed_size"
                 android:drawablePadding="8dp"
                 />
             <ImageView
                 android:id="@+id/btnHideShowPassword"
                 android:layout_gravity="right"
-                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
                 android:paddingTop="8dp"
-                android:paddingRight="0dp"
+                android:paddingEnd="0dp"
                 android:paddingBottom="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -110,14 +110,14 @@
             android:id="@+id/txtFullName_signup"
             android:inputType="text"
             android:background="@android:color/transparent"
-            android:paddingLeft="0dp"
-            android:paddingRight="8dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_marginTop="32dp"
             android:hint="Họ và tên"
             android:maxLines="1"
-
+            android:drawableStart="@drawable/ic_user_login_fixed_size"
             android:drawablePadding="8dp"
             android:layout_below="@+id/line2" />
 
