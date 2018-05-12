@@ -2,9 +2,11 @@ package com.example.trongtuyen.carmap
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.PendingIntent.getActivity
 import android.app.ProgressDialog.show
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -12,6 +14,7 @@ import android.content.res.Resources
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
@@ -22,6 +25,7 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.PopupWindow
+import android.widget.TextView
 import android.widget.Toast
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -43,13 +47,19 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import io.socket.client.IO
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
+import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URISyntaxException
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener {
 
@@ -77,6 +87,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // List of user of other cars
     lateinit var listUser : List<User>
+
+    // Socket
+    lateinit var socket: io.socket.client.Socket
 
     companion object {
         private const val CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION = 1
@@ -132,6 +145,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Load user profile
         loadUserProfile()
+
+
+        // Khởi tạo socket
+        try {
+            socket = IO.socket("https://carmap-test.herokuapp.com/")
+        }catch (e: URISyntaxException){
+            throw RuntimeException(e)
+        }
+        socket.on(Socket.EVENT_CONNECT, onConnect)
+        socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
+        socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
+        socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
+//        socket.on("chat message", onNewMessage)
+        socket.on("hello message", onSayHello)
+        socket.connect()
     }
 
     @SuppressLint("MissingPermission")
@@ -247,7 +275,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val newGeo = Geometry("Point", listGeo)
                     Log.e("LOC", lastLocation.longitude.toString())
                     Log.e("LOC", lastLocation.latitude.toString())
-                    val user = User("", "", "", "", "", "", newGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo)
                     onUpdateHomeLocation(user)
                 }
             }
@@ -435,7 +463,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    // ======================================================================
     // ======== ON NAVIGATION BUTTON EVENT ==================================
+    // ======================================================================
     private fun loadUserProfile() {
         if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
             val service = APIServiceGenerator.createService(UserService::class.java)
@@ -475,7 +505,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
     // ======================================================================
 
+    // ======================================================================
     // ======== MARKER CLICK GROUP ==========================================
+    // ======================================================================
     override fun onMarkerClick(p0: Marker): Boolean {
         p0.showInfoWindow()
         return false
@@ -491,7 +523,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Phải có con trỏ vào customViewPopup, nếu không sẽ null
         val btnHello = customViewPopup.findViewById<Button>(R.id.btnHello)
-        btnHello.setOnClickListener { Toast.makeText(this, "Helloooooooooooo", Toast.LENGTH_SHORT).show() }
+        btnHello.setOnClickListener { attemptHello(AppController.userProfile?.name.toString(),getUserFromMarker(p0).socketID.toString()) }
     }
 
     override fun onInfoWindowClose(p0: Marker?) {
@@ -512,13 +544,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         map.addMarker(markerOptions)
     }
 
-    fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
+    private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
         marker.position(latLng)
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
     }
+
+    private fun getUserFromMarker(marker: Marker): User{
+        val listGeo: List<Double> = listOf(0.0,0.0)
+        val newGeo = Geometry("Point", listGeo)
+        var user= User("","","","","","","", newGeo)
+        for (i in 0 until listUser.size){
+            // Except current user
+            if (listUser[i].email == marker.snippet){
+                user = listUser[i]
+            }
+        }
+        return user
+    }
     // ========================================================================
 
+    // ========================================================================
     // ======== API CALL AND LISTENERS ========================================
+    // ========================================================================
     internal fun onGetAllUser(){
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.allUserProfile
@@ -569,6 +616,119 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.e("Failure", "Error: " + t.message)
             }
         })
+    }
+
+    internal fun onUpdateSocketID(user : User){
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateSocketID(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+    // =====================================================================
+
+
+    // ======================================================================
+    // ======== SOCKET EVENT ================================================
+    // ======================================================================
+    private val onConnect = Emitter.Listener {
+        this.runOnUiThread(Runnable {
+            Toast.makeText(this.getApplicationContext(),
+                    "Đã kết nối socket", Toast.LENGTH_LONG).show()
+            // Gán socket ID vào cho socketID của người dùng
+            AppController.userProfile?.socketID = socket.id()
+            onUpdateSocketID(AppController.userProfile!!)
+        })
+    }
+
+    private val onDisconnect = Emitter.Listener {
+        this.runOnUiThread(Runnable {
+            Toast.makeText(this.getApplicationContext(),
+                    "Ngắt kết nối socket", Toast.LENGTH_LONG).show()
+        })
+    }
+
+    private val onConnectError = Emitter.Listener {
+        this.runOnUiThread(Runnable {
+            Toast.makeText(this.getApplicationContext(),
+                    "Lỗi kết nối socket", Toast.LENGTH_LONG).show()
+        })
+    }
+
+//    private val onNewMessage = Emitter.Listener { args ->
+//        this.runOnUiThread(Runnable {
+//            //            val data : JSONObject = args[0] as JSONObject
+//            var message: String
+//            try {
+//                message = args[0] as String
+//            } catch (e: JSONException) {
+//                Log.e("LOG", e.message)
+//                return@Runnable
+//            }
+//        })
+//    }
+
+    private val onSayHello = Emitter.Listener { args ->
+        this.runOnUiThread(Runnable {
+            //            val data : JSONObject = args[0] as JSONObject
+            var senderName: String
+            var sendID: String
+            var message: String
+            try {
+                senderName = args[0] as String
+                sendID = args[1] as String
+                message = args[2] as String
+
+            } catch (e: JSONException) {
+                Log.e("LOG", e.message)
+                return@Runnable
+            }
+            if (message == "hello") {
+                val factory = LayoutInflater.from(this)
+                val customDialogView = factory.inflate(R.layout.custom_dialog_layout, null)
+                val customDialog = AlertDialog.Builder(this).create()
+                customDialog.setView(customDialogView)
+                customDialog.setOnShowListener(DialogInterface.OnShowListener {
+                    customDialog.findViewById<TextView>(R.id.tv_custom_dialog).text = senderName + " đã chào bạn"
+                    object : CountDownTimer(2000, 100) {
+
+                        override fun onTick(millisUntilFinished: Long) {
+                            customDialogView.findViewById<Button>(R.id.btn_custom_dialog).text = String.format(Locale.getDefault(), "%s (%d)",
+                                    "Chào lại",
+                                    TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        }
+
+                        override fun onFinish() {
+                            customDialog.dismiss()
+                        }
+                    }.start()
+                })
+
+                customDialogView.findViewById<Button>(R.id.btn_custom_dialog).setOnClickListener {
+                    attemptHello(AppController.userProfile?.name.toString(), sendID)
+                    customDialog.dismiss()
+                }
+                customDialog.show()
+            }
+        })
+    }
+
+    private fun attemptHello(senderName: String, receiveSocketID: String) {
+        if (!socket.connected()) return
+
+        // perform the sending message attempt.
+        socket.emit("say hello to someone", senderName, socket.id(), receiveSocketID, "hello")
     }
     // =====================================================================
 }
