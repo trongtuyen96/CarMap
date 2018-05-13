@@ -9,7 +9,7 @@ import android.support.design.widget.Snackbar.make
 import android.support.v4.widget.SwipeRefreshLayout
 import android.widget.Toast
 import butterknife.ButterKnife
-import com.example.trongtuyen.carmap.MainActivity
+import com.example.trongtuyen.carmap.activity.MainActivity
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.services.APIServiceGenerator

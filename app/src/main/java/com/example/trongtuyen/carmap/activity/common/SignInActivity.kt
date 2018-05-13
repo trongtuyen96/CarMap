@@ -8,16 +8,13 @@ import android.view.View
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
-import com.example.trongtuyen.carmap.MainActivity
+import com.example.trongtuyen.carmap.activity.MainActivity
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.AuthenticationResponse
 import com.example.trongtuyen.carmap.services.AuthenticationService
 import com.example.trongtuyen.carmap.services.ErrorUtils
-import kotlinx.android.synthetic.main.activity_signin.*
-import kotlinx.android.synthetic.main.activity_signin.view.*
-import kotlinx.android.synthetic.main.activity_signup.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

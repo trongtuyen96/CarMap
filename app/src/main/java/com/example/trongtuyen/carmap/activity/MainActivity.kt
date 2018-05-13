@@ -1,4 +1,4 @@
-package com.example.trongtuyen.carmap
+package com.example.trongtuyen.carmap.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -24,6 +24,8 @@ import android.widget.Button
 import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -519,7 +521,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Phải có con trỏ vào customViewPopup, nếu không sẽ null
         val btnHello = customViewPopup.findViewById<Button>(R.id.btnHello)
-        btnHello.setOnClickListener { attemptHello(AppController.userProfile?.name.toString(),getUserFromMarker(p0).socketID.toString()) }
+        btnHello.setOnClickListener { attemptHello(AppController.userProfile?.name.toString(),getUserFromMarker(p0).socketID.toString())
+            mPopupWindow!!.dismiss()
+        }
     }
 
     override fun onInfoWindowClose(p0: Marker?) {
