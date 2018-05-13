@@ -3,14 +3,11 @@ package com.example.trongtuyen.carmap
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.PendingIntent.getActivity
-import android.app.ProgressDialog.show
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -51,7 +48,6 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import org.json.JSONException
 import retrofit2.Call
@@ -86,10 +82,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var mPopupWindow : PopupWindow? = null
 
     // List of user of other cars
-    lateinit var listUser : List<User>
+    private lateinit var listUser : List<User>
 
     // Socket
-    lateinit var socket: io.socket.client.Socket
+    private lateinit var socket: io.socket.client.Socket
 
     companion object {
         private const val CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION = 1
@@ -107,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onPlaceSelected(place: Place) {
 
                 Log.d("Maps", "Place selected: " + place.name)
-                addMarker(place);
+                addMarker(place)
             }
 
             override fun onError(status: Status) {
@@ -186,8 +182,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //map.uiSettings.isZoomControlsEnabled = true
 
         //Set Custom InfoWindow Adapter
-        var adapter  = CustomInfoWindowAdapter(this)
-        map.setInfoWindowAdapter(adapter);
+        val adapter  = CustomInfoWindowAdapter(this)
+        map.setInfoWindowAdapter(adapter)
 
         map.setOnMarkerClickListener(this)
         map.setOnInfoWindowClickListener(this)
@@ -424,7 +420,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                     //Toast.makeText(this, "UPDATE LOCATION DENIED", Toast.LENGTH_LONG).show()
                     //Log.e("K", "UPDATE LOCATION DENIED")
-                    resumeFromRequestPermissionFail = true;
+                    resumeFromRequestPermissionFail = true
                     openAppSettings()
 
                     // permission denied, boo! Disable the
@@ -444,7 +440,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } else {
                     //Toast.makeText(this, "SETUP MAP DENIED", Toast.LENGTH_LONG).show()
                     //Log.e("K", "SETUP MAP DENIED")
-                    resumeFromRequestPermissionFail = true;
+                    resumeFromRequestPermissionFail = true
                     openAppSettings()
 
 
@@ -472,7 +468,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val call = service.userProfile
             call.enqueue(object : Callback<UserProfileResponse> {
                 override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful) {
                         AppController.userProfile = response.body().user
                         updateInformation()
                     } else {
@@ -528,7 +524,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onInfoWindowClose(p0: Marker?) {
         // Đóng popup windows
-        mPopupWindow!!.dismiss()
+        mPopupWindow?.dismiss()
     }
 
     private fun addUserMarker(user: User){
@@ -566,7 +562,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ========================================================================
     // ======== API CALL AND LISTENERS ========================================
     // ========================================================================
-    internal fun onGetAllUser(){
+    private fun onGetAllUser(){
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.allUserProfile
         call.enqueue(object : Callback<List<User>> {
@@ -599,12 +595,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    internal fun onUpdateHomeLocation(user : User){
+    private fun onUpdateHomeLocation(user : User){
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.updateHomeLocation(user)
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" +response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
@@ -618,12 +614,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    internal fun onUpdateSocketID(user : User){
+    private fun onUpdateSocketID(user : User){
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.updateSocketID(user)
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
@@ -643,8 +639,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ======== SOCKET EVENT ================================================
     // ======================================================================
     private val onConnect = Emitter.Listener {
-        this.runOnUiThread(Runnable {
-            Toast.makeText(this.getApplicationContext(),
+        this.runOnUiThread({
+            Toast.makeText(this.applicationContext,
                     "Đã kết nối socket", Toast.LENGTH_LONG).show()
             // Gán socket ID vào cho socketID của người dùng
             AppController.userProfile?.socketID = socket.id()
@@ -653,15 +649,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private val onDisconnect = Emitter.Listener {
-        this.runOnUiThread(Runnable {
-            Toast.makeText(this.getApplicationContext(),
+        this.runOnUiThread({
+            Toast.makeText(this.applicationContext,
                     "Ngắt kết nối socket", Toast.LENGTH_LONG).show()
         })
     }
 
     private val onConnectError = Emitter.Listener {
-        this.runOnUiThread(Runnable {
-            Toast.makeText(this.getApplicationContext(),
+        this.runOnUiThread({
+            Toast.makeText(this.applicationContext,
                     "Lỗi kết nối socket", Toast.LENGTH_LONG).show()
         })
     }
@@ -682,9 +678,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val onSayHello = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
-            var senderName: String
-            var sendID: String
-            var message: String
+            val senderName: String
+            val sendID: String
+            val message: String
             try {
                 senderName = args[0] as String
                 sendID = args[1] as String
