@@ -50,6 +50,7 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import org.json.JSONException
 import retrofit2.Call
@@ -59,9 +60,9 @@ import java.net.URISyntaxException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener {
 
-    private lateinit var map: GoogleMap
+    private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
@@ -135,7 +136,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
                 mPolylineOptions.add(LatLng(lastLocation.latitude, lastLocation.longitude))
                 if (mapReady) {
-                    map.addPolyline(mPolylineOptions)
+                    mMap.addPolyline(mPolylineOptions)
                 }
             }
         }
@@ -158,11 +159,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        socket.on("chat message", onNewMessage)
         socket.on("hello message", onSayHello)
         socket.connect()
+
+
+        // onClickListener cho các nút
+        btn_my_loc.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.btn_my_loc -> {
+                onMyLocationButtonClicked()
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
+        mMap = googleMap
 
         // Try catch parsing custom style json file to map
 //        try {
@@ -185,11 +198,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         //Set Custom InfoWindow Adapter
         val adapter  = CustomInfoWindowAdapter(this)
-        map.setInfoWindowAdapter(adapter)
+        mMap.setInfoWindowAdapter(adapter)
 
-        map.setOnMarkerClickListener(this)
-        map.setOnInfoWindowClickListener(this)
-        map.setOnInfoWindowCloseListener(this)
+        mMap.setOnMarkerClickListener(this)
+        mMap.setOnInfoWindowClickListener(this)
+        mMap.setOnInfoWindowCloseListener(this)
 
 
         if (!mapSetup) {
@@ -200,7 +213,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @SuppressLint("MissingPermission")
     private fun setUpMap() {
 
-        map.isMyLocationEnabled = true
+        mMap.isMyLocationEnabled = true
+        mMap.uiSettings.isMyLocationButtonEnabled = false
+        mMap.uiSettings.isZoomControlsEnabled = false
 
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
             // Got last known location. In some rare situations this can be null.
@@ -212,8 +227,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 markerOptions.position(currentLatLng)
                 markerOptions.title("Current location")
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
-                map.addMarker(markerOptions)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
+                mMap.addMarker(markerOptions)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
 
                 mPolylineOptions.add(currentLatLng)
             }
@@ -221,6 +236,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         mapSetup = true
     }
+
+    @SuppressLint("MissingPermission")
+    private fun onMyLocationButtonClicked() {
+        if (::mMap.isInitialized) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(LatLng(lastLocation.latitude, lastLocation.longitude)))
+        } else {
+            Toast.makeText(this, "Vị trí hiện không khả dụng!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun setUpMapWrapper() {
         if (!mapReady) return
@@ -309,9 +334,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         markerOptions.title(p.name.toString() + "")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 
-        map.addMarker(markerOptions)
-        map.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
-        map.animateCamera(CameraUpdateFactory.zoomTo(13f))
+        mMap.addMarker(markerOptions)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(13f))
     }
 
     @SuppressLint("MissingPermission")
@@ -541,12 +566,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         markerOptions.title(user.name)
         markerOptions.snippet(user.email)
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat()*360))
-        map.addMarker(markerOptions)
+        mMap.addMarker(markerOptions)
     }
 
     private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
         marker.position(latLng)
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
     }
 
     private fun getUserFromMarker(marker: Marker): User{
