@@ -29,4 +29,6 @@ object AppController {
         this.userProfile = null
         this.accessToken = ""
     }
+
+
 }

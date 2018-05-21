@@ -45,7 +45,14 @@
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.FullScreen" />
-        <activity android:name=".activity.common.SignUpActivity"></activity>
+        <activity android:name=".activity.common.SignUpActivity" />
+        <activity
+            android:name=".activity.common.ReportMenuActivity"
+            android:theme="@style/AppTheme.FullScreen" />
+        <activity
+            android:name=".activity.common.ReportTrafficActivity"
+            android:theme="@style/AppTheme.FullScreen" />
+        <activity android:name=".activity.common.ReportCrashActivity"></activity>
     </application>
 
 </manifest>

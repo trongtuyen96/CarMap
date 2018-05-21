@@ -7,32 +7,56 @@
     tools:context=".activity.MainActivity">
 
 
-    <include layout="@layout/content_main" />
+    <include
+        layout="@layout/content_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_my_loc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/btn_my_loc"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="359dp"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:src="@drawable/ic_car_loc"-->
+        <!--app:backgroundTint="@color/background_front"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/imvReport"-->
+        <!--app:layout_constraintEnd_toEndOf="parent" />-->
+
+    <ImageView
+        android:id="@+id/imvMyLoc"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="320dp"
         android:layout_marginEnd="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:backgroundTint="@android:color/background_light"
-        app:layout_constraintBottom_toTopOf="@+id/btn_go"
+        app:layout_constraintBottom_toTopOf="@+id/imvReport"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+        app:srcCompat="@drawable/ic_car_loc" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_go"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+
+    <!--<com.nightonke.boommenu.BoomMenuButton-->
+    <!--android:id="@+id/btn_bmb"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="16dp"-->
+    <!--android:layout_marginEnd="16dp"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:srcCompat="@drawable/ic_car_report"-->
+    <!--app:bmb_normalColor="@color/background_front"-->
+    <!--app:bmb_dimColor="@color/textColorSecondary"-->
+    <!--app:bmb_use3DTransformAnimation="true">-->
+    <!--</com.nightonke.boommenu.BoomMenuButton>-->
+
+    <ImageView
+        android:id="@+id/imvReport"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="40dp"
         android:layout_marginEnd="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:backgroundTint="@android:color/holo_blue_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_directions" />
+        app:srcCompat="@drawable/ic_car_report" />
+
 
 </android.support.constraint.ConstraintLayout>

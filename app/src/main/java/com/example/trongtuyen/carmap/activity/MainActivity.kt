@@ -8,6 +8,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.Typeface
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +19,7 @@ import android.os.CountDownTimer
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -26,7 +31,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.R.id.*
+import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
+import com.example.trongtuyen.carmap.activity.common.SignUpActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
@@ -46,6 +53,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum
+import com.nightonke.boommenu.BoomButtons.InnerOnBoomButtonClickListener
+import com.nightonke.boommenu.BoomButtons.OnBMClickListener
+import com.nightonke.boommenu.BoomButtons.TextOutsideCircleButton
+import com.nightonke.boommenu.BoomMenuButton
+import com.nightonke.boommenu.ButtonEnum
+import com.nightonke.boommenu.Piece.PiecePlaceEnum
+import com.nightonke.boommenu.Util
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -89,6 +104,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Socket
     private lateinit var socket: io.socket.client.Socket
+
+    // Boom Menu Button
+//    private lateinit var btnBoomMenu : BoomMenuButton
 
     companion object {
         private const val CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION = 1
@@ -162,13 +180,105 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         // onClickListener cho các nút
-        btn_my_loc.setOnClickListener(this)
+//        btn_my_loc.setOnClickListener(this)
+        imvMyLoc.setOnClickListener(this)
+        imvReport.setOnClickListener(this)
+
+//        // Cài đặt cho Boom Menu button
+//        btnBoomMenu = findViewById(R.id.btn_bmb)
+//        btnBoomMenu.buttonEnum = ButtonEnum.TextOutsideCircle
+//        btnBoomMenu.piecePlaceEnum = PiecePlaceEnum.DOT_4_1
+//        btnBoomMenu.buttonPlaceEnum = ButtonPlaceEnum.SC_4_1
+//        var mWidth = Resources.getSystem().displayMetrics.widthPixels
+//        var mHeight = Resources.getSystem().displayMetrics.heightPixels
+//        for (i in 0 until btnBoomMenu.piecePlaceEnum.pieceNumber()) {
+//            when (i){
+//                0 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_traffic)
+//                            .normalText("KẸT XE").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+////                            .imageRect(Rect(0,50,100,100))
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(255,80,80))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//                1 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_accident)
+//                            .normalText("TAI NẠN").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(175,186,171))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//                2 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_hazard)
+//                            .normalText("NGUY HIỂM").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(255,153,51))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//                3 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_closure)
+//                            .normalText("ĐƯỜNG CHẮN").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(255,153,153))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//            }
+//        }
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.btn_my_loc -> {
+            R.id.imvMyLoc -> {
                 onMyLocationButtonClicked()
+            }
+
+            R.id.imvReport -> {
+                val intent = Intent(this, ReportMenuActivity::class.java)
+                startActivity(intent)
             }
         }
     }
@@ -726,7 +836,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 customDialog.setView(customDialogView)
                 customDialog.setOnShowListener(DialogInterface.OnShowListener {
                     customDialog.findViewById<TextView>(R.id.tv_custom_dialog).text = senderName + " đã chào bạn"
-                    object : CountDownTimer(2000, 100) {
+                    object : CountDownTimer(2000, 500) {
 
                         override fun onTick(millisUntilFinished: Long) {
                             customDialogView.findViewById<Button>(R.id.btn_custom_dialog).text = String.format(Locale.getDefault(), "%s (%d)",
