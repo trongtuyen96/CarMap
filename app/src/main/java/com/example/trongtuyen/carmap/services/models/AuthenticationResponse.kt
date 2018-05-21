@@ -1,4 +1,4 @@
-package com.example.trongtuyen.carmap.services
+package com.example.trongtuyen.carmap.services.models
 
 import com.example.trongtuyen.carmap.models.User
 

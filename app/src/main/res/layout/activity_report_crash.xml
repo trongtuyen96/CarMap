@@ -163,7 +163,7 @@
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:background="@color/bg_messenger"
+        android:background="@color/colorPrimary"
         android:drawableEnd="@drawable/btn_send_44dp"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
@@ -183,6 +183,7 @@
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/ic_message_grey_44dp"
         android:hint="Thêm lời ghi chú"
+        android:inputType="textPersonName"
         android:paddingEnd="8dp"
         android:paddingStart="0dp"
         android:textColor="@color/textColorSecondary" />

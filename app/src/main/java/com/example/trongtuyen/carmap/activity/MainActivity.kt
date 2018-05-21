@@ -153,6 +153,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 lastLocation = p0.lastLocation
                 moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
                 mPolylineOptions.add(LatLng(lastLocation.latitude, lastLocation.longitude))
+
+                // Cập nhật vị trí hiện tại cho userProfile
+                if (::lastLocation.isInitialized) {
+                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+
+                    val newGeo = Geometry("Point", listGeo)
+                    AppController.userProfile?.homeLocation = newGeo
+                    AppController.userLocation = lastLocation
+
+                }
+
                 if (mapReady) {
                     mMap.addPolyline(mPolylineOptions)
                 }

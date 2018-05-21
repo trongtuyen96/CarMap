@@ -185,6 +185,7 @@
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/ic_message_grey_44dp"
         android:hint="Thêm lời ghi chú"
+        android:inputType="textPersonName"
         android:paddingEnd="8dp"
         android:paddingStart="0dp"
         android:textColor="@color/textColorSecondary" />
