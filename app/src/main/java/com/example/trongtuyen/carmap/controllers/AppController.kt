@@ -37,6 +37,4 @@ object AppController {
     // Danh sách các báo cáo
     lateinit var listReport: List<Report>
 
-
-
 }

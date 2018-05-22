@@ -76,7 +76,7 @@ class ReportMenuActivity : AppCompatActivity() {
     }
 
     private fun onReportHazard() {
-        val intent = Intent(this, SignUpActivity::class.java)
+        val intent = Intent(this, ReportHazardActivity::class.java)
         startActivity(intent)
     }
 

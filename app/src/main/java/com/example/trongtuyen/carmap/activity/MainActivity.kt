@@ -8,10 +8,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.Rect
-import android.graphics.Typeface
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -19,7 +15,6 @@ import android.os.CountDownTimer
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -30,10 +25,8 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
-import com.example.trongtuyen.carmap.activity.common.SignUpActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
@@ -347,14 +340,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Got last known location. In some rare situations this can be null.
             if (location != null) {
                 lastLocation = location
-//                val currentLatLng = LatLng(location.latitude, location.longitude)
+                val currentLatLng = LatLng(location.latitude, location.longitude)
 //
 //                // Add Marker
 //                markerOptions.position(currentLatLng)
 //                markerOptions.title("Current location")
 //                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
 //                mMap.addMarker(markerOptions)
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
 //
 //                mPolylineOptions.add(currentLatLng)
             }
@@ -908,6 +901,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onAllReportSuccess(response: List<Report>) {
         listReport = response
+        // Gán vào listReport của AppController
+        AppController.listReport = response
+        Log.e("REPORT", listReport.size.toString())
         drawValidReports()
     }
 
@@ -922,10 +918,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val markerOptions = MarkerOptions()
         // LatLag điền theo thứ tự latitude, longitude
         // Còn ở server Geo là theo thứ tự longitude, latitude
+//        Log.e("REPORT", report.geometry!!.coordinates!![1].toString() + " " +  report.geometry!!.coordinates!![0].toString())
         markerOptions.position(LatLng(report.geometry!!.coordinates!![1], report.geometry!!.coordinates!![0]))
-        markerOptions.title(report.type)
-        markerOptions.snippet(report.subtype1)
-        when(report.type) {
+        markerOptions.title("report")
+        markerOptions.snippet(report._id.toString())
+        when(report.type.toString()) {
             "traffic" -> {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_trafficjam))
             }

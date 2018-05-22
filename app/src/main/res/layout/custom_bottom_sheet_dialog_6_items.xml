@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:text="Nguy hiểm trên đường"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/textColorSecondary"
+        android:layout_below="@+id/textView6"
+        android:layout_marginTop="2dp"/>
+    
+    <LinearLayout
+        android:id="@+id/layout_report_button_1"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/divider4">
+
+        <LinearLayout
+            android:id="@+id/imvObject_report_hazard_on_road"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginStart="2dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_hazard_object" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Vật cản"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary" />
+
+        <LinearLayout
+            android:id="@+id/imvConstruction_report_hazard_on_road"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_hazard_construction" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Công trình"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary" />
+
+        <LinearLayout
+            android:id="@+id/imvBrokenLight_report_hazard_on_road"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_broken_traffic_light" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Đèn hư"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/layout_report_button_1"
+        android:background="@color/textColorSecondary" />
+
+    <LinearLayout
+        android:id="@+id/layout_report_button_2"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/divider5">
+
+        <LinearLayout
+            android:id="@+id/imvPothole_report_hazard_on_road"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginStart="2dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_hazard_pothole" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Ổ voi"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary" />
+
+        <LinearLayout
+            android:id="@+id/imvVehicleStop_report_hazard_on_road"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_hazard_stopped" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Xe đậu"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary" />
+
+        <LinearLayout
+            android:id="@+id/imvRoadkill_report_hazard_on_road"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_hazard_roadkill" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Động vật"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+    
+</RelativeLayout>
