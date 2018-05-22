@@ -1,6 +1,5 @@
 package com.example.trongtuyen.carmap.activity.common
 
-import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
@@ -16,10 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.support.design.widget.BottomSheetDialog
-import android.view.View
 import android.widget.LinearLayout
-
-
 
 
 class ReportHazardActivity : AppCompatActivity() {
@@ -64,11 +60,17 @@ class ReportHazardActivity : AppCompatActivity() {
 //    @BindView(R.id.imvRoadkill_report_hazard_on_road)
 //    lateinit var btnRoadkill: LinearLayout
 
-    private var subType1 : String = ""
-    private var subType2 : String = ""
+    private var subType1: String = ""
+    private var subType2: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_hazard)
+//        val mInflater = LayoutInflater.from(this)
+//        val contentView = mInflater.inflate(R.layout.activity_report_hazard, null)
+//        val mLayout = contentView.findViewById(R.id.relativeLayout_activity_report_hazard) as RelativeLayout
+//        setContentView(mLayout)
+
 //        val view : View = View.inflate(this,R.layout.custom_bottom_sheet_dialog_6_items, null)
 //        this.addContentView(view, LinearLayout.LayoutParams(
 //                LinearLayout.LayoutParams.MATCH_PARENT,
@@ -83,41 +85,31 @@ class ReportHazardActivity : AppCompatActivity() {
 
         // Các nút báo cáo
         btnHazardOnRoad.setOnClickListener {
+
             subType1 = "on_road"
             btnHazardOnRoad.background = getDrawable(R.color.colorPrimaryLight)
             btnHazardShoulder.background = null
             btnHazardWeather.background = null
             onOpenHazardOnRoad()
-            when (subType2){
-                ""-> {
-                    Toast.makeText(this, "Vui lòng chọn loại nguy hiểm trên đường", Toast.LENGTH_SHORT).show()
-                }
-                "object" -> {
-                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_object)
-                    tvHazardOnRoad.text = "Vật cản"
-                }
-                "construction" -> {
-                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_construction)
-                    tvHazardOnRoad.text = "Công trình"
-                }
-                "broken_light" -> {
-                    imHazardOnRoad.setImageResource(R.drawable.ic_report_broken_traffic_light)
-                    tvHazardOnRoad.text = "Đèn hư"
-                }
-                "pothole" -> {
-                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_pothole)
-                    tvHazardOnRoad.text = "Ổ voi"
-                }
-                "vehicle_stop" -> {
-                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_stopped)
-                    tvHazardOnRoad.text = "Xe đậu"
-                }
-                "road_kill" -> {
-                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_roadkill)
-                    tvHazardOnRoad.text = "Động vật"
-                }
-            }
-            
+
+//            val custom_bottom_sheet_view = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
+//            val bottomSheetDialog = BottomSheetDialog(this)
+//            bottomSheetDialog.setContentView(custom_bottom_sheet_view)
+//            bottomSheetDialog.show()
+//            Toast.makeText(this,"Show", Toast.LENGTH_SHORT).show()
+//            bottomSheetDialog.dismiss()
+
+//            imHazardOnRoad.visibility = View.GONE
+//            imHazardOnRoad.visibility = View.VISIBLE
+//            tvHazardOnRoad.visibility = View.GONE
+//            tvHazardOnRoad.visibility = View.VISIBLE
+//            btnHazardOnRoad.visibility = View.GONE
+//            btnHazardOnRoad.visibility = View.VISIBLE
+//            findViewById<ImageView>(R.id.imHazardOnRoad_report_hazard).invalidate()
+//            btnHazardOnRoad.invalidate()
+//            layout.invalidate()
+//            layout.refreshDrawableState()
+//            layout.postInvalidate()
         }
         btnHazardShoulder.setOnClickListener {
             subType1 = "shoulder"
@@ -135,17 +127,16 @@ class ReportHazardActivity : AppCompatActivity() {
         btnCLose.setOnClickListener { onClose() }
     }
 
-    private fun onClose(){
+    private fun onClose() {
         finish()
     }
 
     private fun onSend() {
-        if (subType1 == "" || subType2 == ""){
+        if (subType1 == "" || subType2 == "") {
             Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
-        }
-        else {
+        } else {
             Toast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
-            val mReport = Report("hazard",subType1,subType2,textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(),1,0,false)
+            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
             onAddNewReportHazard(mReport)
         }
     }
@@ -171,7 +162,7 @@ class ReportHazardActivity : AppCompatActivity() {
         })
     }
 
-    private fun onOpenHazardOnRoad(){
+    private fun onOpenHazardOnRoad() {
         val custom_bottom_sheet_view = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
 
         val btnObject = custom_bottom_sheet_view.findViewById<LinearLayout>(R.id.imvObject_report_hazard_on_road)
@@ -208,6 +199,38 @@ class ReportHazardActivity : AppCompatActivity() {
             bottomSheetDialog.dismiss()
         }
         bottomSheetDialog.setCanceledOnTouchOutside(true)
+
+        bottomSheetDialog.setOnDismissListener {
+            when (subType2) {
+                "" -> {
+                    Toast.makeText(this, "Vui lòng chọn loại nguy hiểm trên đường", Toast.LENGTH_SHORT).show()
+                }
+                "object" -> {
+                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_object)
+                    tvHazardOnRoad.text = "Vật cản"
+                }
+                "construction" -> {
+                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_construction)
+                    tvHazardOnRoad.text = "Công trình"
+                }
+                "broken_light" -> {
+                    imHazardOnRoad.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                    tvHazardOnRoad.text = "Đèn hư"
+                }
+                "pothole" -> {
+                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_pothole)
+                    tvHazardOnRoad.text = "Ổ voi"
+                }
+                "vehicle_stop" -> {
+                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_stopped)
+                    tvHazardOnRoad.text = "Xe đậu"
+                }
+                "road_kill" -> {
+                    imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_roadkill)
+                    tvHazardOnRoad.text = "Động vật"
+                }
+            }
+        }
         bottomSheetDialog.show()
     }
 }

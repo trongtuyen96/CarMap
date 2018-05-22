@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".activity.common.ReportHazardActivity">
+    tools:context=".activity.common.ReportHazardActivity"
+    android:id="@+id/relativeLayout_activity_report_hazard">
     
 
     <ImageView
