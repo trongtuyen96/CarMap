@@ -92,9 +92,9 @@ class ReportHazardActivity : AppCompatActivity() {
             btnHazardWeather.background = null
             onOpenHazardOnRoad()
 
-//            val custom_bottom_sheet_view = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
+//            val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
 //            val bottomSheetDialog = BottomSheetDialog(this)
-//            bottomSheetDialog.setContentView(custom_bottom_sheet_view)
+//            bottomSheetDialog.setContentView(customBottomSheetView)
 //            bottomSheetDialog.show()
 //            Toast.makeText(this,"Show", Toast.LENGTH_SHORT).show()
 //            bottomSheetDialog.dismiss()
@@ -163,17 +163,17 @@ class ReportHazardActivity : AppCompatActivity() {
     }
 
     private fun onOpenHazardOnRoad() {
-        val custom_bottom_sheet_view = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
+        val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
 
-        val btnObject = custom_bottom_sheet_view.findViewById<LinearLayout>(R.id.imvObject_report_hazard_on_road)
-        val btnConstruction = custom_bottom_sheet_view.findViewById<LinearLayout>(R.id.imvConstruction_report_hazard_on_road)
-        val btnBrokenLight = custom_bottom_sheet_view.findViewById<LinearLayout>(R.id.imvBrokenLight_report_hazard_on_road)
-        val btnPothole = custom_bottom_sheet_view.findViewById<LinearLayout>(R.id.imvPothole_report_hazard_on_road)
-        val btnVehicleStop = custom_bottom_sheet_view.findViewById<LinearLayout>(R.id.imvVehicleStop_report_hazard_on_road)
-        val btnRoadkill = custom_bottom_sheet_view.findViewById<LinearLayout>(R.id.imvRoadkill_report_hazard_on_road)
+        val btnObject = customBottomSheetView.findViewById<LinearLayout>(R.id.imvObject_report_hazard_on_road)
+        val btnConstruction = customBottomSheetView.findViewById<LinearLayout>(R.id.imvConstruction_report_hazard_on_road)
+        val btnBrokenLight = customBottomSheetView.findViewById<LinearLayout>(R.id.imvBrokenLight_report_hazard_on_road)
+        val btnPothole = customBottomSheetView.findViewById<LinearLayout>(R.id.imvPothole_report_hazard_on_road)
+        val btnVehicleStop = customBottomSheetView.findViewById<LinearLayout>(R.id.imvVehicleStop_report_hazard_on_road)
+        val btnRoadkill = customBottomSheetView.findViewById<LinearLayout>(R.id.imvRoadkill_report_hazard_on_road)
 
         val bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetDialog.setContentView(custom_bottom_sheet_view)
+        bottomSheetDialog.setContentView(customBottomSheetView)
         btnObject.setOnClickListener {
             subType2 = "object"
             bottomSheetDialog.dismiss()
