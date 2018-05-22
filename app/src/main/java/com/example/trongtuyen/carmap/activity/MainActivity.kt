@@ -37,9 +37,11 @@ import com.example.trongtuyen.carmap.activity.common.SignUpActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
+import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
+import com.example.trongtuyen.carmap.services.ReportService
 import com.example.trongtuyen.carmap.services.UserService
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.google.android.gms.common.api.ResolvableApiException
@@ -101,6 +103,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // List of user of other cars
     private lateinit var listUser : List<User>
+
+    // List of user of other cars
+    private lateinit var listReport : List<Report>
 
     // Socket
     private lateinit var socket: io.socket.client.Socket
@@ -342,16 +347,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Got last known location. In some rare situations this can be null.
             if (location != null) {
                 lastLocation = location
-                val currentLatLng = LatLng(location.latitude, location.longitude)
-
-                // Add Marker
-                markerOptions.position(currentLatLng)
-                markerOptions.title("Current location")
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
-                mMap.addMarker(markerOptions)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
-
-                mPolylineOptions.add(currentLatLng)
+//                val currentLatLng = LatLng(location.latitude, location.longitude)
+//
+//                // Add Marker
+//                markerOptions.position(currentLatLng)
+//                markerOptions.title("Current location")
+//                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
+//                mMap.addMarker(markerOptions)
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
+//
+//                mPolylineOptions.add(currentLatLng)
             }
         }
 
@@ -424,7 +429,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
             R.id.nav_slideshow -> {
-
+                onGetAllReport()
             }
             R.id.nav_manage -> {
 
@@ -877,4 +882,64 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.emit("say hello to someone", senderName, socket.id(), receiveSocketID, "hello")
     }
     // =====================================================================
+
+    // ======================================================================
+    // ======== REPORT ======================================================
+    // ======================================================================
+    private fun onGetAllReport(){
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.allReport
+        call.enqueue(object : Callback<List<Report>> {
+            override fun onResponse(call: Call<List<Report>>, response: Response<List<Report>>) {
+                if (response.isSuccessful) {
+                    onAllReportSuccess(response.body())
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<Report>>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun onAllReportSuccess(response: List<Report>) {
+        listReport = response
+        drawValidReports()
+    }
+
+    private fun drawValidReports(){
+        for (i in 0 until listReport.size){
+            addReportMarker(listReport[i])
+        }
+    }
+
+
+    private fun addReportMarker(report: Report){
+        val markerOptions = MarkerOptions()
+        // LatLag điền theo thứ tự latitude, longitude
+        // Còn ở server Geo là theo thứ tự longitude, latitude
+        markerOptions.position(LatLng(report.geometry!!.coordinates!![1], report.geometry!!.coordinates!![0]))
+        markerOptions.title(report.type)
+        markerOptions.snippet(report.subtype1)
+        when(report.type) {
+            "traffic" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_trafficjam))
+            }
+            "crash" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_accident))
+            }
+            "hazard" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_hazard))
+            }
+            "assistance" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_assistance))
+            }
+        }
+        mMap.addMarker(markerOptions)
+    }
+    // ======================================================================
 }

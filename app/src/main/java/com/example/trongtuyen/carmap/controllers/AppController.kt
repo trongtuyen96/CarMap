@@ -1,6 +1,7 @@
 package com.example.trongtuyen.carmap.controllers
 
 import android.location.Location
+import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.utils.SharePrefs
 
@@ -29,6 +30,13 @@ object AppController {
         this.userProfile = null
         this.accessToken = ""
     }
+
+    // Danh sách tài xế
+    lateinit var listUser: List<User>
+
+    // Danh sách các báo cáo
+    lateinit var listReport: List<Report>
+
 
 
 }
