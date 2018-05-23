@@ -16,7 +16,7 @@
     <color name="preload_placeholder">#E9E9E9</color>
     <color name="home_search_box_color">#E9E9E9</color>
     <color name="background_back">#DCDEE3</color>
-    <color name="background_front">#FFF</color>
+    <color name="background_front">#ffffff</color>
     <color name="button_bg_active">#FFF</color>
     <color name="button_bg_inactive">#D6D7D7</color>
     <color name="button_text_active">#FF9800</color>

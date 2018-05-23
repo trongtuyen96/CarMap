@@ -25,14 +25,16 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
+import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
+import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
+import com.example.trongtuyen.carmap.services.ReportService
 import com.example.trongtuyen.carmap.services.UserService
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.google.android.gms.common.api.ResolvableApiException
@@ -46,6 +48,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum
+import com.nightonke.boommenu.BoomButtons.InnerOnBoomButtonClickListener
+import com.nightonke.boommenu.BoomButtons.OnBMClickListener
+import com.nightonke.boommenu.BoomButtons.TextOutsideCircleButton
+import com.nightonke.boommenu.BoomMenuButton
+import com.nightonke.boommenu.ButtonEnum
+import com.nightonke.boommenu.Piece.PiecePlaceEnum
+import com.nightonke.boommenu.Util
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -87,8 +97,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // List of user of other cars
     private lateinit var listUser : List<User>
 
+    // List of user of other cars
+    private lateinit var listReport : List<Report>
+
     // Socket
     private lateinit var socket: io.socket.client.Socket
+
+    // Boom Menu Button
+//    private lateinit var btnBoomMenu : BoomMenuButton
 
     companion object {
         private const val CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION = 1
@@ -135,6 +151,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 lastLocation = p0.lastLocation
                 moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
                 mPolylineOptions.add(LatLng(lastLocation.latitude, lastLocation.longitude))
+
+                // Cập nhật vị trí hiện tại cho userProfile
+                if (::lastLocation.isInitialized) {
+                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+
+                    val newGeo = Geometry("Point", listGeo)
+                    AppController.userProfile?.homeLocation = newGeo
+                    AppController.userLocation = lastLocation
+
+                }
+
                 if (mapReady) {
                     mMap.addPolyline(mPolylineOptions)
                 }
@@ -162,13 +189,105 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         // onClickListener cho các nút
-        btn_my_loc.setOnClickListener(this)
+//        btn_my_loc.setOnClickListener(this)
+        imvMyLoc.setOnClickListener(this)
+        imvReport.setOnClickListener(this)
+
+//        // Cài đặt cho Boom Menu button
+//        btnBoomMenu = findViewById(R.id.btn_bmb)
+//        btnBoomMenu.buttonEnum = ButtonEnum.TextOutsideCircle
+//        btnBoomMenu.piecePlaceEnum = PiecePlaceEnum.DOT_4_1
+//        btnBoomMenu.buttonPlaceEnum = ButtonPlaceEnum.SC_4_1
+//        var mWidth = Resources.getSystem().displayMetrics.widthPixels
+//        var mHeight = Resources.getSystem().displayMetrics.heightPixels
+//        for (i in 0 until btnBoomMenu.piecePlaceEnum.pieceNumber()) {
+//            when (i){
+//                0 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_traffic)
+//                            .normalText("KẸT XE").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+////                            .imageRect(Rect(0,50,100,100))
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(255,80,80))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//                1 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_accident)
+//                            .normalText("TAI NẠN").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(175,186,171))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//                2 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_hazard)
+//                            .normalText("NGUY HIỂM").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(255,153,51))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//                3 -> {
+//                    val builder = TextOutsideCircleButton.Builder()
+//                            .normalImageRes(R.drawable.ic_report_closure)
+//                            .normalText("ĐƯỜNG CHẮN").typeface(Typeface.DEFAULT_BOLD).textSize(16).textWidth(mWidth/3).textGravity(Gravity.CENTER)
+//                            .rotateImage(true)
+//                            .rotateText(true)
+//                            .rippleEffect(true)
+//                            .normalColor(Color.rgb(255,153,153))
+//                            .isRound(true)
+//                            .buttonRadius(mWidth / 5)
+//                            .imageRect(Rect(20,20,mWidth / 5 * 2 - 20,mWidth / 5 * 2 - 20))
+//                            .listener(object : OnBMClickListener{
+//                                override fun onBoomButtonClick(index: Int) {
+//                                    Toast.makeText(this@MainActivity, index.toString() ,Toast.LENGTH_SHORT).show()
+//                                }
+//                            })
+//                    btnBoomMenu.addBuilder(builder)
+//                }
+//            }
+//        }
     }
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.btn_my_loc -> {
+            R.id.imvMyLoc -> {
                 onMyLocationButtonClicked()
+            }
+
+            R.id.imvReport -> {
+                val intent = Intent(this, ReportMenuActivity::class.java)
+                startActivity(intent)
             }
         }
     }
@@ -222,15 +341,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-
-                // Add Marker
-                markerOptions.position(currentLatLng)
-                markerOptions.title("Current location")
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
-                mMap.addMarker(markerOptions)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
-
-                mPolylineOptions.add(currentLatLng)
+//
+//                // Add Marker
+//                markerOptions.position(currentLatLng)
+//                markerOptions.title("Current location")
+//                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
+//                mMap.addMarker(markerOptions)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
+//
+//                mPolylineOptions.add(currentLatLng)
             }
         }
 
@@ -240,7 +359,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
         if (::mMap.isInitialized) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(LatLng(lastLocation.latitude, lastLocation.longitude)))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         } else {
             Toast.makeText(this, "Vị trí hiện không khả dụng!", Toast.LENGTH_SHORT).show()
         }
@@ -303,7 +422,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
             R.id.nav_slideshow -> {
-
+                onGetAllReport()
             }
             R.id.nav_manage -> {
 
@@ -336,7 +455,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         mMap.addMarker(markerOptions)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13f))
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
     }
 
     @SuppressLint("MissingPermission")
@@ -571,7 +690,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
         marker.position(latLng)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
     }
 
     private fun getUserFromMarker(marker: Marker): User{
@@ -726,7 +845,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 customDialog.setView(customDialogView)
                 customDialog.setOnShowListener(DialogInterface.OnShowListener {
                     customDialog.findViewById<TextView>(R.id.tv_custom_dialog).text = senderName + " đã chào bạn"
-                    object : CountDownTimer(2000, 100) {
+                    object : CountDownTimer(2000, 500) {
 
                         override fun onTick(millisUntilFinished: Long) {
                             customDialogView.findViewById<Button>(R.id.btn_custom_dialog).text = String.format(Locale.getDefault(), "%s (%d)",
@@ -756,4 +875,68 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.emit("say hello to someone", senderName, socket.id(), receiveSocketID, "hello")
     }
     // =====================================================================
+
+    // ======================================================================
+    // ======== REPORT ======================================================
+    // ======================================================================
+    private fun onGetAllReport(){
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.allReport
+        call.enqueue(object : Callback<List<Report>> {
+            override fun onResponse(call: Call<List<Report>>, response: Response<List<Report>>) {
+                if (response.isSuccessful) {
+                    onAllReportSuccess(response.body())
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<Report>>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun onAllReportSuccess(response: List<Report>) {
+        listReport = response
+        // Gán vào listReport của AppController
+        AppController.listReport = response
+        Log.e("REPORT", listReport.size.toString())
+        drawValidReports()
+    }
+
+    private fun drawValidReports(){
+        for (i in 0 until listReport.size){
+            addReportMarker(listReport[i])
+        }
+    }
+
+
+    private fun addReportMarker(report: Report){
+        val markerOptions = MarkerOptions()
+        // LatLag điền theo thứ tự latitude, longitude
+        // Còn ở server Geo là theo thứ tự longitude, latitude
+//        Log.e("REPORT", report.geometry!!.coordinates!![1].toString() + " " +  report.geometry!!.coordinates!![0].toString())
+        markerOptions.position(LatLng(report.geometry!!.coordinates!![1], report.geometry!!.coordinates!![0]))
+        markerOptions.title("report")
+        markerOptions.snippet(report._id.toString())
+        when(report.type.toString()) {
+            "traffic" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_trafficjam))
+            }
+            "crash" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_accident))
+            }
+            "hazard" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_hazard))
+            }
+            "assistance" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_assistance))
+            }
+        }
+        mMap.addMarker(markerOptions)
+    }
+    // ======================================================================
 }

@@ -14,7 +14,7 @@ import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
-import com.example.trongtuyen.carmap.services.AuthenticationResponse
+import com.example.trongtuyen.carmap.services.models.AuthenticationResponse
 import com.example.trongtuyen.carmap.services.AuthenticationService
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import retrofit2.Call

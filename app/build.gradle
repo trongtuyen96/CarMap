@@ -61,8 +61,14 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
     // Socket.io
-    implementation ('io.socket:socket.io-client:0.8.3') {
+    implementation('io.socket:socket.io-client:0.8.3') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+
+    // BoomMenu
+    implementation 'com.nightonke:boommenu:2.1.1'
+
+//    // Circle Button
+//    implementation 'com.cuboid:cuboidcirclebutton:1.0.5'
 }

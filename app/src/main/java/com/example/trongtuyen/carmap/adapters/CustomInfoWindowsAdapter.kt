@@ -18,13 +18,18 @@ class CustomInfoWindowAdapter(private val context: Activity) : GoogleMap.InfoWin
     }
 
     override fun getInfoContents(marker: Marker): View {
-        val view = context.layoutInflater.inflate(R.layout.custom_infowindow_layout, null)
+        var view : View
+        if(marker.title == "report"){
+            view = context.layoutInflater.inflate(R.layout.custom_infowindow_layout, null)
+        }else {
+            view = context.layoutInflater.inflate(R.layout.custom_infowindow_layout, null)
 
-        val tvTitle = view.findViewById(R.id.tvName_custom_info_windows) as TextView
-        val tvSubTitle = view.findViewById(R.id.tvEmail_custom_info_windows) as TextView
+            val tvTitle = view.findViewById(R.id.tvName_custom_info_windows) as TextView
+            val tvSubTitle = view.findViewById(R.id.tvEmail_custom_info_windows) as TextView
 
-        tvTitle.text = marker.title
-        tvSubTitle.text = marker.snippet
+            tvTitle.text = marker.title
+            tvSubTitle.text = marker.snippet
+        }
         return view
     }
 }
