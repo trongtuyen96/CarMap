@@ -77,7 +77,7 @@ class ReportHazardActivity : AppCompatActivity() {
         // Các nút báo cáo
         btnHazardOnRoad.setOnClickListener {
             subType1 = "on_road"
-            btnHazardOnRoad.background = getDrawable(R.color.colorPrimaryLight)
+            btnHazardOnRoad.background = getDrawable(R.color.button_bg_inactive)
             btnHazardShoulder.background = null
             btnHazardWeather.background = null
             tvTitle.text = "TRÊN ĐƯỜNG ĐI"
@@ -85,7 +85,7 @@ class ReportHazardActivity : AppCompatActivity() {
         }
         btnHazardShoulder.setOnClickListener {
             subType1 = "shoulder"
-            btnHazardShoulder.background = getDrawable(R.color.colorPrimaryLight)
+            btnHazardShoulder.background = getDrawable(R.color.button_bg_inactive)
             btnHazardOnRoad.background = null
             btnHazardWeather.background = null
             tvTitle.text = "LỀ ĐƯỜNG"
@@ -93,7 +93,7 @@ class ReportHazardActivity : AppCompatActivity() {
         }
         btnHazardWeather.setOnClickListener {
             subType1 = "weather"
-            btnHazardWeather.background = getDrawable(R.color.colorPrimaryLight)
+            btnHazardWeather.background = getDrawable(R.color.button_bg_inactive)
             btnHazardShoulder.background = null
             btnHazardOnRoad.background = null
             tvTitle.text = "THỜI TIẾT"
@@ -229,7 +229,7 @@ class ReportHazardActivity : AppCompatActivity() {
 
         tvVehicleStop.text = "Xe đậu"
         tvAnimal.text = "Động vật"
-        tvMissingSign.text = "Thiếu biển báo"
+        tvMissingSign.text = "Thiếu biển"
 
         tvTitleSub.text = "Nguy hiểm bên lè"
 
@@ -252,16 +252,16 @@ class ReportHazardActivity : AppCompatActivity() {
         bottomSheetDialog.setOnDismissListener {
             when (subType2) {
                 "vehicle_stop" -> {
-                    imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_object)
+                    imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_stopped)
                     tvHazardShoulder.text = "Xe đậu"
                 }
                 "animal" -> {
-                    imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_construction)
+                    imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_animals)
                     tvHazardShoulder.text = "Động vật"
                 }
                 "missing_sign" -> {
-                    imHazardShoulder.setImageResource(R.drawable.ic_report_broken_traffic_light)
-                    tvHazardShoulder.text = "Thiếu biển báo"
+                    imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_missingsign)
+                    tvHazardShoulder.text = "Thiếu biển"
                 }
             }
         }
@@ -327,19 +327,19 @@ class ReportHazardActivity : AppCompatActivity() {
         bottomSheetDialog.setOnDismissListener {
             when (subType2) {
                 "fog" -> {
-                    imHazardWeather.setImageResource(R.drawable.ic_report_hazard_object)
+                    imHazardWeather.setImageResource(R.drawable.ic_hazard_weather_fog)
                     tvHazardWeather.text = "Sương mù"
                 }
                 "hail" -> {
-                    imHazardWeather.setImageResource(R.drawable.ic_report_hazard_construction)
+                    imHazardWeather.setImageResource(R.drawable.ic_hazard_weather_hail)
                     tvHazardWeather.text = "Mưa đá"
                 }
                 "flood" -> {
-                    imHazardWeather.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                    imHazardWeather.setImageResource(R.drawable.ic_hazard_weather_flood)
                     tvHazardWeather.text = "Lũ lụt"
                 }
                 "ice" -> {
-                    imHazardWeather.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                    imHazardWeather.setImageResource(R.drawable.ic_hazard_weather_ice)
                     tvHazardWeather.text = "Đá trơn"
                 }
             }

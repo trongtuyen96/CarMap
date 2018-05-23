@@ -347,7 +347,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //                markerOptions.title("Current location")
 //                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
 //                mMap.addMarker(markerOptions)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 13f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
 //
 //                mPolylineOptions.add(currentLatLng)
             }
@@ -359,7 +359,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
         if (::mMap.isInitialized) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(LatLng(lastLocation.latitude, lastLocation.longitude)))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         } else {
             Toast.makeText(this, "Vị trí hiện không khả dụng!", Toast.LENGTH_SHORT).show()
         }
@@ -455,7 +455,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         mMap.addMarker(markerOptions)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(13f))
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
     }
 
     @SuppressLint("MissingPermission")
@@ -690,7 +690,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
         marker.position(latLng)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
     }
 
     private fun getUserFromMarker(marker: Marker): User{
