@@ -231,7 +231,7 @@ class ReportHazardActivity : AppCompatActivity() {
         tvAnimal.text = "Động vật"
         tvMissingSign.text = "Thiếu biển"
 
-        tvTitleSub.text = "Nguy hiểm bên lè"
+        tvTitleSub.text = "Nguy hiểm bên lề"
 
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
