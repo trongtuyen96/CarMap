@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.common.ReportMenuActivity"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:id="@+id/report_menu_layout">
 
 
     <TextView

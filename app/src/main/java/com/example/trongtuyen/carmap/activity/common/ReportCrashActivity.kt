@@ -47,19 +47,19 @@ class ReportCrashActivity : AppCompatActivity() {
         // Các nút báo cáo
         btnCrashMinor.setOnClickListener {
             subType1 = "minor"
-            btnCrashMinor.background = getDrawable(R.color.colorPrimaryLight)
+            btnCrashMinor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
             btnCrashOtherSide.background = null
         }
         btnCrashMajor.setOnClickListener {
             subType1 = "major"
-            btnCrashMajor.background = getDrawable(R.color.colorPrimaryLight)
+            btnCrashMajor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMinor.background = null
             btnCrashOtherSide.background = null
         }
         btnCrashOtherSide.setOnClickListener {
             subType1 = "other_side"
-            btnCrashOtherSide.background = getDrawable(R.color.colorPrimaryLight)
+            btnCrashOtherSide.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
             btnCrashMinor.background = null
         }
@@ -93,7 +93,7 @@ class ReportCrashActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful()) {
                     Toast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", Toast.LENGTH_SHORT).show()
-
+                    finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     Toast.makeText(this@ReportCrashActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()

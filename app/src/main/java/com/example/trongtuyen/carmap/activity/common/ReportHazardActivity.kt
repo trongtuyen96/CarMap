@@ -129,7 +129,7 @@ class ReportHazardActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful()) {
                     Toast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", Toast.LENGTH_SHORT).show()
-
+                    finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     Toast.makeText(this@ReportHazardActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()
@@ -282,15 +282,23 @@ class ReportHazardActivity : AppCompatActivity() {
         val imHail = customBottomSheetView.findViewById<ImageView>(R.id.imFrame2_6_items)
         val imFlood = customBottomSheetView.findViewById<ImageView>(R.id.imFrame3_6_items)
         val imIce = customBottomSheetView.findViewById<ImageView>(R.id.imFrame4_6_items)
+        val im5 = customBottomSheetView.findViewById<ImageView>(R.id.imFrame5_6_items)
+        val im6 = customBottomSheetView.findViewById<ImageView>(R.id.imFrame6_6_items)
 
         val tvFog = customBottomSheetView.findViewById<TextView>(R.id.tvFrame1_6_items)
         val tvHail = customBottomSheetView.findViewById<TextView>(R.id.tvFrame2_6_items)
         val tvFlood = customBottomSheetView.findViewById<TextView>(R.id.tvFrame3_6_items)
         val tvIce = customBottomSheetView.findViewById<TextView>(R.id.tvFrame4_6_items)
+        val tv5 = customBottomSheetView.findViewById<TextView>(R.id.tvFrame5_6_items)
+        val tv6 = customBottomSheetView.findViewById<TextView>(R.id.tvFrame6_6_items)
         val tvTitleSub = customBottomSheetView.findViewById<TextView>(R.id.tvTitle_report_6_items)
 
-        btn5.visibility = View.GONE
-        btn6.visibility = View.GONE
+        btn5.isClickable = false
+        btn6.isClickable = false
+        im5.visibility = View.INVISIBLE
+        im6.visibility = View.INVISIBLE
+        tv5.visibility = View.INVISIBLE
+        tv6.visibility = View.INVISIBLE
 
         imFog.setImageResource(R.drawable.ic_hazard_weather_fog)
         imHail.setImageResource(R.drawable.ic_hazard_weather_hail)

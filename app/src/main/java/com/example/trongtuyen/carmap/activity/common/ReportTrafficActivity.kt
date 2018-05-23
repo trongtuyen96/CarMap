@@ -47,19 +47,19 @@ class ReportTrafficActivity : AppCompatActivity() {
         // Các nút báo cáo
         btnTrafficModerate.setOnClickListener {
             subType1 = "moderate"
-            btnTrafficModerate.background = getDrawable(R.color.colorPrimaryLight)
+            btnTrafficModerate.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficHeavy.background = null
             btnTrafficStandstill.background = null
         }
         btnTrafficHeavy.setOnClickListener {
             subType1 = "heavy"
-            btnTrafficHeavy.background = getDrawable(R.color.colorPrimaryLight)
+            btnTrafficHeavy.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficModerate.background = null
             btnTrafficStandstill.background = null
         }
         btnTrafficStandstill.setOnClickListener {
             subType1 = "standstill"
-            btnTrafficStandstill.background = getDrawable(R.color.colorPrimaryLight)
+            btnTrafficStandstill.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficHeavy.background = null
             btnTrafficModerate.background = null
         }
@@ -94,7 +94,7 @@ class ReportTrafficActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful()) {
                     Toast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", Toast.LENGTH_SHORT).show()
-
+                    finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     Toast.makeText(this@ReportTrafficActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()

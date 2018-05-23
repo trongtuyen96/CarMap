@@ -21,7 +21,8 @@ class ReportMenuActivity : AppCompatActivity() {
     lateinit var btnReportHazard: ImageView
     @BindView(R.id.imvReportAssistance_activity_report)
     lateinit var btnReportAssist: ImageView
-
+    @BindView(R.id.report_menu_layout)
+    lateinit var layoutMenu: RelativeLayout
     @BindView(R.id.btnClose_activity_report)
     lateinit var btnCLose: ImageView
 
@@ -55,7 +56,7 @@ class ReportMenuActivity : AppCompatActivity() {
         btnReportCrash.setOnClickListener { onReportCrash() }
         btnReportHazard.setOnClickListener { onReportHazard() }
         btnReportAssist.setOnClickListener { onReportAssist() }
-
+        layoutMenu.setOnClickListener { finish() }
 
         btnCLose.setOnClickListener { onClose() }
 
@@ -81,7 +82,7 @@ class ReportMenuActivity : AppCompatActivity() {
     }
 
     private fun onReportAssist() {
-        val intent = Intent(this, SignUpActivity::class.java)
+        val intent = Intent(this, ReportHelpActivity::class.java)
         startActivity(intent)
     }
 }
