@@ -32,26 +32,28 @@
 
         <LinearLayout
             android:id="@+id/imvFrame1_6_items"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_marginStart="4dp">
 
             <ImageView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_report_hazard_object"
-                android:id="@+id/imFrame1_6_items"/>
+                android:id="@+id/imFrame1_6_items"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
 
             <TextView
+                android:id="@+id/tvFrame1_6_items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Vật cản"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="18sp"
-                android:id="@+id/tvFrame1_6_items"/>
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -64,16 +66,18 @@
 
         <LinearLayout
             android:id="@+id/imvFrame2_6_items"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_report_hazard_construction"
-                android:id="@+id/imFrame2_6_items"/>
+                android:id="@+id/imFrame2_6_items"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -95,16 +99,18 @@
 
         <LinearLayout
             android:id="@+id/imvFrame3_6_items"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_report_broken_traffic_light"
-                android:id="@+id/imFrame3_6_items"/>
+                android:id="@+id/imFrame3_6_items"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -133,18 +139,19 @@
 
         <LinearLayout
             android:id="@+id/imvFrame4_6_items"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_marginStart="4dp">
 
             <ImageView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_report_hazard_pothole"
-                android:id="@+id/imFrame4_6_items"/>
+                android:id="@+id/imFrame4_6_items"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -166,16 +173,18 @@
 
         <LinearLayout
             android:id="@+id/imvFrame5_6_items"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_report_hazard_stopped"
-                android:id="@+id/imFrame5_6_items"/>
+                android:id="@+id/imFrame5_6_items"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -197,16 +206,18 @@
 
         <LinearLayout
             android:id="@+id/imvFrame6_6_items"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:adjustViewBounds="true"
                 android:src="@drawable/ic_report_hazard_roadkill"
-                android:id="@+id/imFrame6_6_items"/>
+                android:id="@+id/imFrame6_6_items"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:layout_width="match_parent"
