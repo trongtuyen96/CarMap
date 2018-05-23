@@ -6,7 +6,7 @@
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/tvTitle_report_6_items"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_alignParentEnd="true"
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/textColorSecondary"
-        android:layout_below="@+id/textView6"
+        android:layout_below="@+id/tvTitle_report_6_items"
         android:layout_marginTop="2dp"/>
     
     <LinearLayout
@@ -31,17 +31,18 @@
         android:layout_below="@+id/divider4">
 
         <LinearLayout
-            android:id="@+id/imvObject_report_hazard_on_road"
+            android:id="@+id/imvFrame1_6_items"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="4dp">
 
             <ImageView
                 android:layout_width="110dp"
                 android:layout_height="110dp"
-                android:layout_marginStart="2dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_report_hazard_object" />
+                android:src="@drawable/ic_report_hazard_object"
+                android:id="@+id/imFrame1_6_items"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -49,7 +50,8 @@
                 android:text="Vật cản"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:id="@+id/tvFrame1_6_items"/>
 
         </LinearLayout>
 
@@ -61,7 +63,7 @@
             android:background="@color/textColorSecondary" />
 
         <LinearLayout
-            android:id="@+id/imvConstruction_report_hazard_on_road"
+            android:id="@+id/imvFrame2_6_items"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -70,7 +72,8 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_report_hazard_construction" />
+                android:src="@drawable/ic_report_hazard_construction"
+                android:id="@+id/imFrame2_6_items"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -78,7 +81,8 @@
                 android:text="Công trình"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:id="@+id/tvFrame2_6_items"/>
 
         </LinearLayout>
 
@@ -90,7 +94,7 @@
             android:background="@color/textColorSecondary" />
 
         <LinearLayout
-            android:id="@+id/imvBrokenLight_report_hazard_on_road"
+            android:id="@+id/imvFrame3_6_items"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -99,7 +103,8 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_report_broken_traffic_light" />
+                android:src="@drawable/ic_report_broken_traffic_light"
+                android:id="@+id/imFrame3_6_items"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -107,7 +112,8 @@
                 android:text="Đèn hư"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:id="@+id/tvFrame3_6_items"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -126,17 +132,19 @@
         android:layout_below="@+id/divider5">
 
         <LinearLayout
-            android:id="@+id/imvPothole_report_hazard_on_road"
+            android:id="@+id/imvFrame4_6_items"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginStart="4dp">
 
             <ImageView
                 android:layout_width="110dp"
                 android:layout_height="110dp"
-                android:layout_marginStart="2dp"
+
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_report_hazard_pothole" />
+                android:src="@drawable/ic_report_hazard_pothole"
+                android:id="@+id/imFrame4_6_items"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -144,7 +152,8 @@
                 android:text="Ổ voi"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:id="@+id/tvFrame4_6_items"/>
 
         </LinearLayout>
 
@@ -156,7 +165,7 @@
             android:background="@color/textColorSecondary" />
 
         <LinearLayout
-            android:id="@+id/imvVehicleStop_report_hazard_on_road"
+            android:id="@+id/imvFrame5_6_items"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -165,7 +174,8 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_report_hazard_stopped" />
+                android:src="@drawable/ic_report_hazard_stopped"
+                android:id="@+id/imFrame5_6_items"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -173,7 +183,8 @@
                 android:text="Xe đậu"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:id="@+id/tvFrame5_6_items"/>
 
         </LinearLayout>
 
@@ -185,7 +196,7 @@
             android:background="@color/textColorSecondary" />
 
         <LinearLayout
-            android:id="@+id/imvRoadkill_report_hazard_on_road"
+            android:id="@+id/imvFrame6_6_items"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -194,7 +205,8 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_report_hazard_roadkill" />
+                android:src="@drawable/ic_report_hazard_roadkill"
+                android:id="@+id/imFrame6_6_items"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -202,7 +214,8 @@
                 android:text="Động vật"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                android:id="@+id/tvFrame6_6_items"/>
         </LinearLayout>
     </LinearLayout>
     

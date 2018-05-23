@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <TextView
+        android:id="@+id/tvTitle_report_3_items"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:text="Nguy hiểm trên đường"
+        android:textAlignment="center"
+        android:textSize="18sp" />
+
+    <View
+        android:id="@+id/divider4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/textColorSecondary"
+        android:layout_below="@+id/tvTitle_report_3_items"
+        android:layout_marginTop="2dp"/>
+
+    <LinearLayout
+        android:id="@+id/layout_report_button_1"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/divider4"
+        android:layout_marginStart="4dp">
+
+        <LinearLayout
+            android:id="@+id/imvFrame1_3_items"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_hazard_object"
+                android:id="@+id/imFrame1_3_items"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Vật cản"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp"
+                android:id="@+id/tvFrame1_3_items"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary" />
+
+        <LinearLayout
+            android:id="@+id/imvFrame2_3_items"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_hazard_construction"
+                android:id="@+id/imFrame2_3_items"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Công trình"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp"
+                android:id="@+id/tvFrame2_3_items"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary" />
+
+        <LinearLayout
+            android:id="@+id/imvFrame3_3_items"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_report_broken_traffic_light"
+                android:id="@+id/imFrame3_3_items"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Đèn hư"
+                android:textAlignment="center"
+                android:textColor="@color/textColorSecondary"
+                android:textSize="18sp"
+                android:id="@+id/tvFrame3_3_items"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

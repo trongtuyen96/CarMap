@@ -15,6 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.support.design.widget.BottomSheetDialog
+import android.view.View
 import android.widget.LinearLayout
 
 
@@ -26,6 +27,10 @@ class ReportHazardActivity : AppCompatActivity() {
     lateinit var btnHazardShoulder: LinearLayout
     @BindView(R.id.imvHazardWeather_report_hazard)
     lateinit var btnHazardWeather: LinearLayout
+
+    @BindView(R.id.tvTitle_report_hazard)
+    lateinit var tvTitle: TextView
+
     @BindView(R.id.txtMess_report_hazard)
     lateinit var textInputEdit: EditText
     @BindView(R.id.btnSend_report_hazard)
@@ -45,20 +50,6 @@ class ReportHazardActivity : AppCompatActivity() {
 
     @BindView(R.id.btnClose_report_hazard)
     lateinit var btnCLose: ImageView
-
-    // CustomBottomSheetDialog
-//    @BindView(R.id.imvObject_report_hazard_on_road)
-//    lateinit var btnObject: LinearLayout
-//    @BindView(R.id.imvConstruction_report_hazard_on_road)
-//    lateinit var btnConstruction: LinearLayout
-//    @BindView(R.id.imvBrokenLight_report_hazard_on_road)
-//    lateinit var btnBrokenLight: LinearLayout
-//    @BindView(R.id.imvPothole_report_hazard_on_road)
-//    lateinit var btnPothole: LinearLayout
-//    @BindView(R.id.imvVehicleStop_report_hazard_on_road)
-//    lateinit var btnVehicleStop: LinearLayout
-//    @BindView(R.id.imvRoadkill_report_hazard_on_road)
-//    lateinit var btnRoadkill: LinearLayout
 
     private var subType1: String = ""
     private var subType2: String = ""
@@ -85,43 +76,28 @@ class ReportHazardActivity : AppCompatActivity() {
 
         // Các nút báo cáo
         btnHazardOnRoad.setOnClickListener {
-
             subType1 = "on_road"
             btnHazardOnRoad.background = getDrawable(R.color.colorPrimaryLight)
             btnHazardShoulder.background = null
             btnHazardWeather.background = null
+            tvTitle.text = "TRÊN ĐƯỜNG ĐI"
             onOpenHazardOnRoad()
-
-//            val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
-//            val bottomSheetDialog = BottomSheetDialog(this)
-//            bottomSheetDialog.setContentView(customBottomSheetView)
-//            bottomSheetDialog.show()
-//            Toast.makeText(this,"Show", Toast.LENGTH_SHORT).show()
-//            bottomSheetDialog.dismiss()
-
-//            imHazardOnRoad.visibility = View.GONE
-//            imHazardOnRoad.visibility = View.VISIBLE
-//            tvHazardOnRoad.visibility = View.GONE
-//            tvHazardOnRoad.visibility = View.VISIBLE
-//            btnHazardOnRoad.visibility = View.GONE
-//            btnHazardOnRoad.visibility = View.VISIBLE
-//            findViewById<ImageView>(R.id.imHazardOnRoad_report_hazard).invalidate()
-//            btnHazardOnRoad.invalidate()
-//            layout.invalidate()
-//            layout.refreshDrawableState()
-//            layout.postInvalidate()
         }
         btnHazardShoulder.setOnClickListener {
             subType1 = "shoulder"
             btnHazardShoulder.background = getDrawable(R.color.colorPrimaryLight)
             btnHazardOnRoad.background = null
             btnHazardWeather.background = null
+            tvTitle.text = "LỀ ĐƯỜNG"
+            onOpenHazardShoulder()
         }
         btnHazardWeather.setOnClickListener {
             subType1 = "weather"
             btnHazardWeather.background = getDrawable(R.color.colorPrimaryLight)
             btnHazardShoulder.background = null
             btnHazardOnRoad.background = null
+            tvTitle.text = "THỜI TIẾT"
+            onOpenHazardWeather()
         }
         btnSend.setOnClickListener { onSend() }
         btnCLose.setOnClickListener { onClose() }
@@ -165,12 +141,12 @@ class ReportHazardActivity : AppCompatActivity() {
     private fun onOpenHazardOnRoad() {
         val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
 
-        val btnObject = customBottomSheetView.findViewById<LinearLayout>(R.id.imvObject_report_hazard_on_road)
-        val btnConstruction = customBottomSheetView.findViewById<LinearLayout>(R.id.imvConstruction_report_hazard_on_road)
-        val btnBrokenLight = customBottomSheetView.findViewById<LinearLayout>(R.id.imvBrokenLight_report_hazard_on_road)
-        val btnPothole = customBottomSheetView.findViewById<LinearLayout>(R.id.imvPothole_report_hazard_on_road)
-        val btnVehicleStop = customBottomSheetView.findViewById<LinearLayout>(R.id.imvVehicleStop_report_hazard_on_road)
-        val btnRoadkill = customBottomSheetView.findViewById<LinearLayout>(R.id.imvRoadkill_report_hazard_on_road)
+        val btnObject = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame1_6_items)
+        val btnConstruction = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame2_6_items)
+        val btnBrokenLight = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame3_6_items)
+        val btnPothole = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame4_6_items)
+        val btnVehicleStop = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame5_6_items)
+        val btnRoadkill = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame6_6_items)
 
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
@@ -202,9 +178,6 @@ class ReportHazardActivity : AppCompatActivity() {
 
         bottomSheetDialog.setOnDismissListener {
             when (subType2) {
-                "" -> {
-                    Toast.makeText(this, "Vui lòng chọn loại nguy hiểm trên đường", Toast.LENGTH_SHORT).show()
-                }
                 "object" -> {
                     imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_object)
                     tvHazardOnRoad.text = "Vật cản"
@@ -233,4 +206,145 @@ class ReportHazardActivity : AppCompatActivity() {
         }
         bottomSheetDialog.show()
     }
+
+    private fun onOpenHazardShoulder() {
+        val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_3_items, null)
+
+        val btnVehicleStop = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame1_3_items)
+        val btnAnimal = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame2_3_items)
+        val btnMissingSign = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame3_3_items)
+
+        val imVehicleStop = customBottomSheetView.findViewById<ImageView>(R.id.imFrame1_3_items)
+        val imAnimal = customBottomSheetView.findViewById<ImageView>(R.id.imFrame2_3_items)
+        val imMissingSign = customBottomSheetView.findViewById<ImageView>(R.id.imFrame3_3_items)
+
+        val tvVehicleStop = customBottomSheetView.findViewById<TextView>(R.id.tvFrame1_3_items)
+        val tvAnimal = customBottomSheetView.findViewById<TextView>(R.id.tvFrame2_3_items)
+        val tvMissingSign = customBottomSheetView.findViewById<TextView>(R.id.tvFrame3_3_items)
+        val tvTitleSub = customBottomSheetView.findViewById<TextView>(R.id.tvTitle_report_3_items)
+
+        imVehicleStop.setImageResource(R.drawable.ic_report_hazard_stopped)
+        imAnimal.setImageResource(R.drawable.ic_report_hazard_animals)
+        imMissingSign.setImageResource(R.drawable.ic_report_hazard_missingsign)
+
+        tvVehicleStop.text = "Xe đậu"
+        tvAnimal.text = "Động vật"
+        tvMissingSign.text = "Thiếu biển báo"
+
+        tvTitleSub.text = "Nguy hiểm bên lè"
+
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(customBottomSheetView)
+        btnVehicleStop.setOnClickListener {
+            subType2 = "vehicle_stop"
+            bottomSheetDialog.dismiss()
+        }
+        btnAnimal.setOnClickListener {
+            subType2 = "animal"
+            bottomSheetDialog.dismiss()
+        }
+        btnMissingSign.setOnClickListener {
+            subType2 = "missing_sign"
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.setCanceledOnTouchOutside(true)
+
+        bottomSheetDialog.setOnDismissListener {
+            when (subType2) {
+                "vehicle_stop" -> {
+                    imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_object)
+                    tvHazardShoulder.text = "Xe đậu"
+                }
+                "animal" -> {
+                    imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_construction)
+                    tvHazardShoulder.text = "Động vật"
+                }
+                "missing_sign" -> {
+                    imHazardShoulder.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                    tvHazardShoulder.text = "Thiếu biển báo"
+                }
+            }
+        }
+        bottomSheetDialog.show()
+    }
+
+    private fun onOpenHazardWeather() {
+        val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
+
+        val btnFog = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame1_6_items)
+        val btnHail = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame2_6_items)
+        val btnFlood = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame3_6_items)
+        val btnIce = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame4_6_items)
+        val btn5 = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame5_6_items)
+        val btn6 = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame6_6_items)
+
+        val imFog = customBottomSheetView.findViewById<ImageView>(R.id.imFrame1_6_items)
+        val imHail = customBottomSheetView.findViewById<ImageView>(R.id.imFrame2_6_items)
+        val imFlood = customBottomSheetView.findViewById<ImageView>(R.id.imFrame3_6_items)
+        val imIce = customBottomSheetView.findViewById<ImageView>(R.id.imFrame4_6_items)
+
+        val tvFog = customBottomSheetView.findViewById<TextView>(R.id.tvFrame1_6_items)
+        val tvHail = customBottomSheetView.findViewById<TextView>(R.id.tvFrame2_6_items)
+        val tvFlood = customBottomSheetView.findViewById<TextView>(R.id.tvFrame3_6_items)
+        val tvIce = customBottomSheetView.findViewById<TextView>(R.id.tvFrame4_6_items)
+        val tvTitleSub = customBottomSheetView.findViewById<TextView>(R.id.tvTitle_report_6_items)
+
+        btn5.visibility = View.GONE
+        btn6.visibility = View.GONE
+
+        imFog.setImageResource(R.drawable.ic_hazard_weather_fog)
+        imHail.setImageResource(R.drawable.ic_hazard_weather_hail)
+        imFlood.setImageResource(R.drawable.ic_hazard_weather_flood)
+        imIce.setImageResource(R.drawable.ic_hazard_weather_ice)
+
+        tvFog.text = "Sương mù"
+        tvHail.text = "Mưa đá"
+        tvFlood.text = "Lũ lụt"
+        tvIce.text = "Đá trơn"
+
+        tvTitleSub.text = "Nguy hiểm thời tiết"
+
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(customBottomSheetView)
+        btnFog.setOnClickListener {
+            subType2 = "fog"
+            bottomSheetDialog.dismiss()
+        }
+        btnHail.setOnClickListener {
+            subType2 = "hail"
+            bottomSheetDialog.dismiss()
+        }
+        btnFlood.setOnClickListener {
+            subType2 = "flood"
+            bottomSheetDialog.dismiss()
+        }
+        btnIce.setOnClickListener {
+            subType2 = "ice"
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetDialog.setCanceledOnTouchOutside(true)
+
+        bottomSheetDialog.setOnDismissListener {
+            when (subType2) {
+                "fog" -> {
+                    imHazardWeather.setImageResource(R.drawable.ic_report_hazard_object)
+                    tvHazardWeather.text = "Sương mù"
+                }
+                "hail" -> {
+                    imHazardWeather.setImageResource(R.drawable.ic_report_hazard_construction)
+                    tvHazardWeather.text = "Mưa đá"
+                }
+                "flood" -> {
+                    imHazardWeather.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                    tvHazardWeather.text = "Lũ lụt"
+                }
+                "ice" -> {
+                    imHazardWeather.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                    tvHazardWeather.text = "Đá trơn"
+                }
+            }
+        }
+        bottomSheetDialog.show()
+    }
+
 }

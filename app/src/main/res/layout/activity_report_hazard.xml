@@ -30,7 +30,7 @@
         app:srcCompat="@drawable/ic_report_hazard" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tvTitle_report_hazard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imvReportHazard_report_hazard"
