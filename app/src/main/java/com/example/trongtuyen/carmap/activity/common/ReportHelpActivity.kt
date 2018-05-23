@@ -82,9 +82,9 @@ class ReportHelpActivity : AppCompatActivity() {
     }
 
     private fun onAddNewReportHazard(report: Report) {
-        val servMedical = APIServiceGenerator.createService(ReportService::class.java)
+        val service = APIServiceGenerator.createService(ReportService::class.java)
 
-        val call = servMedical.addNewReport(report)
+        val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
                 Toast.makeText(this@ReportHelpActivity, "Failed!", Toast.LENGTH_SHORT).show()
