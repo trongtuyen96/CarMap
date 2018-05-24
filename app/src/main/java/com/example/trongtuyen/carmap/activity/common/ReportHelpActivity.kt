@@ -36,6 +36,8 @@ class ReportHelpActivity : AppCompatActivity() {
 
     @BindView(R.id.btnClose_report_help)
     lateinit var btnCLose: ImageView
+    @BindView(R.id.btnDismiss_report_help)
+    lateinit var btnDismiss: Button
 
     private var subType1: String = ""
     private var subType2: String = ""
@@ -65,6 +67,7 @@ class ReportHelpActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener { onSend() }
         btnCLose.setOnClickListener { onClose() }
+        btnDismiss.setOnClickListener { onClose() }
     }
 
     private fun onClose() {

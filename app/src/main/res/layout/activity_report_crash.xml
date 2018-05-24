@@ -156,13 +156,26 @@
 
     </LinearLayout>
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentStart="true"
+    android:orientation="horizontal">
 
+    <Button
+        android:id="@+id/btnDismiss_report_crash"
+        android:layout_width="140dp"
+        android:layout_height="match_parent"
+        android:background="@color/dangerous"
+        android:text="HUỶ"
+        android:textColor="@color/background_front"
+        android:textSize="24sp"
+        android:textStyle="bold" />
     <Button
         android:id="@+id/btnSend_report_crash"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
+        android:layout_height="match_parent"
         android:background="@color/colorPrimary"
         android:drawableEnd="@drawable/btn_send_44dp"
         android:paddingEnd="10dp"
@@ -171,6 +184,9 @@
         android:textColor="@color/background_front"
         android:textSize="24sp"
         android:textStyle="bold" />
+
+
+</LinearLayout>
 
     <EditText
         android:id="@+id/txtMess_report_crash"
