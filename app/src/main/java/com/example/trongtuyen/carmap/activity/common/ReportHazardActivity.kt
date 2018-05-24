@@ -114,9 +114,35 @@ class ReportHazardActivity : AppCompatActivity() {
         if (subType1 == "" || subType2 == "") {
             Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
-            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
-            onAddNewReportHazard(mReport)
+            when(subType1){
+                "on_road" -> {
+                    if (subType2 == "object" ||subType2 == "construction" || subType2 == "broken_light" || subType2 == "pothole" || subType2 == "vehicle_stop" || subType2 == "road_kill" ){
+                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+                        onAddNewReportHazard(mReport)
+                    } else {
+                        Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "shoulder" -> {
+                    if (subType2 == "vehicle_stop" ||subType2 == "animal" || subType2 == "missing_sign" ){
+                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+                        onAddNewReportHazard(mReport)
+                    } else {
+                        Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "weather" -> {
+                    if (subType2 == "fog" ||subType2 == "hail" || subType2 == "flood" || subType2 == "ice" ){
+                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+                        onAddNewReportHazard(mReport)
+                    } else {
+                        Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 

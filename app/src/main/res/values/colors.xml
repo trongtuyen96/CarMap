@@ -26,5 +26,5 @@
     <color name="hint_scan">#ffffffcc</color>
     <color name="bg_call">#00CC6A</color>
     <color name="bg_sms">#F7630C</color>
-    <color name="bg_messenger">#0084FF</color>
+    <color name="bg_messenger">#0084ff</color>
 </resources>

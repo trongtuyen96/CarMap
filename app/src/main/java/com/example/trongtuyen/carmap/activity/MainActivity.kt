@@ -3,6 +3,7 @@ package com.example.trongtuyen.carmap.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -20,10 +21,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.PopupWindow
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
@@ -92,13 +90,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var markerOptions = MarkerOptions()
 
     // Popup windows
-    private var mPopupWindow : PopupWindow? = null
+    private var mPopupWindow: PopupWindow? = null
+
+//    // Popup windows
+//    private var mPopupWindowReport: PopupWindow? = null
+//
+//    private var mPopupWindowUser: PopupWindow? = null
 
     // List of user of other cars
-    private lateinit var listUser : List<User>
+    private lateinit var listUser: List<User>
 
     // List of user of other cars
-    private lateinit var listReport : List<Report>
+    private lateinit var listReport: List<Report>
 
     // Socket
     private lateinit var socket: io.socket.client.Socket
@@ -176,7 +179,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Khởi tạo socket
         try {
             socket = IO.socket("https://carmap-test.herokuapp.com/")
-        }catch (e: URISyntaxException){
+        } catch (e: URISyntaxException) {
             throw RuntimeException(e)
         }
         socket.on(Socket.EVENT_CONNECT, onConnect)
@@ -316,7 +319,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //map.uiSettings.isZoomControlsEnabled = true
 
         //Set Custom InfoWindow Adapter
-        val adapter  = CustomInfoWindowAdapter(this)
+        val adapter = CustomInfoWindowAdapter(this)
         mMap.setInfoWindowAdapter(adapter)
 
         mMap.setOnMarkerClickListener(this)
@@ -370,7 +373,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (!mapReady) return
         if (ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (!alreadyAskPermission){
+            if (!alreadyAskPermission) {
                 ActivityCompat.requestPermissions(this,
                         arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), CODE_REQUEST_PERMISSION_FOR_SETUP_MAP)
                 alreadyAskPermission = true
@@ -545,10 +548,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (!mapSetup && !resumeFromRequestPermissionFail) {
             setUpMapWrapper()
         }
-        if (mapSetup && locationUpdateState && !locationUpdateRunning&& !resumeFromRequestPermissionFail) {
+        if (mapSetup && locationUpdateState && !locationUpdateRunning && !resumeFromRequestPermissionFail) {
             startLocationUpdatesWrapper()
         }
-        resumeFromRequestPermissionFail=false
+        resumeFromRequestPermissionFail = false
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
@@ -651,23 +654,183 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ======== MARKER CLICK GROUP ==========================================
     // ======================================================================
     override fun onMarkerClick(p0: Marker): Boolean {
-        p0.showInfoWindow()
+//        p0.showInfoWindow()
+        onOpenReportMarker(p0)
         return false
+    }
+
+    private fun onOpenReportMarker(marker: Marker) {
+        Toast.makeText(this, "onReport", Toast.LENGTH_SHORT).show()
+//        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//        val customViewPopup = inflater.inflate(R.layout.custom_popup_layout,null)
+//        mPopupWindow = PopupWindow(customViewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//
+//        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.TOP,0,0)
+//
+//        // Phải có con trỏ vào customViewPopup, nếu không sẽ null
+//        val btnHello = customViewPopup.findViewById<Button>(R.id.btnHello)
+//        btnHello.setOnClickListener { attemptHello(AppController.userProfile?.name.toString(),getUserFromMarker(marker).socketID.toString())
+//            mPopupWindow!!.dismiss()
+//        }
+        if (marker.title == "report") {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewReportPopup = inflater.inflate(R.layout.marker_report_layout, null)
+            mPopupWindow = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+
+            // Phải có con trỏ vào customViewPopup, nếu không sẽ null
+            val tvType = viewReportPopup.findViewById<TextView>(R.id.tvType_marker_report)
+            val tvDistance = viewReportPopup.findViewById<TextView>(R.id.tvDistance_marker_report)
+            val tvLocation = viewReportPopup.findViewById<TextView>(R.id.tvLocation_marker_report)
+            val tvDescription = viewReportPopup.findViewById<TextView>(R.id.tvDescription_marker_report)
+            val imvType = viewReportPopup.findViewById<ImageView>(R.id.imvType_marker_report)
+            val imvUpVote = viewReportPopup.findViewById<ImageView>(R.id.imvUpVote_marker_report)
+            val imvDownVote = viewReportPopup.findViewById<ImageView>(R.id.imvDownVote_marker_report)
+
+            val dataReport: Report = marker.tag as Report
+            if (dataReport.subtype2 == "") {
+                tvType.text = dataReport.subtype1
+            } else {
+                tvType.text = dataReport.subtype2
+            }
+            tvDistance.text = "Cách 500m"
+            tvLocation.text = "Nguyen Kiem, Go Vap"
+            tvDescription.text = dataReport.description.toString()
+            when (dataReport.type) {
+                "traffic" -> {
+                    imvType.background = getDrawable(R.drawable.bg_btn_report_traffic)
+                    when (dataReport.subtype1) {
+                        "moderate" -> {
+                            imvType.setImageResource(R.drawable.ic_report_traffic_moderate)
+                        }
+                        "heavy" -> {
+                            imvType.setImageResource(R.drawable.ic_report_traffic_heavy)
+                        }
+                        "standstill" -> {
+                            imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
+                        }
+                    }
+                }
+                "crash" -> {
+                    imvType.background = getDrawable(R.drawable.bg_btn_report_crash)
+                    when (dataReport.subtype1) {
+                        "minor" -> {
+                            imvType.setImageResource(R.drawable.ic_accident_minor)
+                        }
+                        "major" -> {
+                            imvType.setImageResource(R.drawable.ic_accident_major)
+                        }
+                        "other_side" -> {
+                            imvType.setImageResource(R.drawable.ic_accident_other_side)
+                        }
+                    }
+                }
+                "hazard" -> {
+                    imvType.background = getDrawable(R.drawable.bg_btn_report_hazard)
+                    when (dataReport.subtype2) {
+                        "object" -> {
+                            imvType.setImageResource(R.drawable.ic_report_hazard_object)
+                        }
+                        "construction" -> {
+                            imvType.setImageResource(R.drawable.ic_report_hazard_construction)
+                        }
+                        "broken_light" -> {
+                            imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                        }
+                        "pothole" -> {
+                            imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
+                        }
+                        "vehicle_stop" -> {
+                            imvType.setImageResource(R.drawable.ic_report_hazard_stopped)
+                        }
+                        "road_kill" -> {
+                            imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
+                        }
+                        "animal" -> {
+                            imvType.setImageResource(R.drawable.ic_report_hazard_animals)
+                        }
+                        "missing_sign" -> {
+                            imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
+                        }
+                        "fog" -> {
+                            imvType.setImageResource(R.drawable.ic_hazard_weather_fog)
+                        }
+                        "hail" -> {
+                            imvType.setImageResource(R.drawable.ic_hazard_weather_hail)
+                        }
+                        "flood" -> {
+                            imvType.setImageResource(R.drawable.ic_hazard_weather_flood)
+                        }
+                        "ice" -> {
+                            imvType.setImageResource(R.drawable.ic_hazard_weather_ice)
+                        }
+                    }
+                }
+                "help" -> {
+                    imvType.background = getDrawable(R.drawable.bg_btn_report_assistance)
+                    when (dataReport.subtype1) {
+                        "no_gas" -> {
+                            imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
+                        }
+                        "flat_tire" -> {
+                            imvType.setImageResource(R.drawable.ic_report_sos_flat_tire)
+                        }
+                        "no_battery" -> {
+                            imvType.setImageResource(R.drawable.ic_report_sos_no_battery)
+                        }
+                        "medical_care" -> {
+                            imvType.setImageResource(R.drawable.ic_report_sos_medical_care)
+                        }
+                    }
+                }
+            }
+            imvUpVote.setOnClickListener {
+                Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
+                mPopupWindow!!.dismiss()
+            }
+            imvDownVote.setOnClickListener {
+                Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+                mPopupWindow!!.dismiss()
+            }
+        }
+        if (marker.title == "user") {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewReportPopup = inflater.inflate(R.layout.marker_user_layout, null)
+            mPopupWindow = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+
+            val imvAvatar = viewReportPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
+            val tvName = viewReportPopup.findViewById<TextView>(R.id.tvName_marker_user)
+            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
+            val tvEmail = viewReportPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
+            val btnHello = viewReportPopup.findViewById<Button>(R.id.btnHello_marker_user)
+
+            val dataUser: User = marker.tag as User
+            tvName.text = dataUser.name.toString()
+            tvDOB.text = dataUser.birthDate.toString()
+            tvEmail.text = dataUser.email.toString()
+
+            btnHello.setOnClickListener {
+                attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                mPopupWindow!!.dismiss()
+            }
+        }
     }
 
     // Sự kiện khi click vào info windows
     override fun onInfoWindowClick(p0: Marker) {
-        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val customViewPopup = inflater.inflate(R.layout.custom_popup_layout,null)
-        mPopupWindow = PopupWindow(customViewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM,0,0)
-
-        // Phải có con trỏ vào customViewPopup, nếu không sẽ null
-        val btnHello = customViewPopup.findViewById<Button>(R.id.btnHello)
-        btnHello.setOnClickListener { attemptHello(AppController.userProfile?.name.toString(),getUserFromMarker(p0).socketID.toString())
-            mPopupWindow!!.dismiss()
-        }
+//        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//        val viewPopupUser = inflater.inflate(R.layout.custom_popup_layout, null)
+//        mPopupWindow = PopupWindow(viewPopupUser, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//
+//        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+//
+//        // Phải có con trỏ vào viewPopupUser, nếu không sẽ null
+//        val btnHello = viewPopupUser.findViewById<Button>(R.id.btnHello)
+//        btnHello.setOnClickListener {
+//            attemptHello(AppController.userProfile?.name.toString(), getUserFromMarker(p0).socketID.toString())
+//            mPopupWindow!!.dismiss()
+//        }
     }
 
     override fun onInfoWindowClose(p0: Marker?) {
@@ -675,17 +838,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mPopupWindow?.dismiss()
     }
 
-    private fun addUserMarker(user: User){
+    private fun addUserMarker(user: User) {
         val markerOptions = MarkerOptions()
         // LatLag điền theo thứ tự latitude, longitude
         // Còn ở server Geo là theo thứ tự longitude, latitude
         // Random
         val random = Random()
         markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
-        markerOptions.title(user.name)
-        markerOptions.snippet(user.email)
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat()*360))
-        mMap.addMarker(markerOptions)
+        markerOptions.title("user")
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
+        mMap.addMarker(markerOptions).tag = user
     }
 
     private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
@@ -693,13 +855,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
     }
 
-    private fun getUserFromMarker(marker: Marker): User{
-        val listGeo: List<Double> = listOf(0.0,0.0)
+    private fun getUserFromMarker(marker: Marker): User {
+        val listGeo: List<Double> = listOf(0.0, 0.0)
         val newGeo = Geometry("Point", listGeo)
-        var user= User("","","","","","","", newGeo)
-        for (i in 0 until listUser.size){
+        var user = User("", "", "", "", "", "", "", newGeo)
+        for (i in 0 until listUser.size) {
             // Except current user
-            if (listUser[i].email == marker.snippet){
+            if (listUser[i].email == marker.snippet) {
                 user = listUser[i]
             }
         }
@@ -710,7 +872,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ========================================================================
     // ======== API CALL AND LISTENERS ========================================
     // ========================================================================
-    private fun onGetAllUser(){
+    private fun onGetAllUser() {
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.allUserProfile
         call.enqueue(object : Callback<List<User>> {
@@ -735,21 +897,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawOtherUsers()
     }
 
-    private fun drawOtherUsers(){
-        for (i in 0 until listUser.size){
-            // Except current user
-            if (listUser[i].email != AppController.userProfile!!.email)
-                addUserMarker(listUser[i])
+    private fun drawOtherUsers() {
+        if(listUser.size == 1)
+        {
+            Toast.makeText(this, "Không tìm thấy xe khác", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            for (i in 0 until listUser.size) {
+                // Except current user
+                if (listUser[i].email != AppController.userProfile!!.email)
+                    addUserMarker(listUser[i])
+            }
         }
     }
 
-    private fun onUpdateHomeLocation(user : User){
+    private fun onUpdateHomeLocation(user: User) {
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.updateHomeLocation(user)
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" +response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
@@ -762,7 +930,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    private fun onUpdateSocketID(user : User){
+    private fun onUpdateSocketID(user: User) {
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.updateSocketID(user)
         call.enqueue(object : Callback<UserProfileResponse> {
@@ -879,7 +1047,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ======================================================================
     // ======== REPORT ======================================================
     // ======================================================================
-    private fun onGetAllReport(){
+    private fun onGetAllReport() {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.allReport
         call.enqueue(object : Callback<List<Report>> {
@@ -907,22 +1075,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawValidReports()
     }
 
-    private fun drawValidReports(){
-        for (i in 0 until listReport.size){
+    private fun drawValidReports() {
+        for (i in 0 until listReport.size) {
             addReportMarker(listReport[i])
         }
     }
 
 
-    private fun addReportMarker(report: Report){
+    private fun addReportMarker(report: Report) {
         val markerOptions = MarkerOptions()
         // LatLag điền theo thứ tự latitude, longitude
         // Còn ở server Geo là theo thứ tự longitude, latitude
 //        Log.e("REPORT", report.geometry!!.coordinates!![1].toString() + " " +  report.geometry!!.coordinates!![0].toString())
         markerOptions.position(LatLng(report.geometry!!.coordinates!![1], report.geometry!!.coordinates!![0]))
         markerOptions.title("report")
-        markerOptions.snippet(report._id.toString())
-        when(report.type.toString()) {
+//        markerOptions.snippet(report._id.toString())
+        when (report.type.toString()) {
             "traffic" -> {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_trafficjam))
             }
@@ -936,7 +1104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_assistance))
             }
         }
-        mMap.addMarker(markerOptions)
+        mMap.addMarker(markerOptions).tag = report
     }
     // ======================================================================
 }

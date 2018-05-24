@@ -164,36 +164,68 @@
 
     </LinearLayout>
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="80dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btnDismiss_report_hazard"-->
+            <!--android:layout_width="120dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/dangerous"-->
+            <!--android:text="HUỶ"-->
+            <!--android:textColor="@color/background_front"-->
+            <!--android:textSize="24sp"-->
+            <!--android:textStyle="bold" />-->
+        <!--<Button-->
+            <!--android:id="@+id/btnSend_report_hazard"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/colorPrimary"-->
+            <!--android:drawableEnd="@drawable/btn_send_44dp"-->
+            <!--android:paddingEnd="10dp"-->
+            <!--android:paddingStart="10dp"-->
+            <!--android:text="GỬI"-->
+            <!--android:textColor="@color/background_front"-->
+            <!--android:textSize="24sp"-->
+            <!--android:textStyle="bold" />-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/button_bg_inactive">
 
         <Button
             android:id="@+id/btnDismiss_report_hazard"
-            android:layout_width="140dp"
-            android:layout_height="match_parent"
-            android:background="@color/dangerous"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:background="@drawable/bg_btn_dismiss"
             android:text="HUỶ"
             android:textColor="@color/background_front"
             android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="15dp"/>
         <Button
             android:id="@+id/btnSend_report_hazard"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:layout_height="70dp"
+            android:background="@drawable/bg_btn_send"
             android:drawableEnd="@drawable/btn_send_44dp"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
-            android:text="GỬI BÁO CÁO"
+            android:text="GỬI"
             android:textColor="@color/background_front"
             android:textSize="24sp"
-            android:textStyle="bold" />
-
-
+            android:textStyle="bold"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="15dp"/>
     </LinearLayout>
 
     <EditText
@@ -202,7 +234,7 @@
         android:layout_height="84dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="105dp"
         android:background="@android:color/transparent"
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/ic_message_grey_44dp"
