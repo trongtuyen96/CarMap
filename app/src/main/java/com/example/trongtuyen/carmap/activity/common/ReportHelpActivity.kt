@@ -78,9 +78,17 @@ class ReportHelpActivity : AppCompatActivity() {
         if (subType1 == "" || subType2 == "") {
             Toast.makeText(this, "Vui lòng chọn loại giúp đỡ", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
-            val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
-            onAddNewReportHazard(mReport)
+            when(subType1){
+                "others" -> {
+                    if (subType2 == "no_gas" ||subType2 == "flat_tire" || subType2 == "no_battery" || subType2 == "medical_care"){
+                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                        val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+                        onAddNewReportHazard(mReport)
+                    } else {
+                        Toast.makeText(this, "Vui lòng chọn loại giúp đỡ", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 
