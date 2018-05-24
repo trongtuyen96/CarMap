@@ -3,6 +3,7 @@ package com.example.trongtuyen.carmap.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -651,8 +652,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ======== MARKER CLICK GROUP ==========================================
     // ======================================================================
     override fun onMarkerClick(p0: Marker): Boolean {
-        p0.showInfoWindow()
+//        p0.showInfoWindow()
+        onOpenReportMarker(p0)
         return false
+    }
+
+    private fun onOpenReportMarker(marker: Marker){
+        Toast.makeText(this, "onReport", Toast.LENGTH_SHORT).show()
+//        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//        val customViewPopup = inflater.inflate(R.layout.custom_popup_layout,null)
+//        mPopupWindow = PopupWindow(customViewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//
+//        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.TOP,0,0)
+//
+//        // Phải có con trỏ vào customViewPopup, nếu không sẽ null
+//        val btnHello = customViewPopup.findViewById<Button>(R.id.btnHello)
+//        btnHello.setOnClickListener { attemptHello(AppController.userProfile?.name.toString(),getUserFromMarker(marker).socketID.toString())
+//            mPopupWindow!!.dismiss()
+//        }
     }
 
     // Sự kiện khi click vào info windows
