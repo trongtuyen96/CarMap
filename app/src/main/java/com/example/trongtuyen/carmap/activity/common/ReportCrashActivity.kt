@@ -32,6 +32,8 @@ class ReportCrashActivity : AppCompatActivity() {
 
     @BindView(R.id.btnClose_report_crash)
     lateinit var btnCLose: ImageView
+    @BindView(R.id.btnDismiss_report_crash)
+    lateinit var btnDismiss: Button
 
     private var subType1: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +67,7 @@ class ReportCrashActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener { onSend() }
         btnCLose.setOnClickListener { onClose() }
+        btnDismiss.setOnClickListener { onClose() }
     }
 
     private fun onClose() {
