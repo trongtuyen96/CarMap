@@ -65,7 +65,7 @@
             android:layout_height="90dp"
             android:layout_marginStart="60dp"
             android:background="@drawable/bg_btn_report_hazard"
-            android:padding="6dp"
+            android:padding="10dp"
             app:srcCompat="@drawable/ic_report_hazard_stopped" />
 
         <LinearLayout

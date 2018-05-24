@@ -693,8 +693,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             } else {
                 tvType.text = dataReport.subtype2
             }
-            tvDistance.text = "Đang làm"
-            tvLocation.text = "Cần GG Places"
+            tvDistance.text = "Cách 500m"
+            tvLocation.text = "Nguyen Kiem, Go Vap"
             tvDescription.text = dataReport.description.toString()
             when (dataReport.type) {
                 "traffic" -> {
