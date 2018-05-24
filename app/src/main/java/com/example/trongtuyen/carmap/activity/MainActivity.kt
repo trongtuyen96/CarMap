@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Maerket options for set up marker
     private var markerOptions = MarkerOptions()
 
-        // Popup windows
+    // Popup windows
     private var mPopupWindow: PopupWindow? = null
 
 //    // Popup windows
@@ -793,22 +793,44 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mPopupWindow!!.dismiss()
             }
         }
+        if (marker.title == "user") {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewReportPopup = inflater.inflate(R.layout.marker_user_layout, null)
+            mPopupWindow = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+
+            val imvAvatar = viewReportPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
+            val tvName = viewReportPopup.findViewById<TextView>(R.id.tvName_marker_user)
+            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
+            val tvEmail = viewReportPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
+            val btnHello = viewReportPopup.findViewById<Button>(R.id.btnHello_marker_user)
+
+            val dataUser: User = marker.tag as User
+            tvName.text = dataUser.name.toString()
+            tvDOB.text = dataUser.birthDate.toString()
+            tvEmail.text = dataUser.email.toString()
+
+            btnHello.setOnClickListener {
+                attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                mPopupWindow!!.dismiss()
+            }
+        }
     }
 
     // Sự kiện khi click vào info windows
     override fun onInfoWindowClick(p0: Marker) {
-        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewPopupUser = inflater.inflate(R.layout.custom_popup_layout, null)
-        mPopupWindow = PopupWindow(viewPopupUser, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
-
-        // Phải có con trỏ vào viewPopupUser, nếu không sẽ null
-        val btnHello = viewPopupUser.findViewById<Button>(R.id.btnHello)
-        btnHello.setOnClickListener {
-            attemptHello(AppController.userProfile?.name.toString(), getUserFromMarker(p0).socketID.toString())
-            mPopupWindow!!.dismiss()
-        }
+//        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//        val viewPopupUser = inflater.inflate(R.layout.custom_popup_layout, null)
+//        mPopupWindow = PopupWindow(viewPopupUser, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//
+//        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+//
+//        // Phải có con trỏ vào viewPopupUser, nếu không sẽ null
+//        val btnHello = viewPopupUser.findViewById<Button>(R.id.btnHello)
+//        btnHello.setOnClickListener {
+//            attemptHello(AppController.userProfile?.name.toString(), getUserFromMarker(p0).socketID.toString())
+//            mPopupWindow!!.dismiss()
+//        }
     }
 
     override fun onInfoWindowClose(p0: Marker?) {
@@ -823,10 +845,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Random
         val random = Random()
         markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
-        markerOptions.title(user.name)
-        markerOptions.snippet(user.email)
+        markerOptions.title("user")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
-        mMap.addMarker(markerOptions)
+        mMap.addMarker(markerOptions).tag = user
     }
 
     private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
@@ -877,10 +898,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun drawOtherUsers() {
-        for (i in 0 until listUser.size) {
-            // Except current user
-            if (listUser[i].email != AppController.userProfile!!.email)
-                addUserMarker(listUser[i])
+        if(listUser.size == 1)
+        {
+            Toast.makeText(this, "Không tìm thấy xe khác", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            for (i in 0 until listUser.size) {
+                // Except current user
+                if (listUser[i].email != AppController.userProfile!!.email)
+                    addUserMarker(listUser[i])
+            }
         }
     }
 
