@@ -9,11 +9,13 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.PixelFormat
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.Settings
+import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
@@ -23,6 +25,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -30,10 +33,7 @@ import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
-import com.example.trongtuyen.carmap.services.APIServiceGenerator
-import com.example.trongtuyen.carmap.services.ErrorUtils
-import com.example.trongtuyen.carmap.services.ReportService
-import com.example.trongtuyen.carmap.services.UserService
+import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
@@ -54,7 +54,6 @@ import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.ButtonEnum
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
 import com.nightonke.boommenu.Util
-import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -89,13 +88,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Maerket options for set up marker
     private var markerOptions = MarkerOptions()
 
-    // Popup windows
-    private var mPopupWindow: PopupWindow? = null
-
 //    // Popup windows
-//    private var mPopupWindowReport: PopupWindow? = null
-//
-//    private var mPopupWindowUser: PopupWindow? = null
+//    private var mPopupWindow: PopupWindow? = null
+
+    // Popup windows
+    private var mPopupWindowReport: PopupWindow? = null
+
+    private var mPopupWindowUser: PopupWindow? = null
 
     // List of user of other cars
     private lateinit var listUser: List<User>
@@ -104,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var listReport: List<Report>
 
     // Socket
-    private lateinit var socket: io.socket.client.Socket
+    private lateinit var socket: Socket
 
     // Boom Menu Button
 //    private lateinit var btnBoomMenu : BoomMenuButton
@@ -177,11 +176,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         // Khởi tạo socket
-        try {
-            socket = IO.socket("https://carmap-test.herokuapp.com/")
-        } catch (e: URISyntaxException) {
-            throw RuntimeException(e)
-        }
+        socket = SocketService().getSocket()
         socket.on(Socket.EVENT_CONNECT, onConnect)
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
         socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
@@ -660,23 +655,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onOpenReportMarker(marker: Marker) {
-        Toast.makeText(this, "onReport", Toast.LENGTH_SHORT).show()
-//        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//        val customViewPopup = inflater.inflate(R.layout.custom_popup_layout,null)
-//        mPopupWindow = PopupWindow(customViewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//
-//        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.TOP,0,0)
-//
-//        // Phải có con trỏ vào customViewPopup, nếu không sẽ null
-//        val btnHello = customViewPopup.findViewById<Button>(R.id.btnHello)
-//        btnHello.setOnClickListener { attemptHello(AppController.userProfile?.name.toString(),getUserFromMarker(marker).socketID.toString())
-//            mPopupWindow!!.dismiss()
-//        }
         if (marker.title == "report") {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewReportPopup = inflater.inflate(R.layout.marker_report_layout, null)
-            mPopupWindow = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+            mPopupWindowReport = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindowReport!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
 
             // Phải có con trỏ vào customViewPopup, nếu không sẽ null
             val tvType = viewReportPopup.findViewById<TextView>(R.id.tvType_marker_report)
@@ -786,56 +769,49 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             imvUpVote.setOnClickListener {
                 Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
-                mPopupWindow!!.dismiss()
+                mPopupWindowReport!!.dismiss()
             }
             imvDownVote.setOnClickListener {
                 Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
-                mPopupWindow!!.dismiss()
+                mPopupWindowReport!!.dismiss()
             }
         }
         if (marker.title == "user") {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val viewReportPopup = inflater.inflate(R.layout.marker_user_layout, null)
-            mPopupWindow = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+            val viewUserPopup = inflater.inflate(R.layout.marker_user_layout, null)
+            mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindowUser!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
-            val imvAvatar = viewReportPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
-            val tvName = viewReportPopup.findViewById<TextView>(R.id.tvName_marker_user)
-            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
-            val tvEmail = viewReportPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
-            val btnHello = viewReportPopup.findViewById<Button>(R.id.btnHello_marker_user)
+            val imvAvatar = viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
+            val tvName = viewUserPopup.findViewById<TextView>(R.id.tvName_marker_user)
+//            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
+            val tvEmail = viewUserPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
+            val btnHello = viewUserPopup.findViewById<Button>(R.id.btnHello_marker_user)
 
             val dataUser: User = marker.tag as User
             tvName.text = dataUser.name.toString()
-            tvDOB.text = dataUser.birthDate.toString()
+//            tvDOB.text = dataUser.birthDate.toString()
             tvEmail.text = dataUser.email.toString()
 
             btnHello.setOnClickListener {
                 attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
-                mPopupWindow!!.dismiss()
+                mPopupWindowUser!!.dismiss()
             }
         }
     }
 
     // Sự kiện khi click vào info windows
     override fun onInfoWindowClick(p0: Marker) {
-//        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-//        val viewPopupUser = inflater.inflate(R.layout.custom_popup_layout, null)
-//        mPopupWindow = PopupWindow(viewPopupUser, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//
-//        mPopupWindow!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
-//
-//        // Phải có con trỏ vào viewPopupUser, nếu không sẽ null
-//        val btnHello = viewPopupUser.findViewById<Button>(R.id.btnHello)
-//        btnHello.setOnClickListener {
-//            attemptHello(AppController.userProfile?.name.toString(), getUserFromMarker(p0).socketID.toString())
-//            mPopupWindow!!.dismiss()
-//        }
     }
 
     override fun onInfoWindowClose(p0: Marker?) {
-        // Đóng popup windows
-        mPopupWindow?.dismiss()
+        if (p0?.title == "report") {
+            // Đóng popup windows
+            mPopupWindowReport?.dismiss()
+        }
+        if (p0?.title == "user") {
+            mPopupWindowUser?.dismiss()
+        }
     }
 
     private fun addUserMarker(user: User) {
@@ -898,11 +874,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun drawOtherUsers() {
-        if(listUser.size == 1)
-        {
+        if (listUser.size == 1) {
             Toast.makeText(this, "Không tìm thấy xe khác", Toast.LENGTH_SHORT).show()
-        }
-        else {
+        } else {
             for (i in 0 until listUser.size) {
                 // Except current user
                 if (listUser[i].email != AppController.userProfile!!.email)
@@ -1080,7 +1054,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             addReportMarker(listReport[i])
         }
     }
-
 
     private fun addReportMarker(report: Report) {
         val markerOptions = MarkerOptions()
