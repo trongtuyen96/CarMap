@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -32,10 +33,7 @@ import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
-import com.example.trongtuyen.carmap.services.APIServiceGenerator
-import com.example.trongtuyen.carmap.services.ErrorUtils
-import com.example.trongtuyen.carmap.services.ReportService
-import com.example.trongtuyen.carmap.services.UserService
+import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
@@ -56,7 +54,6 @@ import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.ButtonEnum
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
 import com.nightonke.boommenu.Util
-import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -106,7 +103,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var listReport: List<Report>
 
     // Socket
-    private lateinit var socket: io.socket.client.Socket
+    private lateinit var socket: Socket
 
     // Boom Menu Button
 //    private lateinit var btnBoomMenu : BoomMenuButton
@@ -179,11 +176,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
         // Khởi tạo socket
-        try {
-            socket = IO.socket("https://carmap-test.herokuapp.com/")
-        } catch (e: URISyntaxException) {
-            throw RuntimeException(e)
-        }
+        socket = SocketService().getSocket()
         socket.on(Socket.EVENT_CONNECT, onConnect)
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
         socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
@@ -786,7 +779,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (marker.title == "user") {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewUserPopup = inflater.inflate(R.layout.marker_user_layout, null)
-            mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mPopupWindowUser!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
             val imvAvatar = viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
@@ -1061,7 +1054,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             addReportMarker(listReport[i])
         }
     }
-
 
     private fun addReportMarker(report: Report) {
         val markerOptions = MarkerOptions()
