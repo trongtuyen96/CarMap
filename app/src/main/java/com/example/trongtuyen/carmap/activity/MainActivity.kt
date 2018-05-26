@@ -3,19 +3,13 @@ package com.example.trongtuyen.carmap.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.graphics.PixelFormat
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.provider.Settings
-import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.view.GravityCompat
@@ -25,7 +19,6 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -45,15 +38,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
-import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum
-import com.nightonke.boommenu.BoomButtons.InnerOnBoomButtonClickListener
-import com.nightonke.boommenu.BoomButtons.OnBMClickListener
-import com.nightonke.boommenu.BoomButtons.TextOutsideCircleButton
-import com.nightonke.boommenu.BoomMenuButton
-import com.nightonke.boommenu.ButtonEnum
-import com.nightonke.boommenu.Piece.PiecePlaceEnum
-import com.nightonke.boommenu.Util
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -63,24 +51,28 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.net.URISyntaxException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener {
-
+    // Google Map variables
     private lateinit var mMap: GoogleMap
+    private var mapReady = false
+    private var mapSetup = false
+    // Location variables
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
-    private var locationUpdateState = false
-    val mPolylineOptions = PolylineOptions()
-    private var mapReady = false
-    private var mapSetup = false
     private var locationUpdateRunning = false
-    private var alreadyAskPermission = false
-    private var resumeFromRequestPermissionFail = false
+    private var locationUpdateState = false
+
+//    // Polyline variables
+//    val mPolylineOptions = PolylineOptions()
+
+//    // Permission variables
+//    private var alreadyAskPermission = false
+//    private var resumeFromRequestPermissionFail = false
 
     // PlaceAutoCompleteFragment
     private var placeAutoComplete: PlaceAutocompleteFragment? = null
@@ -152,7 +144,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 lastLocation = p0.lastLocation
                 moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
-                mPolylineOptions.add(LatLng(lastLocation.latitude, lastLocation.longitude))
+//                mPolylineOptions.add(LatLng(lastLocation.latitude, lastLocation.longitude))
 
                 // Cập nhật vị trí hiện tại cho userProfile
                 if (::lastLocation.isInitialized) {
@@ -164,9 +156,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 }
 
-                if (mapReady) {
-                    mMap.addPolyline(mPolylineOptions)
-                }
+//                if (mapReady) {
+//                    mMap.addPolyline(mPolylineOptions)
+//                }
             }
         }
         createLocationRequest()
@@ -368,11 +360,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (!mapReady) return
         if (ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (!alreadyAskPermission) {
+//            if (!alreadyAskPermission) {
                 ActivityCompat.requestPermissions(this,
                         arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), CODE_REQUEST_PERMISSION_FOR_SETUP_MAP)
-                alreadyAskPermission = true
-            }
+//                alreadyAskPermission = true
+//            }
             return
         }
         setUpMap()
@@ -396,9 +388,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -437,13 +429,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun openAppSettings() {
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        val uri = Uri.fromParts("package", packageName, null)
-        intent.data = uri
-        startActivity(intent)
-    }
+//    private fun openAppSettings() {
+//        val intent = Intent()
+//        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+//        val uri = Uri.fromParts("package", packageName, null)
+//        intent.data = uri
+//        startActivity(intent)
+//    }
 
     fun addMarker(p: Place) {
         val markerOptions = MarkerOptions()
@@ -456,25 +448,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
     }
 
-    @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
-        locationUpdateRunning = true
-    }
-
-    private fun startLocationUpdatesWrapper() {
-        if (!mapSetup || locationUpdateRunning) return
-        if (ActivityCompat.checkSelfPermission(this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (!alreadyAskPermission) {
-                ActivityCompat.requestPermissions(this,
-                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION)
-                alreadyAskPermission = true
-            }
-            return
-        }
-        startLocationUpdates()
-    }
+//    @SuppressLint("MissingPermission")
+//    private fun startLocationUpdates() {
+//        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
+//        locationUpdateRunning = true
+//    }
+//
+//    private fun startLocationUpdatesWrapper() {
+//        if (!mapSetup || locationUpdateRunning) return
+//        if (ActivityCompat.checkSelfPermission(this,
+//                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+////            if (!alreadyAskPermission) {
+//                ActivityCompat.requestPermissions(this,
+//                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION)
+////                alreadyAskPermission = true
+////            }
+//            return
+//        }
+//        startLocationUpdates()
+//    }
 
     @SuppressLint("RestrictedApi")
     private fun createLocationRequest() {
@@ -540,32 +532,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     public override fun onResume() {
         super.onResume()
         //Toast.makeText(this,"On Resume",Toast.LENGTH_SHORT).show()
-        if (!mapSetup && !resumeFromRequestPermissionFail) {
-            setUpMapWrapper()
-        }
-        if (mapSetup && locationUpdateState && !locationUpdateRunning && !resumeFromRequestPermissionFail) {
-            startLocationUpdatesWrapper()
-        }
-        resumeFromRequestPermissionFail = false
+//        if (!mapSetup && !resumeFromRequestPermissionFail) {
+//            setUpMapWrapper()
+//        }
+//        if (mapSetup && locationUpdateState && !locationUpdateRunning && !resumeFromRequestPermissionFail) {
+//            startLocationUpdatesWrapper()
+//        }
+//        resumeFromRequestPermissionFail = false
     }
 
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION -> {
-                alreadyAskPermission = false
+//                alreadyAskPermission = false
                 // If request is cancelled, the result arrays are empty.
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    startLocationUpdates()
+//                    startLocationUpdates()
                 } else {
 
-                    //Toast.makeText(this, "UPDATE LOCATION DENIED", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "UPDATE LOCATION DENIED", Toast.LENGTH_LONG).show()
                     //Log.e("K", "UPDATE LOCATION DENIED")
-                    resumeFromRequestPermissionFail = true
-                    openAppSettings()
+//                    resumeFromRequestPermissionFail = true
+//                    openAppSettings()
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -574,18 +566,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             CODE_REQUEST_PERMISSION_FOR_SETUP_MAP -> {
-                alreadyAskPermission = false
+//                alreadyAskPermission = false
                 // If request is cancelled, the result arrays are empty.
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    setUpMap()
+//                    setUpMap()
                 } else {
-                    //Toast.makeText(this, "SETUP MAP DENIED", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "SETUP MAP DENIED", Toast.LENGTH_LONG).show()
                     //Log.e("K", "SETUP MAP DENIED")
-                    resumeFromRequestPermissionFail = true
-                    openAppSettings()
+//                    resumeFromRequestPermissionFail = true
+//                    openAppSettings()
 
 
                     // permission denied, boo! Disable the
@@ -607,7 +599,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ======== ON NAVIGATION BUTTON EVENT ==================================
     // ======================================================================
     private fun loadUserProfile() {
-        if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
+        if (AppController.accessToken != null && AppController.accessToken.toString().isNotEmpty()) {
             val service = APIServiceGenerator.createService(UserService::class.java)
             val call = service.userProfile
             call.enqueue(object : Callback<UserProfileResponse> {
@@ -654,6 +646,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return false
     }
 
+    @SuppressLint("InflateParams", "SetTextI18n")
     private fun onOpenReportMarker(marker: Marker) {
         if (marker.title == "report") {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -782,7 +775,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mPopupWindowUser!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
-            val imvAvatar = viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
+//            val imvAvatar = viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
             val tvName = viewUserPopup.findViewById<TextView>(R.id.tvName_marker_user)
 //            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
             val tvEmail = viewUserPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
@@ -831,18 +824,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
     }
 
-    private fun getUserFromMarker(marker: Marker): User {
-        val listGeo: List<Double> = listOf(0.0, 0.0)
-        val newGeo = Geometry("Point", listGeo)
-        var user = User("", "", "", "", "", "", "", newGeo)
-        for (i in 0 until listUser.size) {
-            // Except current user
-            if (listUser[i].email == marker.snippet) {
-                user = listUser[i]
-            }
-        }
-        return user
-    }
+//    private fun getUserFromMarker(marker: Marker): User {
+//        val listGeo: List<Double> = listOf(0.0, 0.0)
+//        val newGeo = Geometry("Point", listGeo)
+//        var user = User("", "", "", "", "", "", "", newGeo)
+//        for (i in 0 until listUser.size) {
+//            // Except current user
+//            if (listUser[i].email == marker.snippet) {
+//                user = listUser[i]
+//            }
+//        }
+//        return user
+//    }
     // ========================================================================
 
     // ========================================================================
@@ -965,6 +958,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        })
 //    }
 
+    @SuppressLint("InflateParams", "SetTextI18n")
     private val onSayHello = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
@@ -985,8 +979,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val customDialogView = factory.inflate(R.layout.custom_dialog_layout, null)
                 val customDialog = AlertDialog.Builder(this).create()
                 customDialog.setView(customDialogView)
-                customDialog.setOnShowListener(DialogInterface.OnShowListener {
-                    customDialog.findViewById<TextView>(R.id.tv_custom_dialog).text = senderName + " đã chào bạn"
+                customDialog.setOnShowListener({
+                    customDialog.findViewById<TextView>(R.id.tv_custom_dialog).text = "$senderName đã chào bạn"
                     object : CountDownTimer(2000, 500) {
 
                         override fun onTick(millisUntilFinished: Long) {
