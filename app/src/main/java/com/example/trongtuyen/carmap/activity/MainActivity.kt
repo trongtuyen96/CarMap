@@ -34,6 +34,7 @@ import com.example.trongtuyen.carmap.models.Geometry
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
+import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
@@ -63,7 +64,9 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.math.RoundingMode
 import java.net.URISyntaxException
+import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -363,7 +366,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-
     private fun setUpMapWrapper() {
         if (!mapReady) return
         if (ActivityCompat.checkSelfPermission(this,
@@ -420,7 +422,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
             R.id.nav_slideshow -> {
-                onGetAllReport()
+//                onGetAllReport()
+                onGetNearbyReports()
             }
             R.id.nav_manage -> {
 
@@ -527,19 +530,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onPause() {
         super.onPause()
-        //Toast.makeText(this,"On Pause",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this,"On Pause",Toast.LENGTH_SHORT).show()
         fusedLocationClient.removeLocationUpdates(locationCallback)
         locationUpdateRunning = false
     }
 
     public override fun onStop() {
         super.onStop()
-        //Toast.makeText(this,"On Stop",Toast.LENGTH_SHORT).show()
     }
 
     public override fun onResume() {
         super.onResume()
-        //Toast.makeText(this,"On Resume",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
         if (!mapSetup && !resumeFromRequestPermissionFail) {
             setUpMapWrapper()
         }
@@ -676,7 +678,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             } else {
                 tvType.text = dataReport.subtype2
             }
-            tvDistance.text = "Cách 500m"
+
+            // Làm tròn số double
+            val decimalFormat = DecimalFormat("#")
+            decimalFormat.roundingMode = RoundingMode.CEILING
+
+            tvDistance.text = "Cách " + decimalFormat.format(dataReport.distance) + " m"
             tvLocation.text = "Nguyen Kiem, Go Vap"
             tvDescription.text = dataReport.description.toString()
             when (dataReport.type) {
@@ -981,6 +988,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return@Runnable
             }
             if (message == "hello") {
+                // Cần code lại layout
                 val factory = LayoutInflater.from(this)
                 val customDialogView = factory.inflate(R.layout.custom_dialog_layout, null)
                 val customDialog = AlertDialog.Builder(this).create()
@@ -1041,12 +1049,48 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    private fun onGetNearbyReports() {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.getNearbyReports(lastLocation.latitude, lastLocation.longitude, 300f)
+        call.enqueue(object : Callback<NearbyReportsResponse> {
+            override fun onResponse(call: Call<NearbyReportsResponse>, response: Response<NearbyReportsResponse>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
+                    onNearbyReportsSuccess(response.body())
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<NearbyReportsResponse>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                t.printStackTrace()
+            }
+        })
+    }
+
     private fun onAllReportSuccess(response: List<Report>) {
         listReport = response
         // Gán vào listReport của AppController
         AppController.listReport = response
         Log.e("REPORT", listReport.size.toString())
         drawValidReports()
+    }
+
+    private fun onNearbyReportsSuccess(response: NearbyReportsResponse) {
+
+        listReport = response.reports!!
+
+//        // Gán vào listReport của AppController
+//        AppController.listReport = response.reports!!
+
+        for (i in 0 until response.reports!!.size) {
+            listReport[i].distance = response.distances!![i]
+        }
+
+        drawValidReports()
+
     }
 
     private fun drawValidReports() {

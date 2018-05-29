@@ -35,6 +35,8 @@ class Report {
     @Expose
     var status: Boolean? = null
 
+    var distance: Double? = null
+
     constructor(type: String, subtype1: String, subtype2: String, description: String, geometry: Geometry, userID: String, numReport: Number, numDelete: Number, status: Boolean) {
         this.type = type
         this.subtype1 = subtype1
