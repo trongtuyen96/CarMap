@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.design.widget.NavigationView
@@ -19,6 +20,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -28,6 +30,7 @@ import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
+import com.example.trongtuyen.carmap.utils.Permission
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -55,57 +58,15 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener {
-    // Google Map variables
-    private lateinit var mMap: GoogleMap
-    private var mapReady = false
-    private var mapSetup = false
-    // Location variables
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var lastLocation: Location
-    private lateinit var locationCallback: LocationCallback
-    private lateinit var locationRequest: LocationRequest
-    private var locationUpdateRunning = false
-    private var locationUpdateState = false
-
-//    // Polyline variables
-//    val mPolylineOptions = PolylineOptions()
-
-//    // Permission variables
-//    private var alreadyAskPermission = false
-//    private var resumeFromRequestPermissionFail = false
-
-    // PlaceAutoCompleteFragment
-    private var placeAutoComplete: PlaceAutocompleteFragment? = null
-
-    // Maerket options for set up marker
-    private var markerOptions = MarkerOptions()
-
-//    // Popup windows
-//    private var mPopupWindow: PopupWindow? = null
-
-    // Popup windows
-    private var mPopupWindowReport: PopupWindow? = null
-
-    private var mPopupWindowUser: PopupWindow? = null
-
-    // List of user of other cars
-    private lateinit var listUser: List<User>
-
-    // List of user of other cars
-    private lateinit var listReport: List<Report>
-
-    // Socket
-    private lateinit var socket: Socket
-
-    // Boom Menu Button
-//    private lateinit var btnBoomMenu : BoomMenuButton
-
+    // Static variables
     companion object {
-        private const val CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION = 1
-        private const val CODE_REQUEST_SETTING_FOR_UPDATE_LOCATION = 2
-        private const val CODE_REQUEST_PERMISSION_FOR_SETUP_MAP = 3
+        // PERMISSION_REQUEST_CODE
+        private const val MY_LOCATION_PERMISSION_REQUEST_CODE = 1
+        // Log
+        private const val TAG = "MainActivity"
     }
 
+    // AppCompatActivity override functions
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -135,33 +96,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult) {
-                super.onLocationResult(p0)
-
-                lastLocation = p0.lastLocation
-                moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
-//                mPolylineOptions.add(LatLng(lastLocation.latitude, lastLocation.longitude))
-
-                // Cập nhật vị trí hiện tại cho userProfile
-                if (::lastLocation.isInitialized) {
-                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
-
-                    val newGeo = Geometry("Point", listGeo)
-                    AppController.userProfile?.homeLocation = newGeo
-                    AppController.userLocation = lastLocation
-
-                }
-
-//                if (mapReady) {
-//                    mMap.addPolyline(mPolylineOptions)
-//                }
-            }
-        }
-        createLocationRequest()
 
         // Load user profile
         loadUserProfile()
@@ -269,19 +203,85 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        }
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.imvMyLoc -> {
-                onMyLocationButtonClicked()
-            }
+    override fun onPause() {
+        super.onPause()
+        // stopLocationUpdates
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
 
-            R.id.imvReport -> {
-                val intent = Intent(this, ReportMenuActivity::class.java)
-                startActivity(intent)
-            }
+    public override fun onStop() {
+        super.onStop()
+        //Toast.makeText(this,"On Stop",Toast.LENGTH_SHORT).show()
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        // resumeLocationUpdates ?
+    }
+
+    // Permission variables
+    private lateinit var mLocationPermission:Permission
+
+    // Permission Requirement functions
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
+                                            grantResults: IntArray) {
+        Log.d(TAG, "requestCode: $requestCode")
+
+        when (requestCode) {
+            MY_LOCATION_PERMISSION_REQUEST_CODE -> mLocationPermission.onRequestPermissionsResult(grantResults)
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun initLocationPermission(){
+        mLocationPermission = Permission(this,android.Manifest.permission.ACCESS_FINE_LOCATION,
+                object : Permission.PermissionListener{
+                    override fun onPermissionGranted() {
+                        if (mLocationPermission.checkPermissions()){
+                            mMap.isMyLocationEnabled = true
+                            mMap.uiSettings.isMyLocationButtonEnabled = false
+                        }
+                        if (::fusedLocationClient.isInitialized){
+                            fusedLocationClient.lastLocation
+                                    .addOnSuccessListener { location : Location? ->
+                                        // Got last known location. In some rare situations this can be null.
+                                        location?: return@addOnSuccessListener
+                                        lastLocation=location
+                                    }
+                        }
+                    }
+
+                    override fun onShouldProvideRationale() {
+                        Toast.makeText(this@MainActivity,"onShouldProvideRationale",Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onRequestPermission() {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            requestPermissions(
+                                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                                    MY_LOCATION_PERMISSION_REQUEST_CODE)
+                        }
+                    }
+
+                    override fun onPermissionDenied() {
+                        Toast.makeText(this@MainActivity,"onPermissionDenied",Toast.LENGTH_SHORT).show()
+                    }
+
+                })
+    }
+
+    //    private fun openAppSettings() {
+//        val intent = Intent()
+//        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+//        val uri = Uri.fromParts("package", packageName, null)
+//        intent.data = uri
+//        startActivity(intent)
+//    }
+
+    // Google Map variables
+    private lateinit var mMap: GoogleMap
+
+    // Google Map functions
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -301,10 +301,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            Log.e("Resources", "Can't find style. Error: ", e)
 //        }
 
-        mapReady = true
-
-        //map.uiSettings.isZoomControlsEnabled = true
-
         //Set Custom InfoWindow Adapter
         val adapter = CustomInfoWindowAdapter(this)
         mMap.setInfoWindowAdapter(adapter)
@@ -313,61 +309,146 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mMap.setOnInfoWindowClickListener(this)
         mMap.setOnInfoWindowCloseListener(this)
 
+        initLocationPermission()
 
-        if (!mapSetup) {
-            setUpMapWrapper()
+        mLocationPermission.execute()
+
+        initLocation()
+
+        // Set myLocationButton visible and clickable
+    }
+
+    // Location variables
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var lastLocation: Location
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
+
+    // Location functions
+    @SuppressLint("RestrictedApi")
+    private fun createLocationRequest() {
+        locationRequest = LocationRequest().apply {
+            interval = 10000
+            fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+        val client = LocationServices.getSettingsClient(this)
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            startLocationUpdates()
+        }
+
+        task.addOnFailureListener { e ->
+            // 6
+            if (e is ResolvableApiException) {
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+//                    e.startResolutionForResult(this@MainActivity,
+//                            REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun setUpMap() {
+    private fun initLocation(){
+        // Create location services client
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        mMap.isMyLocationEnabled = true
-        mMap.uiSettings.isMyLocationButtonEnabled = false
-        mMap.uiSettings.isZoomControlsEnabled = false
+        if (mLocationPermission.checkPermissions()){
+            fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location : Location? ->
+                        // Got last known location. In some rare situations this can be null.
+                        location?:return@addOnSuccessListener
+                        lastLocation=location
+                    }
+        }
 
-        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
-            // Got last known location. In some rare situations this can be null.
-            if (location != null) {
-                lastLocation = location
-                val currentLatLng = LatLng(location.latitude, location.longitude)
-//
-//                // Add Marker
-//                markerOptions.position(currentLatLng)
-//                markerOptions.title("Current location")
-//                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car))
-//                mMap.addMarker(markerOptions)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
-//
-//                mPolylineOptions.add(currentLatLng)
+        // Define the location update callback
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                locationResult ?: return
+                super.onLocationResult(locationResult)
+//                for (location in locationResult.locations){
+//                    // Update UI with location data
+//                    // ...
+//                    lastLocation = location
+//                }
             }
         }
 
-        mapSetup = true
+        // Set up a location request
+        createLocationRequest()
+    }
+
+    private fun startLocationUpdates() {
+        @SuppressLint("MissingPermission")
+        if (mLocationPermission.checkPermissions()){
+            fusedLocationClient.requestLocationUpdates(locationRequest,
+                    locationCallback,
+                    null /* Looper */)
+        }
+    }
+
+    // PlaceAutoCompleteFragment
+    private var placeAutoComplete: PlaceAutocompleteFragment? = null
+
+    // Marker options for set up marker
+    private var markerOptions = MarkerOptions()
+
+//    // Popup windows
+//    private var mPopupWindow: PopupWindow? = null
+
+    // Popup windows
+    private var mPopupWindowReport: PopupWindow? = null
+
+    private var mPopupWindowUser: PopupWindow? = null
+
+    // List of user of other cars
+    private lateinit var listUser: List<User>
+
+    // List of user of other cars
+    private lateinit var listReport: List<Report>
+
+    // Socket
+    private lateinit var socket: Socket
+
+    // Boom Menu Button
+//    private lateinit var btnBoomMenu : BoomMenuButton
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.imvMyLoc -> {
+                onMyLocationButtonClicked()
+            }
+
+            R.id.imvReport -> {
+                val intent = Intent(this, ReportMenuActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
-        if (::mMap.isInitialized) {
+        mLocationPermission.execute()
+
+        startLocationUpdates()
+
+        if (::lastLocation.isInitialized){
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         } else {
             Toast.makeText(this, "Vị trí hiện không khả dụng!", Toast.LENGTH_SHORT).show()
         }
-    }
-
-
-    private fun setUpMapWrapper() {
-        if (!mapReady) return
-        if (ActivityCompat.checkSelfPermission(this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            if (!alreadyAskPermission) {
-                ActivityCompat.requestPermissions(this,
-                        arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), CODE_REQUEST_PERMISSION_FOR_SETUP_MAP)
-//                alreadyAskPermission = true
-//            }
-            return
-        }
-        setUpMap()
     }
 
     override fun onBackPressed() {
@@ -429,14 +510,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-//    private fun openAppSettings() {
-//        val intent = Intent()
-//        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-//        val uri = Uri.fromParts("package", packageName, null)
-//        intent.data = uri
-//        startActivity(intent)
-//    }
-
     fun addMarker(p: Place) {
         val markerOptions = MarkerOptions()
         markerOptions.position(p.latLng)
@@ -467,133 +540,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        }
 //        startLocationUpdates()
 //    }
-
-    @SuppressLint("RestrictedApi")
-    private fun createLocationRequest() {
-        // 1
-        locationRequest = LocationRequest()
-        // 2
-        locationRequest.interval = 10000
-        // 3
-        locationRequest.fastestInterval = 5000
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
-        val builder = LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest)
-
-        // 4
-        val client = LocationServices.getSettingsClient(this)
-        val task = client.checkLocationSettings(builder.build())
-
-        // 5
-        task.addOnSuccessListener {
-            locationUpdateState = true
-            //startLocationUpdatesWrapper()
-        }
-        task.addOnFailureListener { e ->
-            // 6
-            if (e is ResolvableApiException) {
-                // Location settings are not satisfied, but this can be fixed
-                // by showing the user a dialog.
-                try {
-                    // Show the dialog by calling startResolutionForResult(),
-                    // and check the result in onActivityResult().
-                    e.startResolutionForResult(this@MainActivity,
-                            CODE_REQUEST_SETTING_FOR_UPDATE_LOCATION)
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    // Ignore the error.
-                }
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        //super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CODE_REQUEST_SETTING_FOR_UPDATE_LOCATION) {
-            if (resultCode == Activity.RESULT_OK) {
-                locationUpdateState = true
-                //startLocationUpdatesWrapper()
-            }
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        //Toast.makeText(this,"On Pause",Toast.LENGTH_SHORT).show()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-        locationUpdateRunning = false
-    }
-
-    public override fun onStop() {
-        super.onStop()
-        //Toast.makeText(this,"On Stop",Toast.LENGTH_SHORT).show()
-    }
-
-    public override fun onResume() {
-        super.onResume()
-        //Toast.makeText(this,"On Resume",Toast.LENGTH_SHORT).show()
-//        if (!mapSetup && !resumeFromRequestPermissionFail) {
-//            setUpMapWrapper()
-//        }
-//        if (mapSetup && locationUpdateState && !locationUpdateRunning && !resumeFromRequestPermissionFail) {
-//            startLocationUpdatesWrapper()
-//        }
-//        resumeFromRequestPermissionFail = false
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION -> {
-//                alreadyAskPermission = false
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-//                    startLocationUpdates()
-                } else {
-
-                    Toast.makeText(this, "UPDATE LOCATION DENIED", Toast.LENGTH_LONG).show()
-                    //Log.e("K", "UPDATE LOCATION DENIED")
-//                    resumeFromRequestPermissionFail = true
-//                    openAppSettings()
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return
-            }
-
-            CODE_REQUEST_PERMISSION_FOR_SETUP_MAP -> {
-//                alreadyAskPermission = false
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-//                    setUpMap()
-                } else {
-                    Toast.makeText(this, "SETUP MAP DENIED", Toast.LENGTH_LONG).show()
-                    //Log.e("K", "SETUP MAP DENIED")
-//                    resumeFromRequestPermissionFail = true
-//                    openAppSettings()
-
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return
-            }
-
-        // Add other 'when' lines to check for other
-        // permissions this app might request.
-
-            else -> {
-                // Ignore all other requests.
-            }
-        }
-    }
 
     // ======================================================================
     // ======== ON NAVIGATION BUTTON EVENT ==================================
@@ -635,7 +581,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(intent)
         this.finish()
     }
-    // ======================================================================
 
     // ======================================================================
     // ======== MARKER CLICK GROUP ==========================================
@@ -794,8 +739,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     // Sự kiện khi click vào info windows
-    override fun onInfoWindowClick(p0: Marker) {
-    }
+    override fun onInfoWindowClick(p0: Marker) {}
 
     override fun onInfoWindowClose(p0: Marker?) {
         if (p0?.title == "report") {
