@@ -111,6 +111,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Boom Menu Button
 //    private lateinit var btnBoomMenu : BoomMenuButton
 
+    // List of markers
+    private var listMarker: MutableList<Marker> = ArrayList()
+
     companion object {
         private const val CODE_REQUEST_PERMISSION_FOR_UPDATE_LOCATION = 1
         private const val CODE_REQUEST_SETTING_FOR_UPDATE_LOCATION = 2
@@ -1079,7 +1082,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onNearbyReportsSuccess(response: NearbyReportsResponse) {
-
         listReport = response.reports!!
 
 //        // Gán vào listReport của AppController
@@ -1094,6 +1096,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun drawValidReports() {
+        if(listMarker.size > 0){
+            for (i in 0 until listMarker.size) {
+                listMarker[i].remove()
+            }
+            listMarker.clear()
+        }
         for (i in 0 until listReport.size) {
             addReportMarker(listReport[i])
         }
@@ -1121,7 +1129,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_assistance))
             }
         }
-        mMap.addMarker(markerOptions).tag = report
+        val marker = mMap.addMarker(markerOptions)
+        listMarker.add(marker)
+        marker.tag = report
     }
     // ======================================================================
 }
