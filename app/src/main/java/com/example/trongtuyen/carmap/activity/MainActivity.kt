@@ -767,7 +767,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onGetNearbyUsers() {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, 300f)
+        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, 10000f)
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
@@ -1015,7 +1015,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onGetNearbyReports() {
         val service = APIServiceGenerator.createService(ReportService::class.java)
-        val call = service.getNearbyReports(lastLocation.latitude, lastLocation.longitude, 300f)
+        val call = service.getNearbyReports(lastLocation.latitude, lastLocation.longitude, 10000f)
         call.enqueue(object : Callback<NearbyReportsResponse> {
             override fun onResponse(call: Call<NearbyReportsResponse>, response: Response<NearbyReportsResponse>) {
                 if (response.isSuccessful) {
