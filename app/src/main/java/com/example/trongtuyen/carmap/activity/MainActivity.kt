@@ -13,9 +13,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityCompat.requestPermissions
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -93,6 +96,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var mPopupWindowUser: PopupWindow? = null
 
+    private var mPopupWindowHello: PopupWindow? = null
+
     // List of user of other cars
     private lateinit var listUser: List<User>
 
@@ -107,6 +112,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // List of report markers
     private var listReportMarker: MutableList<Marker> = ArrayList()
+
+    // Handler của thread
+    private lateinit var handler: Handler
+
+    // Runnable của auto
+    private lateinit var runnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,18 +161,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onPause()
 //        Toast.makeText(this,"On Pause",Toast.LENGTH_SHORT).show()
         // stopLocationUpdates
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+        if (::fusedLocationClient.isInitialized) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
     }
 
     public override fun onStop() {
         super.onStop()
-        //Toast.makeText(this,"On Stop",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "On Stop", Toast.LENGTH_SHORT).show()
+        handler.removeCallbacks(runnable)
     }
 
     public override fun onResume() {
         super.onResume()
         Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
         // resumeLocationUpdates ?
+
+        // Tự động thực hiện
+        handler = Handler()
+        runnable = object : Runnable {
+            override fun run() {
+                // Sau đó lặp lại mỗi 15s
+                if (::lastLocation.isInitialized) {
+                    Toast.makeText(this@MainActivity, "Cập nhật All", Toast.LENGTH_SHORT).show()
+                    // Cập nhật địa điểm hiện tại
+                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                    val newGeo = Geometry("Point", listGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo)
+                    onUpdateHomeLocation(user)
+
+                    // Cập nhật người dùng xung quanh
+                    onGetNearbyUsers()
+
+                    // Cập nhật biển báo xung quanh
+                    onGetNearbyReports()
+                }
+                handler.postDelayed(this, 15000)
+            }
+        }
+
+        // Lần đầu chạy sau 7s
+        handler.postDelayed(runnable, 7000)  //the time is in miliseconds
     }
 
     // Permission Requirement functions
@@ -872,11 +912,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val onSayHello = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
-            val senderName: String
+            val email: String
             val sendID: String
             val message: String
             try {
-                senderName = args[0] as String
+                email = args[0] as String
                 sendID = args[1] as String
                 message = args[2] as String
 
@@ -885,41 +925,67 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return@Runnable
             }
             if (message == "hello") {
-                // Cần code lại layout
-                val factory = LayoutInflater.from(this)
-                val customDialogView = factory.inflate(R.layout.custom_dialog_layout, null)
-                val customDialog = AlertDialog.Builder(this).create()
-                customDialog.setView(customDialogView)
-                customDialog.setOnShowListener(DialogInterface.OnShowListener {
-                    customDialog.findViewById<TextView>(R.id.tv_custom_dialog).text = senderName + " đã chào bạn"
-                    object : CountDownTimer(2000, 500) {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewHelloPopup = inflater.inflate(R.layout.hello_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewHelloPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                        override fun onTick(millisUntilFinished: Long) {
-                            customDialogView.findViewById<Button>(R.id.btn_custom_dialog).text = String.format(Locale.getDefault(), "%s (%d)",
-                                    "Chào lại",
-                                    TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
-                        }
+                val tvEmail = viewHelloPopup.findViewById<TextView>(R.id.tvEmail_hello_dialog)
+                val btnHello = viewHelloPopup.findViewById<Button>(R.id.btnHello_hello_dialog)
 
-                        override fun onFinish() {
-                            customDialog.dismiss()
-                        }
-                    }.start()
-                })
+                tvEmail.text = email
 
-                customDialogView.findViewById<Button>(R.id.btn_custom_dialog).setOnClickListener {
-                    attemptHello(AppController.userProfile?.name.toString(), sendID)
-                    customDialog.dismiss()
+                object : CountDownTimer(3000, 500) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        btnHello.text = String.format(Locale.getDefault(), "%s (%d)",
+                                "CHÀO LẠI",
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                    }
+
+                    override fun onFinish() {
+                        mPopupWindowHello!!.dismiss()
+                    }
+                }.start()
+
+                btnHello.setOnClickListener {
+                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    mPopupWindowHello!!.dismiss()
                 }
-                customDialog.show()
+
+//                val factory = LayoutInflater.from(this)
+//                val customDialogView = factory.inflate(R.layout.hello_dialog_layout, null)
+//                val customDialog = AlertDialog.Builder(this).create()
+//                customDialog.setView(customDialogView)
+//                customDialog.setOnShowListener(DialogInterface.OnShowListener {
+//                    customDialog.findViewById<TextView>(R.id.tvEmail_hello_dialog).text = email
+//                    object : CountDownTimer(2000, 500) {
+//
+//                        override fun onTick(millisUntilFinished: Long) {
+//                            customDialogView.findViewById<Button>(R.id.btnHello_hello_dialog).text = String.format(Locale.getDefault(), "%s (%d)",
+//                                    "CHÀO LẠI",
+//                                    TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+//                        }
+//
+//                        override fun onFinish() {
+//                            customDialog.dismiss()
+//                        }
+//                    }.start()
+//                })
+//
+//                customDialogView.findViewById<Button>(R.id.btnHello_hello_dialog).setOnClickListener {
+//                    attemptHello(AppController.userProfile?.name.toString(), sendID)
+//                    customDialog.dismiss()
+//                }
+//                customDialog.show()
             }
         })
     }
 
-    private fun attemptHello(senderName: String, receiveSocketID: String) {
+    private fun attemptHello(email: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("say hello to someone", senderName, socket.id(), receiveSocketID, "hello")
+        socket.emit("say hello to someone", email, socket.id(), receiveSocketID, "hello")
     }
     // =====================================================================
 
