@@ -4,7 +4,6 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.View
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -35,7 +34,7 @@ class ReportMenuActivity : AppCompatActivity() {
         initComponents()
 
         // Tự động tắt activity sau 7 giây
-        var countDownTimer= object : CountDownTimer(7000, 500) {
+        val countDownTimer= object : CountDownTimer(7000, 500) {
             override fun onTick(millisUntilFinished: Long) {
                 findViewById<TextView>(R.id.tvClose_activity_report).text = String.format(Locale.getDefault(), "%s %d giây",
                         "Đóng sau",

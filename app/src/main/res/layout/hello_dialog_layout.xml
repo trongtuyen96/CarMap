@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="200dp"
+    android:layout_height="194dp"
+    android:background="@drawable/bg_btn_send"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/bg_btn_report_hazard"
+        android:padding="6dp"
+        android:src="@drawable/ic_report_hazard_stopped"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
+
+    <!--<View-->
+    <!--android:id="@+id/divider5"-->
+    <!--android:layout_width="1dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginEnd="2dp"-->
+    <!--android:layout_marginStart="2dp"-->
+    <!--android:background="@color/textColorSecondary" />-->
+
+
+    <TextView
+        android:id="@+id/tvEmail_hello_dialog"
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:text="Email"
+        android:textAlignment="center"
+        android:textColor="@color/background_front"/>
+
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/textColorSecondary" />
+
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:text="...ĐÃ CHÀO BẠN"
+        android:textColor="@color/background_front"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:textAlignment="center"/>
+
+    <Button
+        android:id="@+id/btnHello_hello_dialog"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_btn_white"
+        android:text="Chào lại"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="10dp"/>
+
+</LinearLayout>
