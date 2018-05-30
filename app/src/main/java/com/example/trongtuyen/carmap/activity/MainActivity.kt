@@ -189,7 +189,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                                         // Dùng khi chưa có grant permission - chạy lần đầu
                                         Toast.makeText(this@MainActivity,"Fused - init location permission",Toast.LENGTH_SHORT).show()
-
+                                        if(::lastLocation.isInitialized) {
+                                            val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                                            val newGeo = Geometry("Point", listGeo)
+                                            AppController.userProfile?.homeLocation = newGeo
+                                        }
                                     }
                         }
                     }
@@ -288,6 +292,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         // Khi đã có permission rồi, chạy trước locationCallback
                         Toast.makeText(this@MainActivity,"Fused success listener",Toast.LENGTH_SHORT).show()
 
+                        if(::lastLocation.isInitialized) {
+                            val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                            val newGeo = Geometry("Point", listGeo)
+                            AppController.userProfile?.homeLocation = newGeo
+                        }
                     }
         }
 
@@ -303,12 +312,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                     // Nơi update location liên tục
                     Toast.makeText(this@MainActivity,"Update location callback",Toast.LENGTH_SHORT).show()
-                    val currentLatLng = LatLng(location.latitude, location.longitude)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
 
-                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
-                    val newGeo = Geometry("Point", listGeo)
-                    AppController.userProfile?.homeLocation = newGeo
+                    if(::lastLocation.isInitialized) {
+                        val currentLatLng = LatLng(location.latitude, location.longitude)
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
+                        val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                        val newGeo = Geometry("Point", listGeo)
+                        AppController.userProfile?.homeLocation = newGeo
+                    }
 
                 }
             }
