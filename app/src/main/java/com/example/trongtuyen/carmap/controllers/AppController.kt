@@ -31,10 +31,10 @@ object AppController {
         this.accessToken = ""
     }
 
-    // Danh sách tài xế
-    lateinit var listUser: List<User>
-
-    // Danh sách các báo cáo
-    lateinit var listReport: List<Report>
+//    // Danh sách tài xế
+//    lateinit var listUser: List<User>
+//
+//    // Danh sách các báo cáo
+//    lateinit var listReport: List<Report>
 
 }

@@ -102,7 +102,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Socket
     private lateinit var socket: Socket
 
-    // List of markers
+    // List of user markers
+    private var listUserMarker: MutableList<Marker> = ArrayList()
+
+    // List of report markers
     private var listReportMarker: MutableList<Marker> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -188,8 +191,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                         lastLocation = location
 
                                         // Dùng khi chưa có grant permission - chạy lần đầu
-                                        Toast.makeText(this@MainActivity,"Fused - init location permission",Toast.LENGTH_SHORT).show()
-
+                                        Toast.makeText(this@MainActivity, "Fused - init location permission", Toast.LENGTH_SHORT).show()
+                                        if (::lastLocation.isInitialized) {
+                                            val currentLatLng = LatLng(location.latitude, location.longitude)
+                                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
+                                            val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                                            val newGeo = Geometry("Point", listGeo)
+                                            AppController.userProfile?.homeLocation = newGeo
+                                        }
                                     }
                         }
                     }
@@ -286,8 +295,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //                        moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
 
                         // Khi đã có permission rồi, chạy trước locationCallback
-                        Toast.makeText(this@MainActivity,"Fused success listener",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "Fused success listener", Toast.LENGTH_SHORT).show()
 
+                        if (::lastLocation.isInitialized) {
+                            val currentLatLng = LatLng(location.latitude, location.longitude)
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
+                            val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                            val newGeo = Geometry("Point", listGeo)
+                            AppController.userProfile?.homeLocation = newGeo
+                        }
                     }
         }
 
@@ -296,19 +312,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
                 super.onLocationResult(locationResult)
-                for (location in locationResult.locations){
+                for (location in locationResult.locations) {
                     // Update UI with location data
                     // ...
                     lastLocation = location
 
                     // Nơi update location liên tục
-                    Toast.makeText(this@MainActivity,"Update location callback",Toast.LENGTH_SHORT).show()
-                    val currentLatLng = LatLng(location.latitude, location.longitude)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
+                    Toast.makeText(this@MainActivity, "Update location callback", Toast.LENGTH_SHORT).show()
 
-                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
-                    val newGeo = Geometry("Point", listGeo)
-                    AppController.userProfile?.homeLocation = newGeo
+                    if (::lastLocation.isInitialized) {
+                        val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                        val newGeo = Geometry("Point", listGeo)
+                        AppController.userProfile?.homeLocation = newGeo
+                    }
 
                 }
             }
@@ -400,7 +416,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_camera -> {
-                onGetAllUser()
+//                onGetAllUser()
+                onGetNearbyUsers()
             }
             R.id.nav_gallery -> {
                 if (::lastLocation.isInitialized) {
@@ -660,18 +677,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun addUserMarker(user: User) {
-        val markerOptions = MarkerOptions()
-        // LatLag điền theo thứ tự latitude, longitude
-        // Còn ở server Geo là theo thứ tự longitude, latitude
-        // Random
-        val random = Random()
-        markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
-        markerOptions.title("user")
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
-        mMap.addMarker(markerOptions).tag = user
-    }
-
     private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
         marker.position(latLng)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
@@ -717,19 +722,60 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onAllUserProfileSuccess(response: List<User>) {
         listUser = response
-        drawOtherUsers()
+        drawValidUsers()
     }
 
-    private fun drawOtherUsers() {
+    private fun onGetNearbyUsers() {
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, 300f)
+        call.enqueue(object : Callback<List<User>> {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
+                    onAllUserProfileSuccess(response.body())
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun drawValidUsers() {
         if (listUser.size == 1) {
             Toast.makeText(this, "Không tìm thấy xe khác", Toast.LENGTH_SHORT).show()
         } else {
+            if (listUserMarker.size > 0) {
+                for (i in 0 until listUserMarker.size) {
+                    listUserMarker[i].remove()
+                }
+                listUserMarker.clear()
+            }
             for (i in 0 until listUser.size) {
                 // Except current user
                 if (listUser[i].email != AppController.userProfile!!.email)
                     addUserMarker(listUser[i])
             }
         }
+    }
+
+    private fun addUserMarker(user: User) {
+        val markerOptions = MarkerOptions()
+        // LatLag điền theo thứ tự latitude, longitude
+        // Còn ở server Geo là theo thứ tự longitude, latitude
+        // Random
+        val random = Random()
+        markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
+        markerOptions.title("user")
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
+        val marker = mMap.addMarker(markerOptions)
+        listUserMarker.add(marker)
+        marker.tag = user
     }
 
     private fun onUpdateHomeLocation(user: User) {
@@ -775,7 +821,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // ======================================================================
     // ======== SOCKET EVENT ================================================
     // ======================================================================
-    private fun initSocket(){
+    private fun initSocket() {
         socket = SocketService().getSocket()
         socket.on(Socket.EVENT_CONNECT, onConnect)
         socket.on(Socket.EVENT_DISCONNECT, onDisconnect)
@@ -924,9 +970,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onAllReportSuccess(response: List<Report>) {
         listReport = response
-        // Gán vào listReport của AppController
-        AppController.listReport = response
-        Log.e("REPORT", listReport.size.toString())
+//        // Gán vào listReport của AppController
+//        AppController.listReport = response
         drawValidReports()
     }
 
