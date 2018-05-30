@@ -13,9 +13,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityCompat.requestPermissions
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -110,6 +113,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // List of report markers
     private var listReportMarker: MutableList<Marker> = ArrayList()
 
+    // Handler của thread
+    private lateinit var handler: Handler
+
+    // Runnable của auto
+    private lateinit var runnable: Runnable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -152,18 +161,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onPause()
 //        Toast.makeText(this,"On Pause",Toast.LENGTH_SHORT).show()
         // stopLocationUpdates
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+        if (::fusedLocationClient.isInitialized) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
     }
 
     public override fun onStop() {
         super.onStop()
-        //Toast.makeText(this,"On Stop",Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "On Stop", Toast.LENGTH_SHORT).show()
+        handler.removeCallbacks(runnable)
     }
 
     public override fun onResume() {
         super.onResume()
         Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
         // resumeLocationUpdates ?
+
+        // Tự động thực hiện
+        handler = Handler()
+        runnable = object : Runnable {
+            override fun run() {
+                // Sau đó lặp lại mỗi 15s
+                if (::lastLocation.isInitialized) {
+                    Toast.makeText(this@MainActivity, "Cập nhật All", Toast.LENGTH_SHORT).show()
+                    // Cập nhật địa điểm hiện tại
+                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+                    val newGeo = Geometry("Point", listGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo)
+                    onUpdateHomeLocation(user)
+
+                    // Cập nhật người dùng xung quanh
+                    onGetNearbyUsers()
+
+                    // Cập nhật biển báo xung quanh
+                    onGetNearbyReports()
+                }
+                handler.postDelayed(this, 15000)
+            }
+        }
+
+        // Lần đầu chạy sau 7s
+        handler.postDelayed(runnable, 7000)  //the time is in miliseconds
     }
 
     // Permission Requirement functions
