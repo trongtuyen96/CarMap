@@ -169,13 +169,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     public override fun onStop() {
         super.onStop()
         Toast.makeText(this, "On Stop", Toast.LENGTH_SHORT).show()
+        // Xoá runnable thread
         handler.removeCallbacks(runnable)
+
+//        // Destroy socket
+//        destroySocket()
     }
 
     public override fun onResume() {
         super.onResume()
         Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
         // resumeLocationUpdates ?
+
+        // Khởi tạo socket
+//        initSocket()
 
         // Tự động thực hiện
         handler = Handler()
@@ -767,7 +774,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onGetNearbyUsers() {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, 300f)
+        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, 10000f)
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
@@ -870,6 +877,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        socket.on("chat message", onNewMessage)
         socket.on("hello message", onSayHello)
         socket.connect()
+    }
+
+    private fun destroySocket(){
+        socket.off(Socket.EVENT_CONNECT, onConnect)
+        socket.off(Socket.EVENT_DISCONNECT, onDisconnect)
+        socket.off(Socket.EVENT_CONNECT_ERROR, onConnectError)
+        socket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
+//        socket.on("chat message", onNewMessage)
+        socket.off("hello message", onSayHello)
+        socket.disconnect()
     }
 
     private val onConnect = Emitter.Listener {
@@ -1015,7 +1032,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onGetNearbyReports() {
         val service = APIServiceGenerator.createService(ReportService::class.java)
-        val call = service.getNearbyReports(lastLocation.latitude, lastLocation.longitude, 300f)
+        val call = service.getNearbyReports(lastLocation.latitude, lastLocation.longitude, 10000f)
         call.enqueue(object : Callback<NearbyReportsResponse> {
             override fun onResponse(call: Call<NearbyReportsResponse>, response: Response<NearbyReportsResponse>) {
                 if (response.isSuccessful) {
