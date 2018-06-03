@@ -119,6 +119,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Runnable của auto
     private lateinit var runnable: Runnable
 
+    // Marker id để check marker nào đang được ấn
+    private var curMarkerReport: Marker? = null
+
+    // Marker id để check marker nào đang được ấn
+    private var curMarkerUser: Marker? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -168,7 +174,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     public override fun onStop() {
         super.onStop()
-        Toast.makeText(this, "On Stop", Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this, "On Stop", Toast.LENGTH_SHORT).show()
         // Xoá runnable thread
         handler.removeCallbacks(runnable)
 
@@ -178,7 +184,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     public override fun onResume() {
         super.onResume()
-        Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
+        // Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
         // resumeLocationUpdates ?
 
         // Khởi tạo socket
@@ -190,7 +196,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun run() {
                 // Sau đó lặp lại mỗi 15s
                 if (::lastLocation.isInitialized) {
-                    Toast.makeText(this@MainActivity, "Cập nhật All", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@MainActivity, "Cập nhật All", Toast.LENGTH_SHORT).show()
                     // Cập nhật địa điểm hiện tại
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
@@ -238,7 +244,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                         lastLocation = location
 
                                         // Dùng khi chưa có grant permission - chạy lần đầu
-                                        Toast.makeText(this@MainActivity, "Fused - init location permission", Toast.LENGTH_SHORT).show()
+                                        // Toast.makeText(this@MainActivity, "Fused - init location permission", Toast.LENGTH_SHORT).show()
                                         if (::lastLocation.isInitialized) {
                                             val currentLatLng = LatLng(location.latitude, location.longitude)
                                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
@@ -251,7 +257,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
 
                     override fun onShouldProvideRationale() {
-                        Toast.makeText(this@MainActivity, "onShouldProvideRationale", Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(this@MainActivity, "onShouldProvideRationale", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onRequestPermission() {
@@ -263,7 +269,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
 
                     override fun onPermissionDenied() {
-                        Toast.makeText(this@MainActivity, "onPermissionDenied", Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(this@MainActivity, "onPermissionDenied", Toast.LENGTH_SHORT).show()
                     }
 
                 })
@@ -342,7 +348,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //                        moveMarker(markerOptions, LatLng(lastLocation.latitude, lastLocation.longitude))
 
                         // Khi đã có permission rồi, chạy trước locationCallback
-                        Toast.makeText(this@MainActivity, "Fused success listener", Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(this@MainActivity, "Fused success listener", Toast.LENGTH_SHORT).show()
 
                         if (::lastLocation.isInitialized) {
                             val currentLatLng = LatLng(location.latitude, location.longitude)
@@ -365,7 +371,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     lastLocation = location
 
                     // Nơi update location liên tục
-                    Toast.makeText(this@MainActivity, "Update location callback", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@MainActivity, "Update location callback", Toast.LENGTH_SHORT).show()
 
                     if (::lastLocation.isInitialized) {
                         val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
@@ -677,13 +683,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                 }
             }
+            curMarkerReport = marker
             imvUpVote.setOnClickListener {
                 Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
                 mPopupWindowReport!!.dismiss()
+                curMarkerReport = null
             }
             imvDownVote.setOnClickListener {
                 Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
                 mPopupWindowReport!!.dismiss()
+                curMarkerReport = null
             }
         }
         if (marker.title == "user") {
@@ -703,9 +712,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            tvDOB.text = dataUser.birthDate.toString()
             tvEmail.text = dataUser.email.toString()
 
+            curMarkerUser = marker
             btnHello.setOnClickListener {
                 attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                 mPopupWindowUser!!.dismiss()
+                curMarkerUser = null
             }
         }
     }
@@ -718,22 +729,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (p0?.title == "report") {
             // Đóng popup windows
             mPopupWindowReport?.dismiss()
+            curMarkerReport = null
         }
         if (p0?.title == "user") {
             mPopupWindowUser?.dismiss()
+            curMarkerUser = null
         }
+
     }
 
-    private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
-        marker.position(latLng)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
-    }
+//    private fun moveMarker(marker: MarkerOptions, latLng: LatLng) {
+//        marker.position(latLng)
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+//    }
 
     private fun getUserFromMarker(marker: Marker): User {
         val listGeo: List<Double> = listOf(0.0, 0.0)
         val newGeo = Geometry("Point", listGeo)
         var user = User("", "", "", "", "", "", "", newGeo)
-        for (i in 0 until listUser.size) {
+        for (i in 0 until (listUser.size)) {
             // Except current user
             if (listUser[i].email == marker.snippet) {
                 user = listUser[i]
@@ -778,7 +792,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
                     onAllUserProfileSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
@@ -797,16 +811,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (listUser.size == 1) {
             Toast.makeText(this, "Không tìm thấy xe khác", Toast.LENGTH_SHORT).show()
         } else {
-            if (listUserMarker.size > 0) {
+            if (curMarkerUser == null || listUserMarker.size == 0) {
                 for (i in 0 until listUserMarker.size) {
                     listUserMarker[i].remove()
                 }
                 listUserMarker.clear()
+                for (i in 0 until (listUser.size)) {
+                    if (listUser[i].email != AppController.userProfile!!.email) {
+                        addUserMarker(listUser[i])
+                    }
+                }
             }
-            for (i in 0 until listUser.size) {
-                // Except current user
-                if (listUser[i].email != AppController.userProfile!!.email)
-                    addUserMarker(listUser[i])
+            if (curMarkerUser != null) {
+                val size = listUserMarker.size
+                for (i in (size - 1) downTo 0) {
+                    if (curMarkerUser!!.id != listUserMarker[i].id) {
+                        listUserMarker[i].remove()
+                        listUserMarker.removeAt(i)
+                    }
+                }
+                val dataUser = curMarkerUser!!.tag as User
+                for (i in 0 until (listUser.size)) {
+                    if (listUser[i].email != AppController.userProfile!!.email && listUser[i]._id != dataUser._id) {
+                        addUserMarker(listUser[i])
+                    }
+                }
             }
         }
     }
@@ -831,7 +860,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
@@ -850,7 +879,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
@@ -879,7 +908,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.connect()
     }
 
-    private fun destroySocket(){
+    private fun destroySocket() {
         socket.off(Socket.EVENT_CONNECT, onConnect)
         socket.off(Socket.EVENT_DISCONNECT, onDisconnect)
         socket.off(Socket.EVENT_CONNECT_ERROR, onConnectError)
@@ -1036,7 +1065,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         call.enqueue(object : Callback<NearbyReportsResponse> {
             override fun onResponse(call: Call<NearbyReportsResponse>, response: Response<NearbyReportsResponse>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
                     onNearbyReportsSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
@@ -1064,7 +1093,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        // Gán vào listReport của AppController
 //        AppController.listReport = response.reports!!
 
-        for (i in 0 until response.reports!!.size) {
+        for (i in 0 until (response.reports!!.size)) {
             listReport[i].distance = response.distances!![i]
         }
 
@@ -1073,14 +1102,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun drawValidReports() {
-        if (listReportMarker.size > 0) {
+        if (curMarkerReport == null || listReportMarker.size == 0) {
             for (i in 0 until listReportMarker.size) {
                 listReportMarker[i].remove()
             }
             listReportMarker.clear()
+            for (i in 0 until (listReport.size)) {
+                addReportMarker(listReport[i])
+            }
         }
-        for (i in 0 until listReport.size) {
-            addReportMarker(listReport[i])
+        if (curMarkerReport != null) {
+            val size = listReportMarker.size
+            for (i in (size - 1) downTo 0) {
+                if (curMarkerReport!!.id != listReportMarker[i].id) {
+                    listReportMarker[i].remove()
+                    listReportMarker.removeAt(i)
+                }
+            }
+            val dataReport = curMarkerReport!!.tag as Report
+            for (i in 0 until (listReport.size)) {
+                if (listReport[i]._id != dataReport._id) {
+                    addReportMarker(listReport[i])
+                }
+            }
         }
     }
 
