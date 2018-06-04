@@ -1,26 +1,18 @@
 package com.example.trongtuyen.carmap.activity
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
-import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.Location
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
-import android.provider.Settings
 import android.support.design.widget.NavigationView
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.ActivityCompat.requestPermissions
-import android.support.v4.content.ContextCompat.startActivity
-import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
@@ -48,7 +40,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -128,7 +123,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        setSupportActionBar(toolbar)
         // Obtain placeAutoComplete fragment
         placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete) as PlaceAutocompleteFragment
         placeAutoComplete!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
@@ -142,15 +137,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
 
-        // Obtain MapFragment
         obtainMapFragment()
 
-        val toggle = ActionBarDrawerToggle(
-                this, drawer_layout, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
+        initActionBarDrawerToggle()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+//        // Set up Hamburger button toggle Navigation Drawer
+//        setupHamburgerButton()
 
         // Load user profile
         loadUserProfile()
@@ -161,6 +155,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // onClickListener cho các nút
         imvMyLoc.setOnClickListener(this)
         imvReport.setOnClickListener(this)
+//        imvHamburger.setOnClickListener(this)
     }
 
     override fun onPause() {
@@ -215,6 +210,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Lần đầu chạy sau 7s
         handler.postDelayed(runnable, 7000)  //the time is in miliseconds
+    }
+
+    private lateinit var mActionBarDrawerToggle: ActionBarDrawerToggle
+
+    private fun initActionBarDrawerToggle(){
+        mActionBarDrawerToggle = ActionBarDrawerToggle(
+                this, drawer_layout,toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(mActionBarDrawerToggle)
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        mActionBarDrawerToggle.syncState()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        mActionBarDrawerToggle.onConfigurationChanged(newConfig)
     }
 
     // Permission Requirement functions
@@ -451,7 +464,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+//        menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
@@ -459,9 +472,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
