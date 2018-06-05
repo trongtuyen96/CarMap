@@ -71,4 +71,7 @@ dependencies {
 
 //    // Circle Button
 //    implementation 'com.cuboid:cuboidcirclebutton:1.0.5'
+
+    // Simple Finger Gestures
+    implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2'
 }

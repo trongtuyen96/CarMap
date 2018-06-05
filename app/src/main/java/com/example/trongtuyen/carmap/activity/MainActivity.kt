@@ -1,5 +1,6 @@
 package com.example.trongtuyen.carmap.activity
 
+import `in`.championswimmer.sfg.lib.SimpleFingerGestures
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
 import android.widget.*
+import butterknife.OnTouch
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
@@ -30,6 +32,7 @@ import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.Permission
+import com.example.trongtuyen.carmap.utils.SharePrefs.Companion.mContext
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -120,6 +123,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Marker id để check marker nào đang được ấn
     private var curMarkerUser: Marker? = null
 
+    // Gesture Detector
+    private lateinit var mDetector: GestureDetector
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -156,6 +162,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         imvMyLoc.setOnClickListener(this)
         imvReport.setOnClickListener(this)
 //        imvHamburger.setOnClickListener(this)
+
+        mContext = this.applicationContext
     }
 
     override fun onPause() {
@@ -214,9 +222,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var mActionBarDrawerToggle: ActionBarDrawerToggle
 
-    private fun initActionBarDrawerToggle(){
+    private fun initActionBarDrawerToggle() {
         mActionBarDrawerToggle = ActionBarDrawerToggle(
-                this, drawer_layout,toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(mActionBarDrawerToggle)
     }
 
@@ -719,11 +727,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
             val tvEmail = viewUserPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
             val btnHello = viewUserPopup.findViewById<Button>(R.id.btnHello_marker_user)
+            val btnConfirm = viewUserPopup.findViewById<Button>(R.id.btnConfirm_marker_user)
 
             val dataUser: User = marker.tag as User
             tvName.text = dataUser.name.toString()
 //            tvDOB.text = dataUser.birthDate.toString()
             tvEmail.text = dataUser.email.toString()
+            btnConfirm.visibility = View.INVISIBLE
 
             curMarkerUser = marker
             btnHello.setOnClickListener {
@@ -731,8 +741,120 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mPopupWindowUser!!.dismiss()
                 curMarkerUser = null
             }
+
+            // Lấy view của viewTouch
+            val viewTouch = viewUserPopup.findViewById<View>(R.id.viewTouch_maker_user)
+            val sfg = SimpleFingerGestures()
+            sfg.setDebug(true)
+            sfg.consumeTouchEvents = true
+
+            var mType: Number = 0
+
+            sfg.setOnFingerGestureListener(object : SimpleFingerGestures.OnFingerGestureListener {
+                override fun onDoubleTap(fingers: Int): Boolean {
+                    Toast.makeText(this@MainActivity, "You double tap", Toast.LENGTH_SHORT).show()
+                    btnConfirm.visibility = View.VISIBLE
+                    //==== Ban ngày
+                    // Chưa biết
+
+                    //==== Ban đêm
+                    // Nháy báo hiệu xe ngược chiều giảm độ sáng đèn pha
+                    mType = 1
+//                    attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    return true
+                }
+
+                override fun onPinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+                    Toast.makeText(this@MainActivity, "You pinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                    btnConfirm.visibility = View.INVISIBLE
+                    mType = 0
+                    return true
+                }
+
+                override fun onUnpinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+                    Toast.makeText(this@MainActivity, "You unpinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                    btnConfirm.visibility = View.INVISIBLE
+                    mType = 0
+                    return true
+                }
+
+                override fun onSwipeDown(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  down " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                    btnConfirm.visibility = View.INVISIBLE
+                    mType = 0
+                    if (fingers == 2 && gestureDistance >= 120) {
+                        // Báo giảm tốc độ
+                        btnConfirm.visibility = View.VISIBLE
+                        mType = 2
+                    }
+                    if (fingers == 3 && gestureDistance >= 120) {
+                        // Báo có công an
+                        btnConfirm.visibility = View.VISIBLE
+                        mType = 3
+                    }
+                    if (fingers == 4 && gestureDistance >= 120) {
+                        // Báo nên quay đầu
+                        btnConfirm.visibility = View.VISIBLE
+                        mType = 4
+                    }
+                    return true
+                }
+
+                override fun onSwipeUp(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                    btnConfirm.visibility = View.INVISIBLE
+                    mType = 0
+                    return true
+                }
+
+                override fun onSwipeLeft(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                    btnConfirm.visibility = View.INVISIBLE
+                    mType = 0
+                    return true
+                }
+
+                override fun onSwipeRight(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  right " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                    btnConfirm.visibility = View.INVISIBLE
+                    mType = 0
+                    return false
+                }
+            })
+
+            viewTouch.setOnTouchListener(sfg)
+
+            btnConfirm.setOnClickListener {
+                when (mType) {
+                    1 -> {
+                        attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    }
+                    3 -> {
+                        attemptWarnPolice(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    }
+                }
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+            }
+
+
+//            // Set GestureDetector
+//            mDetector = GestureDetector(this, CustomGestureDetector())
+//            viewTouch.setOnTouchListener(object : View.OnTouchListener {
+//                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+//                    mDetector.onTouchEvent(event)
+//                    return true
+//                }
+//            })
+
         }
     }
+
+//    // Override onTouch để lấy event
+//    override fun onTouchEvent(event: MotionEvent?): Boolean {
+//        mDetector.onTouchEvent(event)
+//        return super.onTouchEvent(event)
+//    }
 
     // Sự kiện khi click vào info windows
     override fun onInfoWindowClick(p0: Marker) {
@@ -917,7 +1039,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
         socket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
 //        socket.on("chat message", onNewMessage)
-        socket.on("hello message", onSayHello)
+        socket.on("event_hello_socket", onSayHello)
+        socket.on("event_warn_strong_light_socket", onWarnStrongLight)
+        socket.on("event_warn_police_socket", onWarnPolice)
         socket.connect()
     }
 
@@ -927,7 +1051,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.off(Socket.EVENT_CONNECT_ERROR, onConnectError)
         socket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
 //        socket.on("chat message", onNewMessage)
-        socket.off("hello message", onSayHello)
+        socket.off("event_hello_socket", onSayHello)
+        socket.off("event_warn_strong_light_socket", onWarnStrongLight)
+        socket.off("event_warn_police_socket", onWarnPolice)
         socket.disconnect()
     }
 
@@ -1044,7 +1170,113 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("say hello to someone", email, socket.id(), receiveSocketID, "hello")
+        socket.emit("event_hello_server", email, socket.id(), receiveSocketID, "hello")
+    }
+
+    private val onWarnStrongLight = Emitter.Listener { args ->
+        this.runOnUiThread(Runnable {
+            //            val data : JSONObject = args[0] as JSONObject
+            val email: String
+            val sendID: String
+            val message: String
+            try {
+                email = args[0] as String
+                sendID = args[1] as String
+                message = args[2] as String
+
+            } catch (e: JSONException) {
+                Log.e("LOG", e.message)
+                return@Runnable
+            }
+            if (message == "strong light") {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewWarnStrongLightPopup = inflater.inflate(R.layout.warn_strong_light_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val tvEmail = viewWarnStrongLightPopup.findViewById<TextView>(R.id.tvEmail_warn_strong_light_dialog)
+                val btnThank = viewWarnStrongLightPopup.findViewById<Button>(R.id.btnThank_warn_strong_light_dialog)
+
+                tvEmail.text = email
+
+                object : CountDownTimer(3000, 500) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
+                                "CẢM ƠN",
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                    }
+
+                    override fun onFinish() {
+                        mPopupWindowHello!!.dismiss()
+                    }
+                }.start()
+
+                btnThank.setOnClickListener {
+                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    mPopupWindowHello!!.dismiss()
+                }
+            }
+        })
+    }
+
+    private fun attemptWarnStrongLight(email: String, receiveSocketID: String) {
+        if (!socket.connected()) return
+
+        // perform the sending message attempt.
+        socket.emit("event_warn_strong_light_server", email, socket.id(), receiveSocketID, "strong light")
+    }
+
+    private val onWarnPolice = Emitter.Listener { args ->
+        this.runOnUiThread(Runnable {
+            //            val data : JSONObject = args[0] as JSONObject
+            val email: String
+            val sendID: String
+            val message: String
+            try {
+                email = args[0] as String
+                sendID = args[1] as String
+                message = args[2] as String
+
+            } catch (e: JSONException) {
+                Log.e("LOG", e.message)
+                return@Runnable
+            }
+            if (message == "police") {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_police_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_police_dialog)
+                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_police_dialog)
+
+                tvEmail.text = email
+
+                object : CountDownTimer(3000, 500) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
+                                "CẢM ƠN",
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                    }
+
+                    override fun onFinish() {
+                        mPopupWindowHello!!.dismiss()
+                    }
+                }.start()
+
+                btnThank.setOnClickListener {
+                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    mPopupWindowHello!!.dismiss()
+                }
+            }
+        })
+    }
+
+    private fun attemptWarnPolice(email: String, receiveSocketID: String) {
+        if (!socket.connected()) return
+
+        // perform the sending message attempt.
+        socket.emit("event_warn_police_server", email, socket.id(), receiveSocketID, "police")
     }
     // =====================================================================
 
@@ -1168,4 +1400,67 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         marker.tag = report
     }
     // ======================================================================
+
+    private lateinit var mContext: Context
+
+    class CustomGestureDetector : GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
+        override fun onDoubleTap(e: MotionEvent?): Boolean {
+            Toast.makeText(mContext, "Custom: onDoubleTap", Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
+            Toast.makeText(mContext, "Custom: onDoubleTapEvent", Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            Toast.makeText(mContext, "Custom: onSingleTapConfirm", Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        override fun onShowPress(e: MotionEvent?) {
+            Toast.makeText(mContext, "Custom: onShowPress", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            Toast.makeText(mContext, "Custom: onSingleTap", Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        override fun onDown(e: MotionEvent?): Boolean {
+            Toast.makeText(mContext, "Custom: onDown", Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+            Toast.makeText(mContext, "Custom: onFling", Toast.LENGTH_SHORT).show()
+            if (e1!!.getX() < e2!!.getX()) {
+                Log.d(TAG, "Left to Right swipe performed");
+            }
+
+            if (e1.getX() > e2.getX()) {
+                Log.d(TAG, "Right to Left swipe performed");
+            }
+
+            if (e1.getY() < e2.getY()) {
+                Log.d(TAG, "Up to Down swipe performed");
+            }
+
+            if (e1.getY() > e2.getY()) {
+                Log.d(TAG, "Down to Up swipe performed");
+            }
+
+            return true
+        }
+
+        override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+            Toast.makeText(mContext, "Custom: onScroll", Toast.LENGTH_SHORT).show()
+            return true
+        }
+
+        override fun onLongPress(e: MotionEvent?) {
+            Toast.makeText(mContext, "Custom: onLongPress", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
