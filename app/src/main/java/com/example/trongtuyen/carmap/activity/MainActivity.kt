@@ -766,9 +766,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     imvType.setImageResource(R.drawable.ic_headlights_on_44dp)
                     tvType.text = "HẠ ĐỘ SÁNG ĐÈN PHA"
 //                    btnConfirm.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_headlights_on_44dp,0, 0)
-
-
-//                    attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     return true
                 }
 
@@ -794,6 +791,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         // Báo giảm tốc độ
                         btnConfirm.visibility = View.VISIBLE
                         mType = 2
+                        imvType.setImageResource(R.drawable.ic_report_hazard_44dp)
+                        tvType.text = "NGUY HIỂM NÊN GIẢM TỐC ĐỘ"
                     }
                     if (fingers == 3 && gestureDistance >= 120) {
                         // Báo có công an
@@ -838,6 +837,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 when (mType) {
                     1 -> {
                         attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    }
+                    2 -> {
+                        attemptWarnSlowDown(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                     3 -> {
                         attemptWarnPolice(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
@@ -1288,6 +1290,157 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // perform the sending message attempt.
         socket.emit("event_warn_police_server", email, socket.id(), receiveSocketID, "police")
     }
+
+    private val onWarnSlowDown = Emitter.Listener { args ->
+        this.runOnUiThread(Runnable {
+            //            val data : JSONObject = args[0] as JSONObject
+            val email: String
+            val sendID: String
+            val message: String
+            try {
+                email = args[0] as String
+                sendID = args[1] as String
+                message = args[2] as String
+
+            } catch (e: JSONException) {
+                Log.e("LOG", e.message)
+                return@Runnable
+            }
+            if (message == "slow down") {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_slow_down_dialog)
+                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_slow_down_dialog)
+
+                tvEmail.text = email
+
+                object : CountDownTimer(3000, 500) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
+                                "CẢM ƠN",
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                    }
+
+                    override fun onFinish() {
+                        mPopupWindowHello!!.dismiss()
+                    }
+                }.start()
+
+                btnThank.setOnClickListener {
+                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    mPopupWindowHello!!.dismiss()
+                }
+            }
+        })
+    }
+
+    private fun attemptWarnSlowDown(email: String, receiveSocketID: String) {
+        if (!socket.connected()) return
+
+        // perform the sending message attempt.
+        socket.emit("event_warn_slow_down_server", email, socket.id(), receiveSocketID, "slow down")
+    }
+
+    private val onWarnTurnAround = Emitter.Listener { args ->
+        this.runOnUiThread(Runnable {
+            //            val data : JSONObject = args[0] as JSONObject
+            val email: String
+            val sendID: String
+            val message: String
+            try {
+                email = args[0] as String
+                sendID = args[1] as String
+                message = args[2] as String
+
+            } catch (e: JSONException) {
+                Log.e("LOG", e.message)
+                return@Runnable
+            }
+            if (message == "turn around") {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_turn_around_dialog)
+                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_turn_around_dialog)
+
+                tvEmail.text = email
+
+                object : CountDownTimer(3000, 500) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
+                                "CẢM ƠN",
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                    }
+
+                    override fun onFinish() {
+                        mPopupWindowHello!!.dismiss()
+                    }
+                }.start()
+
+                btnThank.setOnClickListener {
+                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    mPopupWindowHello!!.dismiss()
+                }
+            }
+        })
+    }
+
+    private fun attemptWarnTurnAround(email: String, receiveSocketID: String) {
+        if (!socket.connected()) return
+
+        // perform the sending message attempt.
+        socket.emit("event_warn_turn_around_server", email, socket.id(), receiveSocketID, "turn around")
+    }
+
+    private val onWarnThank = Emitter.Listener { args ->
+        this.runOnUiThread(Runnable {
+            //            val data : JSONObject = args[0] as JSONObject
+            val email: String
+            val sendID: String
+            val message: String
+            try {
+                email = args[0] as String
+                sendID = args[1] as String
+                message = args[2] as String
+
+            } catch (e: JSONException) {
+                Log.e("LOG", e.message)
+                return@Runnable
+            }
+            if (message == "thank") {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
+
+                tvEmail.text = email
+
+                object : CountDownTimer(3000, 500) {
+                    override fun onTick(millisUntilFinished: Long) {
+                    }
+
+                    override fun onFinish() {
+                        mPopupWindowHello!!.dismiss()
+                    }
+                }.start()
+            }
+        })
+    }
+
+    private fun attemptWarnThank(email: String, receiveSocketID: String) {
+        if (!socket.connected()) return
+
+        // perform the sending message attempt.
+        socket.emit("event_warn_thank_server", email, socket.id(), receiveSocketID, "thank")
+    }
+
     // =====================================================================
 
 

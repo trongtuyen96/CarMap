@@ -2,20 +2,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="200dp"
     android:layout_height="214dp"
-    android:background="@drawable/bg_btn_send"
+    android:background="@drawable/bg_btn_red_pink"
     android:orientation="vertical">
 
     <ImageView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:background="@drawable/bg_btn_report_police"
-        android:src="@drawable/ic_report_police"
+        android:background="@drawable/bg_btn_report_closure"
+        android:src="@drawable/ic_report_turn_around"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:padding="2dp"/>
 
     <TextView
-        android:id="@+id/tvEmail_warn_police_dialog"
+        android:id="@+id/tvEmail_warn_turn_around_dialog"
         android:layout_width="200dp"
         android:layout_height="20dp"
         android:text="Email"
@@ -38,14 +38,14 @@
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:text="... NÊN CẨN THẬN CẢNH SÁT"
+        android:text="... CÓ NGUY HIỂM, NÊN QUAY NGƯỢC LẠI"
+        android:textAlignment="center"
         android:textColor="@color/background_front"
         android:textSize="14sp"
-        android:textStyle="italic"
-        android:textAlignment="center"/>
+        android:textStyle="italic" />
 
     <Button
-        android:id="@+id/btnThank_warn_police_dialog"
+        android:id="@+id/btnThank_warn_turn_around_dialog"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
