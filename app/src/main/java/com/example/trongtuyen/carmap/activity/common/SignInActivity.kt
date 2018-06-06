@@ -15,6 +15,7 @@ import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.models.AuthenticationResponse
 import com.example.trongtuyen.carmap.services.AuthenticationService
 import com.example.trongtuyen.carmap.services.ErrorUtils
+import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -65,7 +66,7 @@ class SignInActivity : AppCompatActivity() {
         //        finish();
 
         // Notify sign in successfully
-        Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show()
+        TastyToast.makeText(this, "Đăng nhập thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
 
         // Start Main Activity
         val intent = Intent(this, MainActivity::class.java)
@@ -104,11 +105,11 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun onSignInWithGoogle() {
-        Toast.makeText(this, "Chúng tôi sẽ sớm hoàn thiện chức năng này!", Toast.LENGTH_SHORT).show()
+        TastyToast.makeText(this, "Chúng tôi sẽ sớm hoàn thiện chức năng này!", TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
     }
 
     private fun onSignInWithFacebook() {
-        Toast.makeText(this, "Chúng tôi sẽ sớm hoàn thiện chức năng này!", Toast.LENGTH_SHORT).show()
+        TastyToast.makeText(this, "Chúng tôi sẽ sớm hoàn thiện chức năng này!", TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
     }
 
     private fun onSignInWithEmail() {
@@ -148,12 +149,12 @@ class SignInActivity : AppCompatActivity() {
                     onAuthenticationSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@SignInActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@SignInActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<AuthenticationResponse>, t: Throwable) {
-                Toast.makeText(this@SignInActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@SignInActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
             }
         })
     }

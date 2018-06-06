@@ -17,6 +17,7 @@ import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.models.AuthenticationResponse
 import com.example.trongtuyen.carmap.services.AuthenticationService
 import com.example.trongtuyen.carmap.services.ErrorUtils
+import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,7 +63,7 @@ class SignUpActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    internal fun onSignUpWithEmail(){
+    internal fun onSignUpWithEmail() {
         // Reset errors.
         txtEmail.setError(null)
         txtPassword.setError(null)
@@ -104,16 +105,16 @@ class SignUpActivity : AppCompatActivity() {
         call.enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(this@SignUpActivity, "Đăng ký thành công!", Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@SignUpActivity, "Đăng ký thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     signInWithEmail(email, password)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@SignUpActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@SignUpActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<User>, t: Throwable) {
-                Toast.makeText(this@SignUpActivity, "Failed!", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@SignUpActivity, "Failed!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
             }
         })
     }
@@ -127,12 +128,12 @@ class SignUpActivity : AppCompatActivity() {
                     onAuthenticationSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@SignUpActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@SignUpActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<AuthenticationResponse>, t: Throwable) {
-                Toast.makeText(this@SignUpActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@SignUpActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
             }
         })
     }

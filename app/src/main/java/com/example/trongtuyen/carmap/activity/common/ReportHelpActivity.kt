@@ -13,6 +13,7 @@ import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.ReportService
+import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,16 +77,16 @@ class ReportHelpActivity : AppCompatActivity() {
 
     private fun onSend() {
         if (subType1 == "" || subType2 == "") {
-            Toast.makeText(this, "Vui lòng chọn loại giúp đỡ", Toast.LENGTH_SHORT).show()
+            TastyToast.makeText(this, "Vui lòng chọn loại giúp đỡ", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
-            when(subType1){
+            when (subType1) {
                 "others" -> {
-                    if (subType2 == "no_gas" ||subType2 == "flat_tire" || subType2 == "no_battery" || subType2 == "medical_care"){
-                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                    if (subType2 == "no_gas" || subType2 == "flat_tire" || subType2 == "no_battery" || subType2 == "medical_care") {
+//                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
                         val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
                         onAddNewReportHazard(mReport)
                     } else {
-                        Toast.makeText(this, "Vui lòng chọn loại giúp đỡ", Toast.LENGTH_SHORT).show()
+                        TastyToast.makeText(this, "Vui lòng chọn loại giúp đỡ", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                     }
                 }
             }
@@ -98,22 +99,22 @@ class ReportHelpActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                Toast.makeText(this@ReportHelpActivity, "Failed!", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@ReportHelpActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(this@ReportHelpActivity, "Gửi báo cáo thành công!", Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportHelpActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@ReportHelpActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportHelpActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
         })
     }
 
-    private fun onOpenOthers(){
+    private fun onOpenOthers() {
         val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_6_items, null)
 
         val btnNoGas = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame1_6_items)
@@ -200,7 +201,7 @@ class ReportHelpActivity : AppCompatActivity() {
         bottomSheetDialog.show()
     }
 
-    private fun onCall(){
-        Toast.makeText(this,"Chúng tôi đang hoàn thiện tính năng này!", Toast.LENGTH_SHORT).show()
+    private fun onCall() {
+        TastyToast.makeText(this, "Chúng tôi đang hoàn thiện tính năng này!", TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
     }
 }

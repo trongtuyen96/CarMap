@@ -13,6 +13,7 @@ import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.ReportService
+import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,7 +36,7 @@ class ReportTrafficActivity : AppCompatActivity() {
     @BindView(R.id.btnDismiss_report_traffic)
     lateinit var btnDismiss: Button
 
-    private var subType1 : String = ""
+    private var subType1: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_traffic)
@@ -70,17 +71,16 @@ class ReportTrafficActivity : AppCompatActivity() {
         btnDismiss.setOnClickListener { onClose() }
     }
 
-    private fun onClose(){
+    private fun onClose() {
         finish()
     }
 
     private fun onSend() {
-        if (subType1 == ""){
-            Toast.makeText(this, "Vui lòng chọn mức độ kẹt xe", Toast.LENGTH_SHORT).show()
-        }
-        else {
-            Toast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
-            val mReport = Report("traffic",subType1,"",textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(),1,0,false)
+        if (subType1 == "") {
+            TastyToast.makeText(this, "Vui lòng chọn mức độ kẹt xe", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+        } else {
+//            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
+            val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
             onAddNewReportTraffic(mReport)
         }
     }
@@ -91,16 +91,16 @@ class ReportTrafficActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                Toast.makeText(this@ReportTrafficActivity, "Failed!", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@ReportTrafficActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportTrafficActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
         })

@@ -17,6 +17,7 @@ import com.example.trongtuyen.carmap.services.AuthenticationService
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.models.RefreshTokenResponse
 import com.example.trongtuyen.carmap.utils.SharePrefs
+import com.sdsmdg.tastytoast.TastyToast
 import kotlinx.android.synthetic.main.activity_splash.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -65,7 +66,7 @@ class SplashActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
                         //                                snackbar.dismiss();
                         //                            }
                         //                        }).show();
-                        Toast.makeText(this@SplashActivity, apiError.message(), Toast.LENGTH_SHORT).show()
+                        TastyToast.makeText(this@SplashActivity, apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
 
                         //startMainActivity();
                         val intent = Intent(this@SplashActivity, SignInActivity::class.java)

@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.sdsmdg.tastytoast.TastyToast
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -85,6 +86,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // PlaceAutoCompleteFragment
     private var placeAutoComplete: PlaceAutocompleteFragment? = null
+
+    private lateinit var mActionBarDrawerToggle: ActionBarDrawerToggle
 
     // Maerket options for set up marker
     private var markerOptions = MarkerOptions()
@@ -219,8 +222,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Lần đầu chạy sau 7s
         handler.postDelayed(runnable, 7000)  //the time is in miliseconds
     }
-
-    private lateinit var mActionBarDrawerToggle: ActionBarDrawerToggle
 
     private fun initActionBarDrawerToggle() {
         mActionBarDrawerToggle = ActionBarDrawerToggle(
@@ -458,7 +459,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
             }
         } else {
-            Toast.makeText(this, "Vị trí hiện không khả dụng!", Toast.LENGTH_SHORT).show()
+            TastyToast.makeText(this, "Vị trí hiện không khả dụng!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         }
     }
 
@@ -548,7 +549,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         updateInformation()
                     } else {
                         val apiError = ErrorUtils.parseError(response)
-                        Toast.makeText(this@MainActivity, apiError.message(), Toast.LENGTH_SHORT).show()
+                        TastyToast.makeText(this@MainActivity, apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                     }
                 }
 
@@ -568,7 +569,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onSignOut() {
         AppController.signOut()
-        Toast.makeText(this, "Đăng xuất thành công!", Toast.LENGTH_SHORT).show()
+        TastyToast.makeText(this, "Đăng xuất thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
         val intent = Intent(this, SignInActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
@@ -766,21 +767,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     imvType.setImageResource(R.drawable.ic_headlights_on_44dp)
                     tvType.text = "HẠ ĐỘ SÁNG ĐÈN PHA"
 //                    btnConfirm.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_headlights_on_44dp,0, 0)
-                    return true
+
+                    // return true thì sẽ cho phép các gesture khác cũng bắt được sự kiện đó
+                    // return false thì chỉ sự kiện nào bắt được đúng sự iện đó và không gửi đi tiếp
+                    return false
                 }
 
                 override fun onPinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You pinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
-                    return true
+                    return false
                 }
 
                 override fun onUnpinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You unpinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
-                    return true
+                    return false
                 }
 
                 override fun onSwipeDown(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
@@ -808,21 +812,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
                         tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
                     }
-                    return true
+                    return false
                 }
 
                 override fun onSwipeUp(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
-                    return true
+                    return false
                 }
 
                 override fun onSwipeLeft(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
-                    return true
+                    return false
                 }
 
                 override fun onSwipeRight(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
@@ -922,12 +926,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     onAllUserProfileSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 t.printStackTrace()
             }
         })
@@ -948,12 +952,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     onAllUserProfileSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 t.printStackTrace()
             }
         })
@@ -1015,7 +1019,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     // Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -1034,7 +1038,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     // Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -1082,8 +1086,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val onConnect = Emitter.Listener {
         this.runOnUiThread({
-            Toast.makeText(this.applicationContext,
-                    "Đã kết nối socket", Toast.LENGTH_LONG).show()
+            TastyToast.makeText(this.applicationContext,
+                    "Đã kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
             // Gán socket ID vào cho socketID của người dùng
             AppController.userProfile?.socketID = socket.id()
             onUpdateSocketID(AppController.userProfile!!)
@@ -1092,15 +1096,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private val onDisconnect = Emitter.Listener {
         this.runOnUiThread({
-            Toast.makeText(this.applicationContext,
-                    "Ngắt kết nối socket", Toast.LENGTH_LONG).show()
+            TastyToast.makeText(this.applicationContext,
+                    "Ngắt kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         })
     }
 
     private val onConnectError = Emitter.Listener {
         this.runOnUiThread({
-            Toast.makeText(this.applicationContext,
-                    "Lỗi kết nối socket", Toast.LENGTH_LONG).show()
+            TastyToast.makeText(this.applicationContext,
+                    "Lỗi kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
         })
     }
 
@@ -1467,12 +1471,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     onAllReportSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Report>>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 t.printStackTrace()
             }
         })
@@ -1488,12 +1492,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     onNearbyReportsSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<NearbyReportsResponse>, t: Throwable) {
-                Toast.makeText(this@MainActivity, "Không có kết nối Internet", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 t.printStackTrace()
             }
         })
