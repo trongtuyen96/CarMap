@@ -727,7 +727,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
             val tvEmail = viewUserPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
             val btnHello = viewUserPopup.findViewById<Button>(R.id.btnHello_marker_user)
-            val btnConfirm = viewUserPopup.findViewById<Button>(R.id.btnConfirm_marker_user)
+
+            val btnConfirm = viewUserPopup.findViewById<LinearLayout>(R.id.layoutConfirm_marker_user)
+            val imvType = viewUserPopup.findViewById<ImageView>(R.id.imvType_marker_user)
+            val tvType = viewUserPopup.findViewById<TextView>(R.id.tvType_marker_user)
 
             val dataUser: User = marker.tag as User
             tvName.text = dataUser.name.toString()
@@ -752,7 +755,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             sfg.setOnFingerGestureListener(object : SimpleFingerGestures.OnFingerGestureListener {
                 override fun onDoubleTap(fingers: Int): Boolean {
-                    Toast.makeText(this@MainActivity, "You double tap", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "You double tap", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.VISIBLE
                     //==== Ban ngày
                     // Chưa biết
@@ -760,26 +763,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     //==== Ban đêm
                     // Nháy báo hiệu xe ngược chiều giảm độ sáng đèn pha
                     mType = 1
+                    imvType.setImageResource(R.drawable.ic_headlights_on_44dp)
+                    tvType.text = "HẠ ĐỘ SÁNG ĐÈN PHA"
+//                    btnConfirm.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_headlights_on_44dp,0, 0)
+
+
 //                    attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     return true
                 }
 
                 override fun onPinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
-                    Toast.makeText(this@MainActivity, "You pinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "You pinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return true
                 }
 
                 override fun onUnpinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
-                    Toast.makeText(this@MainActivity, "You unpinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "You unpinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return true
                 }
 
                 override fun onSwipeDown(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
-                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  down " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  down " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     if (fingers == 2 && gestureDistance >= 120) {
@@ -791,6 +799,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         // Báo có công an
                         btnConfirm.visibility = View.VISIBLE
                         mType = 3
+                        imvType.setImageResource(R.drawable.ic_report_police_44dp)
+                        tvType.text = "CÓ CẢNH SÁT GẦN ĐÓ"
                     }
                     if (fingers == 4 && gestureDistance >= 120) {
                         // Báo nên quay đầu
@@ -801,21 +811,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 override fun onSwipeUp(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
-                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return true
                 }
 
                 override fun onSwipeLeft(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
-                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return true
                 }
 
                 override fun onSwipeRight(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
-                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  right " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  right " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return false
