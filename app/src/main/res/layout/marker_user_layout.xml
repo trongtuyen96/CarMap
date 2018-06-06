@@ -69,19 +69,66 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/viewTouch_maker_user"
         android:layout_width="match_parent"
         android:layout_height="210dp"
-        android:background="@color/background_front"
-        android:orientation="vertical">
+        android:background="@color/background_front">
 
         <ImageView
             android:layout_width="60dp"
             android:layout_height="100dp"
+            android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
             android:clickable="false"
             android:src="@drawable/pic_hand_touch" />
-    </LinearLayout>
+
+        <!--<Button-->
+            <!--android:id="@+id/btnConfirm_marker_user"-->
+            <!--android:layout_width="70dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:background="@color/bg_trans_green"-->
+            <!--android:drawableTop="@drawable/ic_headlights_on_44dp"-->
+            <!--android:drawablePadding="20dp"-->
+            <!--android:padding="8dp"-->
+            <!--android:text="HẠ ĐỘ SÁNG ĐÈN PHA"-->
+            <!--android:textColor="@color/background_front" />-->
+        <LinearLayout
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:background="@color/bg_trans_green"
+            android:id="@+id/layoutConfirm_marker_user"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/imvType_marker_user"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/ic_headlights_on_44dp"/>
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:text="HẠ ĐỘ SÁNG ĐÈN PHA"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+                android:textColor="@color/background_front"
+                android:textSize="14sp"
+                android:id="@+id/tvType_marker_user"/>
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/btn_send_44dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
 </LinearLayout>

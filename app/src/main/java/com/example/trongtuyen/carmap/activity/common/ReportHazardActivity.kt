@@ -17,6 +17,7 @@ import retrofit2.Response
 import android.support.design.widget.BottomSheetDialog
 import android.view.View
 import android.widget.LinearLayout
+import com.sdsmdg.tastytoast.TastyToast
 
 
 class ReportHazardActivity : AppCompatActivity() {
@@ -112,34 +113,34 @@ class ReportHazardActivity : AppCompatActivity() {
 
     private fun onSend() {
         if (subType1 == "" || subType2 == "") {
-            Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
+            TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
-            when(subType1){
+            when (subType1) {
                 "on_road" -> {
-                    if (subType2 == "object" ||subType2 == "construction" || subType2 == "broken_light" || subType2 == "pothole" || subType2 == "vehicle_stop" || subType2 == "road_kill" ){
-                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                    if (subType2 == "object" || subType2 == "construction" || subType2 == "broken_light" || subType2 == "pothole" || subType2 == "vehicle_stop" || subType2 == "road_kill") {
+//                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
                         val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
                         onAddNewReportHazard(mReport)
                     } else {
-                        Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
+                        TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                     }
                 }
                 "shoulder" -> {
-                    if (subType2 == "vehicle_stop" ||subType2 == "animal" || subType2 == "missing_sign" ){
-                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                    if (subType2 == "vehicle_stop" || subType2 == "animal" || subType2 == "missing_sign") {
+//                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
                         val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
                         onAddNewReportHazard(mReport)
                     } else {
-                        Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
+                        TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                     }
                 }
                 "weather" -> {
-                    if (subType2 == "fog" ||subType2 == "hail" || subType2 == "flood" || subType2 == "ice" ){
-                        Toast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
+                    if (subType2 == "fog" || subType2 == "hail" || subType2 == "flood" || subType2 == "ice") {
+//                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
                         val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
                         onAddNewReportHazard(mReport)
                     } else {
-                        Toast.makeText(this, "Vui lòng chọn loại nguy hiểm", Toast.LENGTH_SHORT).show()
+                        TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                     }
                 }
             }
@@ -152,16 +153,16 @@ class ReportHazardActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                Toast.makeText(this@ReportHazardActivity, "Failed!", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@ReportHazardActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportHazardActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
         })

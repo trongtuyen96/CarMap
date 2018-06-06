@@ -13,6 +13,7 @@ import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.ReportResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
+import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,10 +77,10 @@ class ReportCrashActivity : AppCompatActivity() {
 
     private fun onSend() {
         if (subType1 == "") {
-            Toast.makeText(this, "Vui lòng chọn loại tai nạn", Toast.LENGTH_SHORT).show()
+            TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
-            Toast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), Toast.LENGTH_SHORT).show()
-            val mReport = Report("crash",subType1,"",textInputEdit.text.toString(),AppController.userProfile!!.homeLocation!!,AppController.userProfile!!._id.toString(),1,0,false)
+//            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
+            val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
             onAddNewReportCrash(mReport)
         }
     }
@@ -90,16 +91,16 @@ class ReportCrashActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                Toast.makeText(this@ReportCrashActivity, "Failed!", Toast.LENGTH_SHORT).show()
+                TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    Toast.makeText(this@ReportCrashActivity, "" + apiError.message(), Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this@ReportCrashActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
         })
