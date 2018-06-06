@@ -805,6 +805,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         // Báo nên quay đầu
                         btnConfirm.visibility = View.VISIBLE
                         mType = 4
+                        imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
+                        tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
                     }
                     return true
                 }
@@ -843,6 +845,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     3 -> {
                         attemptWarnPolice(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    }
+                    4 -> {
+                        attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                 }
                 btnConfirm.visibility = View.INVISIBLE
@@ -1054,6 +1059,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.on("event_hello_socket", onSayHello)
         socket.on("event_warn_strong_light_socket", onWarnStrongLight)
         socket.on("event_warn_police_socket", onWarnPolice)
+        socket.on("event_warn_slow_down_socket", onWarnSlowDown)
+        socket.on("event_warn_turn_around_socket", onWarnTurnAround)
+        socket.on("event_warn_thank_socket", onWarnThank)
         socket.connect()
     }
 
@@ -1066,6 +1074,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.off("event_hello_socket", onSayHello)
         socket.off("event_warn_strong_light_socket", onWarnStrongLight)
         socket.off("event_warn_police_socket", onWarnPolice)
+        socket.off("event_warn_slow_down_socket", onWarnSlowDown)
+        socket.off("event_warn_turn_around_socket", onWarnTurnAround)
+        socket.off("event_warn_thank_socket", onWarnThank)
         socket.disconnect()
     }
 
@@ -1224,7 +1235,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                 }
             }
@@ -1277,7 +1288,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                 }
             }
@@ -1330,7 +1341,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                 }
             }
@@ -1383,7 +1394,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    //                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                 }
             }
