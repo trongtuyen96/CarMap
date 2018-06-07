@@ -115,7 +115,7 @@
                 android:layout_width="60dp"
                 android:layout_height="110dp"
                 android:layout_gravity="center"
-                android:padding="8dp"
+                android:padding="2dp"
                 android:text="HẠ ĐỘ SÁNG ĐÈN PHA"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"

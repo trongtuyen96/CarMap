@@ -84,6 +84,13 @@ class ReportHazardActivity : AppCompatActivity() {
             btnHazardShoulder.background = null
             btnHazardWeather.background = null
             tvTitle.text = "TRÊN ĐƯỜNG ĐI"
+
+            // Đặt 2 bên còn lại về ban đầu
+            imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_shoulder)
+            tvHazardShoulder.text = "Bên lề"
+            imHazardWeather.setImageResource(R.drawable.ic_report_hazard_weather)
+            tvHazardWeather.text = "Thời tiết"
+
             onOpenHazardOnRoad()
         }
         btnHazardShoulder.setOnClickListener {
@@ -92,6 +99,13 @@ class ReportHazardActivity : AppCompatActivity() {
             btnHazardOnRoad.background = null
             btnHazardWeather.background = null
             tvTitle.text = "LỀ ĐƯỜNG"
+
+            // Đặt 2 bên còn lại về ban đầu
+            imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_road)
+            tvHazardOnRoad.text = "Trên đường"
+            imHazardWeather.setImageResource(R.drawable.ic_report_hazard_weather)
+            tvHazardWeather.text = "Thời tiết"
+
             onOpenHazardShoulder()
         }
         btnHazardWeather.setOnClickListener {
@@ -100,6 +114,13 @@ class ReportHazardActivity : AppCompatActivity() {
             btnHazardShoulder.background = null
             btnHazardOnRoad.background = null
             tvTitle.text = "THỜI TIẾT"
+
+            // Đặt 2 bên còn lại về ban đầu
+            imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_road)
+            tvHazardOnRoad.text = "Trên đường"
+            imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_shoulder)
+            tvHazardShoulder.text = "Bên lề"
+
             onOpenHazardWeather()
         }
         btnSend.setOnClickListener { onSend() }

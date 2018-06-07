@@ -854,6 +854,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                 }
+                TastyToast.makeText(this,"Đã gửi cảnh báo cho tài xế", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
                 btnConfirm.visibility = View.INVISIBLE
                 mType = 0
             }
