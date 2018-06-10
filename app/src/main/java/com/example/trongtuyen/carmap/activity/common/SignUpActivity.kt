@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -46,8 +47,14 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initComponents() {
-        btnSignUp.setOnClickListener { onSignUpWithEmail() }
-        btnSignIn.setOnClickListener { onSignIn() }
+        btnSignUp.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSignUpWithEmail()
+        }
+        btnSignIn.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSignIn()
+        }
     }
 
 
@@ -70,9 +77,9 @@ class SignUpActivity : AppCompatActivity() {
         txtFullName.setError(null)
 
         // Store values at the time of the login attempt.
-        var email = txtEmail.text.toString()
-        var password = txtPassword.text.toString()
-        var fullName = txtFullName.text.toString()
+        val email = txtEmail.text.toString()
+        val password = txtPassword.text.toString()
+        val fullName = txtFullName.text.toString()
         var isValidateOk = true
 
         // Validate email
@@ -104,7 +111,7 @@ class SignUpActivity : AppCompatActivity() {
         val call = service.registerWithEmail(email, password, fullName, "1996-01-01")
         call.enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     TastyToast.makeText(this@SignUpActivity, "Đăng ký thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     signInWithEmail(email, password)
                 } else {
@@ -124,7 +131,7 @@ class SignUpActivity : AppCompatActivity() {
         val call = service.authWithEmail(email, password)
         call.enqueue(object : Callback<AuthenticationResponse> {
             override fun onResponse(call: Call<AuthenticationResponse>, response: Response<AuthenticationResponse>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     onAuthenticationSuccess(response.body())
                 } else {
                     val apiError = ErrorUtils.parseError(response)

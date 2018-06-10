@@ -2,17 +2,14 @@ package com.example.trongtuyen.carmap.activity.common
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
-import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
-import com.example.trongtuyen.carmap.services.models.ReportResponse
-import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,22 +50,34 @@ class ReportCrashActivity : AppCompatActivity() {
             btnCrashMinor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
             btnCrashOtherSide.background = null
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnCrashMajor.setOnClickListener {
             subType1 = "major"
             btnCrashMajor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMinor.background = null
             btnCrashOtherSide.background = null
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnCrashOtherSide.setOnClickListener {
             subType1 = "other_side"
             btnCrashOtherSide.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
             btnCrashMinor.background = null
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
-        btnSend.setOnClickListener { onSend() }
-        btnCLose.setOnClickListener { onClose() }
-        btnDismiss.setOnClickListener { onClose() }
+        btnSend.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSend()
+        }
+        btnCLose.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
+        btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
     }
 
     private fun onClose() {
@@ -95,7 +104,7 @@ class ReportCrashActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {

@@ -112,6 +112,7 @@
                 android:src="@drawable/ic_headlights_on_44dp"/>
 
             <TextView
+                android:id="@+id/tvType_marker_user"
                 android:layout_width="60dp"
                 android:layout_height="110dp"
                 android:layout_gravity="center"
@@ -120,8 +121,7 @@
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
                 android:textColor="@color/background_front"
-                android:textSize="14sp"
-                android:id="@+id/tvType_marker_user"/>
+                android:textSize="14sp" />
 
             <ImageView
                 android:layout_width="30dp"

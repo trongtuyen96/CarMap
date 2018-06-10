@@ -3,6 +3,7 @@ package com.example.trongtuyen.carmap.activity.common
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.*
 import butterknife.BindView
@@ -55,20 +56,31 @@ class ReportHelpActivity : AppCompatActivity() {
 
         // Các nút báo cáo
         btnOthers.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType1 = "others"
             btnOthers.background = getDrawable(R.color.button_bg_inactive)
             btnCall.background = null
             onOpenOthers()
         }
         btnCall.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType1 = "call"
             btnCall.background = getDrawable(R.color.button_bg_inactive)
             btnOthers.background = null
             onCall()
         }
-        btnSend.setOnClickListener { onSend() }
-        btnCLose.setOnClickListener { onClose() }
-        btnDismiss.setOnClickListener { onClose() }
+        btnSend.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSend()
+        }
+        btnCLose.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
+        btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
     }
 
     private fun onClose() {
@@ -103,7 +115,7 @@ class ReportHelpActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     TastyToast.makeText(this@ReportHelpActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {
@@ -161,18 +173,22 @@ class ReportHelpActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnNoGas.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "no_gas"
             bottomSheetDialog.dismiss()
         }
         btnFlatTire.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "flat_tire"
             bottomSheetDialog.dismiss()
         }
         btnBattery.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "no_battery"
             bottomSheetDialog.dismiss()
         }
         btnMedical.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "medical_care"
             bottomSheetDialog.dismiss()
         }

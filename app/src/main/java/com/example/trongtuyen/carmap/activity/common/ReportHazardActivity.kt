@@ -15,6 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.support.design.widget.BottomSheetDialog
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.LinearLayout
 import com.sdsmdg.tastytoast.TastyToast
@@ -91,6 +92,7 @@ class ReportHazardActivity : AppCompatActivity() {
             imHazardWeather.setImageResource(R.drawable.ic_report_hazard_weather)
             tvHazardWeather.text = "Thời tiết"
 
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onOpenHazardOnRoad()
         }
         btnHazardShoulder.setOnClickListener {
@@ -106,6 +108,7 @@ class ReportHazardActivity : AppCompatActivity() {
             imHazardWeather.setImageResource(R.drawable.ic_report_hazard_weather)
             tvHazardWeather.text = "Thời tiết"
 
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onOpenHazardShoulder()
         }
         btnHazardWeather.setOnClickListener {
@@ -121,11 +124,21 @@ class ReportHazardActivity : AppCompatActivity() {
             imHazardShoulder.setImageResource(R.drawable.ic_report_hazard_shoulder)
             tvHazardShoulder.text = "Bên lề"
 
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onOpenHazardWeather()
         }
-        btnSend.setOnClickListener { onSend() }
-        btnCLose.setOnClickListener { onClose() }
-        btnDismiss.setOnClickListener { onClose() }
+        btnSend.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSend()
+        }
+        btnCLose.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
+        btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
     }
 
     private fun onClose() {
@@ -178,7 +191,7 @@ class ReportHazardActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {
@@ -202,26 +215,32 @@ class ReportHazardActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnObject.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "object"
             bottomSheetDialog.dismiss()
         }
         btnConstruction.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "construction"
             bottomSheetDialog.dismiss()
         }
         btnBrokenLight.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "broken_light"
             bottomSheetDialog.dismiss()
         }
         btnPothole.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "pothole"
             bottomSheetDialog.dismiss()
         }
         btnVehicleStop.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "vehicle_stop"
             bottomSheetDialog.dismiss()
         }
         btnRoadkill.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "road_kill"
             bottomSheetDialog.dismiss()
         }
@@ -287,14 +306,17 @@ class ReportHazardActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnVehicleStop.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "vehicle_stop"
             bottomSheetDialog.dismiss()
         }
         btnAnimal.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "animal"
             bottomSheetDialog.dismiss()
         }
         btnMissingSign.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "missing_sign"
             bottomSheetDialog.dismiss()
         }
@@ -366,18 +388,22 @@ class ReportHazardActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnFog.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "fog"
             bottomSheetDialog.dismiss()
         }
         btnHail.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "hail"
             bottomSheetDialog.dismiss()
         }
         btnFlood.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "flood"
             bottomSheetDialog.dismiss()
         }
         btnIce.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "ice"
             bottomSheetDialog.dismiss()
         }
