@@ -9,10 +9,10 @@
         location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -59,6 +59,7 @@
         <activity android:name=".activity.common.ReportCrashActivity" />
         <activity android:name=".activity.common.ReportHazardActivity" />
         <activity android:name=".activity.common.ReportHelpActivity" />
+        <activity android:name=".activity.common.AudioRecordActivity"></activity>
     </application>
 
 </manifest>

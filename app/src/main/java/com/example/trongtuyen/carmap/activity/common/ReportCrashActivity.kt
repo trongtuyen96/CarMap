@@ -1,5 +1,6 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
@@ -32,6 +33,9 @@ class ReportCrashActivity : AppCompatActivity() {
     lateinit var btnCLose: ImageView
     @BindView(R.id.btnDismiss_report_crash)
     lateinit var btnDismiss: Button
+
+    @BindView(R.id.layout_record_report_crash)
+    lateinit var btnRecord: LinearLayout
 
     private var subType1: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +81,13 @@ class ReportCrashActivity : AppCompatActivity() {
         btnDismiss.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onClose()
+        }
+
+        btnRecord.setOnClickListener {
+            btnRecord.background = getDrawable(R.color.button_bg_inactive)
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            val intent = Intent(this, AudioRecordActivity::class.java)
+            startActivity(intent)
         }
     }
 
