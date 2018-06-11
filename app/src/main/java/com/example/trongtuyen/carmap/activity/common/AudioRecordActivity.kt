@@ -7,16 +7,9 @@ import com.example.trongtuyen.carmap.R
 import android.media.MediaRecorder
 import android.media.MediaPlayer
 import android.content.pm.PackageManager
-import android.support.annotation.NonNull
-import android.Manifest.permission
-import android.Manifest.permission.RECORD_AUDIO
-import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.View
 import java.io.IOException
-import com.nightonke.boommenu.Util.setText
-import android.view.ViewGroup
 import android.support.v4.app.ActivityCompat
 import android.widget.*
 import butterknife.BindView
@@ -25,7 +18,6 @@ import com.example.trongtuyen.carmap.controllers.AppController
 import com.sdsmdg.tastytoast.TastyToast
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.text.Typography.times
 
 
 class AudioRecordActivity : AppCompatActivity() {
@@ -74,7 +66,7 @@ class AudioRecordActivity : AppCompatActivity() {
     private val permissions = arrayOf<String>(Manifest.permission.RECORD_AUDIO)
 
     // Kiểm tra đã record
-    private var bRecorded : Boolean = false
+    private var bRecorded: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +77,7 @@ class AudioRecordActivity : AppCompatActivity() {
 
         // Record to the external cache directory for visibility
         mFileName = externalCacheDir!!.absolutePath
-        mFileName += "/audiorecordtest.3gp"
+        mFileName += "/audio_new.3gp"
 
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
 
@@ -161,7 +153,10 @@ class AudioRecordActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener {
             if (bRecorded) {
-                AppController.fileAudioName = mFileName!!
+//                AppController.fileAudioName = mFileName!!
+                intent.putExtra("FileAudioPath", mFileName)
+                setResult(1, intent)
+                finish()
             } else {
                 TastyToast.makeText(this, "Bạn cần ghi âm trước khi chọn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
             }

@@ -37,6 +37,6 @@ object AppController {
 //    // Danh sách các báo cáo
 //    lateinit var listReport: List<Report>
 
-    // fileName của thu âm lúc report
-    lateinit var fileAudioName : String
+//    // fileName của thu âm lúc report
+//    lateinit var fileAudioName : String
 }
