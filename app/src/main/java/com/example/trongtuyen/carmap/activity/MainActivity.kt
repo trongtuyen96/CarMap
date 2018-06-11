@@ -7,10 +7,10 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.res.Configuration
 import android.location.Location
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Handler
+import android.net.Uri
+import android.os.*
+import android.provider.Settings
+import android.support.annotation.RequiresApi
 import android.support.design.widget.NavigationView
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
@@ -18,9 +18,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
 import android.widget.*
-import butterknife.OnTouch
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -169,6 +167,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mContext = this.applicationContext
     }
 
+    private var isTouchSoundsEnabled: Boolean = false
+    private var isTouchVibrateEnabled: Boolean = false
+    private fun initSoundVibrate() {
+        if (Settings.System.getInt(contentResolver, Settings.System.SOUND_EFFECTS_ENABLED, 1) == 0) {
+            Settings.System.putInt(contentResolver, Settings.System.SOUND_EFFECTS_ENABLED, 1)
+            isTouchSoundsEnabled = true
+        }
+        if (Settings.System.getInt(contentResolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) == 0) {
+            Settings.System.putInt(contentResolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1)
+            isTouchVibrateEnabled = true
+        }
+    }
+
+    private fun destroySoundVibrate() {
+        if (isTouchSoundsEnabled == true) {
+            Settings.System.putInt(contentResolver, Settings.System.SOUND_EFFECTS_ENABLED, 0)
+        }
+        if (isTouchVibrateEnabled == true) {
+            Settings.System.putInt(contentResolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 0)
+        }
+    }
+
     override fun onPause() {
         super.onPause()
 //        Toast.makeText(this,"On Pause",Toast.LENGTH_SHORT).show()
@@ -186,6 +206,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 //        // Destroy socket
 //        destroySocket()
+
+        // Destroy sound and vibrate
+        destroySoundVibrate()
     }
 
     public override fun onResume() {
@@ -221,7 +244,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Lần đầu chạy sau 7s
         handler.postDelayed(runnable, 7000)  //the time is in miliseconds
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
+            // Khởi tạo sound và vibrate
+            initSoundVibrate()
+        } else {
+            //Migrate to Setting write permission screen.
+            val intent: Intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+            intent.setData(Uri.parse("package:" + this.getPackageName()));
+            startActivity(intent);
+            TastyToast.makeText(this, "Cho phép chỉnh sửa cài đặt hệ thống", TastyToast.LENGTH_LONG, TastyToast.DEFAULT)
+        }
     }
+
 
     private fun initActionBarDrawerToggle() {
         mActionBarDrawerToggle = ActionBarDrawerToggle(
@@ -305,6 +340,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onClick(v: View) {
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         when (v.id) {
             R.id.imvMyLoc -> {
                 onMyLocationButtonClicked()
@@ -536,8 +572,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     // ======================================================================
-    // ======== ON NAVIGATION BUTTON EVENT ==================================
-    // ======================================================================
+// ======== ON NAVIGATION BUTTON EVENT ==================================
+// ======================================================================
     private fun loadUserProfile() {
         if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
             val service = APIServiceGenerator.createService(UserService::class.java)
@@ -575,12 +611,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         startActivity(intent)
         this.finish()
     }
-    // ======================================================================
+// ======================================================================
 
 
     // ======================================================================
-    // ======== MARKER CLICK GROUP ==========================================
-    // ======================================================================
+// ======== MARKER CLICK GROUP ==========================================
+// ======================================================================
     override fun onMarkerClick(p0: Marker): Boolean {
 //        p0.showInfoWindow()
         onOpenReportMarker(p0)
@@ -710,11 +746,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
                 mPopupWindowReport!!.dismiss()
                 curMarkerReport = null
+                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             }
             imvDownVote.setOnClickListener {
                 Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
                 mPopupWindowReport!!.dismiss()
                 curMarkerReport = null
+                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             }
         }
         if (marker.title == "user") {
@@ -744,6 +782,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                 mPopupWindowUser!!.dismiss()
                 curMarkerUser = null
+                viewUserPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             }
 
             // Lấy view của viewTouch
@@ -840,6 +879,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             viewTouch.setOnTouchListener(sfg)
 
             btnConfirm.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 when (mType) {
                     1 -> {
                         attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
@@ -854,6 +894,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                 }
+                TastyToast.makeText(this, "Đã gửi cảnh báo cho tài xế", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
                 btnConfirm.visibility = View.INVISIBLE
                 mType = 0
             }
@@ -911,12 +952,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         return user
     }
-    // ========================================================================
+// ========================================================================
 
 
     // ========================================================================
-    // ======== API CALL AND LISTENERS ========================================
-    // ========================================================================
+// ======== API CALL AND LISTENERS ========================================
+// ========================================================================
     private fun onGetAllUser() {
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.allUserProfile
@@ -1047,12 +1088,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
     }
-    // =====================================================================
+// =====================================================================
 
 
     // ======================================================================
-    // ======== SOCKET EVENT ================================================
-    // ======================================================================
+// ======== SOCKET EVENT ================================================
+// ======================================================================
     private fun initSocket() {
         socket = SocketService().getSocket()
         socket.on(Socket.EVENT_CONNECT, onConnect)
@@ -1162,6 +1203,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 btnHello.setOnClickListener {
                     attemptHello(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
 
 //                val factory = LayoutInflater.from(this)
@@ -1241,6 +1283,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
         })
@@ -1294,6 +1337,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
         })
@@ -1347,6 +1391,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
         })
@@ -1400,6 +1445,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
         })
@@ -1456,12 +1502,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.emit("event_warn_thank_server", email, socket.id(), receiveSocketID, "thank")
     }
 
-    // =====================================================================
+// =====================================================================
 
 
     // ======================================================================
-    // ======== REPORT ======================================================
-    // ======================================================================
+// ======== REPORT ======================================================
+// ======================================================================
     private fun onGetAllReport() {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.allReport
@@ -1577,9 +1623,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         listReportMarker.add(marker)
         marker.tag = report
     }
-    // ======================================================================
+// ======================================================================
 
-    private lateinit var mContext: Context
+//    private lateinit var mContext: Context
 
     class CustomGestureDetector : GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
         override fun onDoubleTap(e: MotionEvent?): Boolean {

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.HapticFeedbackConstants
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -34,7 +35,7 @@ class ReportMenuActivity : AppCompatActivity() {
         initComponents()
 
         // Tự động tắt activity sau 7 giây
-        val countDownTimer= object : CountDownTimer(7000, 500) {
+        val countDownTimer = object : CountDownTimer(7000, 500) {
             override fun onTick(millisUntilFinished: Long) {
                 findViewById<TextView>(R.id.tvClose_activity_report).text = String.format(Locale.getDefault(), "%s %d giây",
                         "Đóng sau",
@@ -51,21 +52,39 @@ class ReportMenuActivity : AppCompatActivity() {
     private fun initComponents() {
 
         // Các nút báo cáo
-        btnReportTraffic.setOnClickListener { onReportTraffic() }
-        btnReportCrash.setOnClickListener { onReportCrash() }
-        btnReportHazard.setOnClickListener { onReportHazard() }
-        btnReportAssist.setOnClickListener { onReportAssist() }
-        layoutMenu.setOnClickListener { finish() }
+        btnReportTraffic.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onReportTraffic()
+        }
+        btnReportCrash.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onReportCrash()
+        }
+        btnReportHazard.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onReportHazard()
+        }
+        btnReportAssist.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onReportAssist()
+        }
+        layoutMenu.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            finish()
+        }
 
-        btnCLose.setOnClickListener { onClose() }
+        btnCLose.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
 
     }
 
-    private fun onClose(){
+    private fun onClose() {
         finish()
     }
 
-    private fun onReportTraffic(){
+    private fun onReportTraffic() {
         val intent = Intent(this, ReportTrafficActivity::class.java)
         startActivity(intent)
     }

@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
+import android.view.HapticFeedbackConstants
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -53,22 +54,34 @@ class ReportTrafficActivity : AppCompatActivity() {
             btnTrafficModerate.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficHeavy.background = null
             btnTrafficStandstill.background = null
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnTrafficHeavy.setOnClickListener {
             subType1 = "heavy"
             btnTrafficHeavy.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficModerate.background = null
             btnTrafficStandstill.background = null
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnTrafficStandstill.setOnClickListener {
             subType1 = "standstill"
             btnTrafficStandstill.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficHeavy.background = null
             btnTrafficModerate.background = null
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
-        btnSend.setOnClickListener { onSend() }
-        btnCLose.setOnClickListener { onClose() }
-        btnDismiss.setOnClickListener { onClose() }
+        btnSend.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSend()
+        }
+        btnCLose.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
+        btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
     }
 
     private fun onClose() {
@@ -95,7 +108,7 @@ class ReportTrafficActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful) {
                     TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {

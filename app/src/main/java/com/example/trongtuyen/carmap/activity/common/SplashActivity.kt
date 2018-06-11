@@ -51,7 +51,7 @@ class SplashActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
                 override fun onResponse(call: Call<RefreshTokenResponse>, response: Response<RefreshTokenResponse>) {
                     swipeRefresh.isRefreshing = false
 
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful) {
                         val accessToken = response.body().token
                         AppController.accessToken = accessToken
 
@@ -76,7 +76,7 @@ class SplashActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
                 }
 
                 override fun onFailure(call: Call<RefreshTokenResponse>, t: Throwable) {
-                    make(findViewById(R.id.splashLayout),"Không có kết nối Internet", Snackbar.LENGTH_INDEFINITE).show()
+                    make(findViewById(R.id.splashLayout), "Không có kết nối Internet", Snackbar.LENGTH_INDEFINITE).show()
                     //startMainActivity();
                     swipeRefresh.isRefreshing = false
                 }

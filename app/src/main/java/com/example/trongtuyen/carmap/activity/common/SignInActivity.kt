@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.*
 import butterknife.BindView
@@ -78,13 +79,28 @@ class SignInActivity : AppCompatActivity() {
     private fun initComponents() {
 
         // Sign in buttons
-        btnSignInWithEmail.setOnClickListener { onSignInWithEmail() }
-        btnSignInWithFacebook.setOnClickListener { onSignInWithFacebook() }
-        btnSignInWithGoogle.setOnClickListener { onSignInWithGoogle() }
+        btnSignInWithEmail.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSignInWithEmail()
+        }
+        btnSignInWithFacebook.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSignInWithFacebook()
+        }
+        btnSignInWithGoogle.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSignInWithGoogle()
+        }
 
         //
-        btnClose.setOnClickListener { onClose() }
-        btnSignUp.setOnClickListener { onSignUp() }
+        btnClose.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onClose()
+        }
+        btnSignUp.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onSignUp()
+        }
 
         progress1.visibility = View.GONE
         progress2.visibility = View.GONE
