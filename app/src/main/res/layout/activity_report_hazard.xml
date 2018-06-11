@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/btnClose_report_hazard"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:src="@drawable/ic_close" />
@@ -228,21 +228,85 @@
             android:layout_marginTop="15dp"/>
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/txtMess_report_hazard"
+
+    <LinearLayout
+        android:id="@+id/layoutCommand_report_hazard"
         android:layout_width="match_parent"
         android:layout_height="84dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="105dp"
-        android:background="@android:color/transparent"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/ic_message_grey_44dp"
-        android:hint="Thêm lời ghi chú"
-        android:inputType="textPersonName"
-        android:paddingEnd="8dp"
-        android:paddingStart="0dp"
-        android:textColor="@color/textColorSecondary" />
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/layout_record_report_hazard"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:src="@drawable/ic_sound" />
+
+            <TextView
+                android:id="@+id/tvRecord_report_hazard"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="Thu âm"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/layout_take_photo_report_hazard"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_take_photo" />
+
+            <TextView
+                android:id="@+id/tvTakePhoto_report_hazard"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="Chụp ảnh"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/txtMess_report_hazard"
+            android:layout_width="110dp"
+            android:layout_height="84dp"
+            android:background="@android:color/transparent"
+            android:hint="Thêm lời ghi chú"
+            android:inputType="textPersonName"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 
     <View
@@ -250,7 +314,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/txtMess_report_hazard"
+        android:layout_below="@+id/layoutCommand_report_hazard"
         android:layout_marginTop="-100dp"
         android:background="@color/textColorSecondary"
         android:visibility="visible" />
