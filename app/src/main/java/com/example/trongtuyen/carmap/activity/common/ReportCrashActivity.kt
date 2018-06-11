@@ -84,7 +84,6 @@ class ReportCrashActivity : AppCompatActivity() {
         }
 
         btnRecord.setOnClickListener {
-            btnRecord.background = getDrawable(R.color.button_bg_inactive)
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val intent = Intent(this, AudioRecordActivity::class.java)
             startActivity(intent)

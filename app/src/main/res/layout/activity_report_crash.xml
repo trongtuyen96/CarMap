@@ -184,7 +184,6 @@
             android:layout_marginEnd="10dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/bg_btn_send"
-            android:drawableEnd="@drawable/btn_send_44dp"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
             android:text="GỬI"
@@ -213,20 +212,23 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:padding="8dp"
-                android:src="@drawable/ic_sound" />
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_btn_round_white_black_stroke"
+                android:padding="12dp"
+                android:src="@drawable/ic_record_voice_over_blue_700_48dp" />
 
             <TextView
                 android:id="@+id/tvRecord_report_crash"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:text="Thu âm"
                 android:textAlignment="center" />
         </LinearLayout>
 
         <View
             android:layout_width="1dp"
-            android:layout_height="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="5dp"
             android:layout_marginStart="5dp"
             android:background="@color/textColorSecondary"
@@ -242,19 +244,23 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_take_photo" />
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_btn_round_white_black_stroke"
+                android:padding="12dp"
+                android:src="@drawable/ic_camera_enhance_blue_700_48dp" />
 
             <TextView
                 android:id="@+id/tvTakePhoto_report_crash"
                 android:layout_width="match_parent"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:text="Chụp ảnh"
                 android:textAlignment="center" />
         </LinearLayout>
 
         <View
             android:layout_width="1dp"
-            android:layout_height="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="5dp"
             android:layout_marginStart="5dp"
             android:background="@color/textColorSecondary"
@@ -265,7 +271,7 @@
             android:layout_width="110dp"
             android:layout_height="84dp"
             android:background="@android:color/transparent"
-            android:hint="Thêm lời ghi chú"
+            android:hint="Thêm ghi chú"
             android:inputType="textPersonName"
             android:textColor="@color/textColorSecondary"
             android:textSize="14sp" />

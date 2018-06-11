@@ -158,7 +158,6 @@
             android:layout_marginEnd="10dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/bg_btn_send"
-            android:drawableEnd="@drawable/btn_send_44dp"
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
             android:text="GỬI"

@@ -21,6 +21,8 @@ import android.support.v4.app.ActivityCompat
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.example.trongtuyen.carmap.controllers.AppController
+import com.sdsmdg.tastytoast.TastyToast
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.text.Typography.times
@@ -48,6 +50,14 @@ class AudioRecordActivity : AppCompatActivity() {
     @BindView(R.id.progressBar_audio_record)
     lateinit var progressBar: ProgressBar
 
+    @BindView(R.id.btnSend_audio_record)
+    lateinit var btnSend: Button
+    @BindView(R.id.btnDismiss_audio_record)
+    lateinit var btnDismiss: Button
+
+    @BindView(R.id.tvPath_audio_record)
+    lateinit var tvPath: TextView
+
 
     private val LOG_TAG = "AudioRecordTest"
     private val REQUEST_RECORD_AUDIO_PERMISSION = 200
@@ -62,6 +72,9 @@ class AudioRecordActivity : AppCompatActivity() {
     // Requesting permission to RECORD_AUDIO
     private var permissionToRecordAccepted = false
     private val permissions = arrayOf<String>(Manifest.permission.RECORD_AUDIO)
+
+    // Kiểm tra đã record
+    private var bRecorded : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,10 +106,11 @@ class AudioRecordActivity : AppCompatActivity() {
 
     }
 
-    private fun initComponents(){
+    private fun initComponents() {
         var mStartRecording = true
         var mStartPlaying = true
-        btnRecord.setOnClickListener{
+        lateinit var countDownTimer: CountDownTimer
+        btnRecord.setOnClickListener {
             onRecord(mStartRecording)
             if (mStartRecording) {
                 tvRecord.text = "DỪNG GHI"
@@ -104,24 +118,28 @@ class AudioRecordActivity : AppCompatActivity() {
                 imRecord.setImageResource(R.drawable.ic_stop_white_48dp)
 
                 /////////////////////////
-                object : CountDownTimer(7000, 100) {
+                countDownTimer = object : CountDownTimer(7000, 100) {
                     override fun onTick(millisUntilFinished: Long) {
                         tvProgress.text = String.format(Locale.getDefault(), "%s%d",
-                                "",
+                                "0",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
                         progressBar.progress = millisUntilFinished.times(100).div(7000).toInt()
                     }
 
                     override fun onFinish() {
                         progressBar.progress = 0
-                        tvProgress.text = "0"
+                        tvProgress.text = "00"
                         btnRecord.performClick()
                     }
                 }.start()
             } else {
+                countDownTimer.cancel()
                 tvRecord.text = "BẮT ĐẦU"
                 btnRecord.background = getDrawable(R.drawable.bg_btn_send)
                 imRecord.setImageResource(R.drawable.ic_record_voice_over_white_48dp)
+                TastyToast.makeText(this, "Đã ghi âm thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                tvPath.text = mFileName.toString()
+                bRecorded = true
             }
             mStartRecording = !mStartRecording
         }
@@ -139,7 +157,17 @@ class AudioRecordActivity : AppCompatActivity() {
             mStartPlaying = !mStartPlaying
         }
         btnCLose.setOnClickListener {
-           finish()
+            finish()
+        }
+        btnSend.setOnClickListener {
+            if (bRecorded) {
+                AppController.fileAudioName = mFileName!!
+            } else {
+                TastyToast.makeText(this, "Bạn cần ghi âm trước khi chọn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+            }
+        }
+        btnDismiss.setOnClickListener {
+            finish()
         }
     }
 
