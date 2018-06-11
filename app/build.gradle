@@ -78,4 +78,7 @@ dependencies {
     // Tasty Toast
     implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
 
+//    // Progress plain pie
+//    implementation 'com.github.zurche:plain-pie:v0.2.4'
+
 }

@@ -66,8 +66,8 @@
                 android:id="@+id/imvCrashMinor_report_crash"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_marginStart="4dp">
+                android:layout_marginStart="4dp"
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="110dp"
@@ -156,65 +156,134 @@
 
     </LinearLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentStart="true"
-    android:orientation="horizontal"
-    android:background="@color/button_bg_inactive">
-
-    <Button
-        android:id="@+id/btnDismiss_report_crash"
-        android:layout_width="120dp"
-        android:layout_height="70dp"
-        android:background="@drawable/bg_btn_dismiss"
-        android:text="HUỶ"
-        android:textColor="@color/background_front"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="15dp"/>
-    <Button
-        android:id="@+id/btnSend_report_crash"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@drawable/bg_btn_send"
-        android:drawableEnd="@drawable/btn_send_44dp"
-        android:paddingEnd="10dp"
-    android:paddingStart="10dp"
-    android:text="GỬI"
-    android:textColor="@color/background_front"
-    android:textSize="24sp"
-    android:textStyle="bold"
-    android:layout_marginEnd="10dp"
-    android:layout_marginTop="15dp"/>
-</LinearLayout>
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/button_bg_inactive"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/txtMess_report_crash"
+        <Button
+            android:id="@+id/btnDismiss_report_crash"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_btn_dismiss"
+            android:text="HUỶ"
+            android:textColor="@color/background_front"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnSend_report_crash"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_btn_send"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:text="GỬI"
+            android:textColor="@color/background_front"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutCommand_report_crash"
         android:layout_width="match_parent"
         android:layout_height="84dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="105dp"
-        android:background="@android:color/transparent"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/ic_message_grey_44dp"
-        android:hint="Thêm lời ghi chú"
-        android:inputType="textPersonName"
-        android:paddingEnd="8dp"
-        android:paddingStart="0dp"
-        android:textColor="@color/textColorSecondary" />
+        android:orientation="horizontal">
 
+        <LinearLayout
+            android:id="@+id/layout_record_report_crash"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_btn_round_white_black_stroke"
+                android:padding="12dp"
+                android:src="@drawable/ic_record_voice_over_blue_700_48dp" />
+
+            <TextView
+                android:id="@+id/tvRecord_report_crash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thu âm"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/layout_take_photo_report_crash"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_btn_round_white_black_stroke"
+                android:padding="12dp"
+                android:src="@drawable/ic_camera_enhance_blue_700_48dp" />
+
+            <TextView
+                android:id="@+id/tvTakePhoto_report_crash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chụp ảnh"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@color/textColorSecondary"
+            android:visibility="visible" />
+
+        <EditText
+            android:id="@+id/txtMess_report_crash"
+            android:layout_width="110dp"
+            android:layout_height="84dp"
+            android:background="@android:color/transparent"
+            android:hint="Thêm ghi chú"
+            android:inputType="textPersonName"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/divider3"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/txtMess_report_crash"
+        android:layout_below="@+id/layoutCommand_report_crash"
         android:layout_marginTop="-100dp"
         android:background="@color/textColorSecondary"
         android:visibility="visible" />

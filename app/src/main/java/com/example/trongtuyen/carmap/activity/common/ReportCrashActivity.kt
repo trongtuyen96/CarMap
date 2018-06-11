@@ -1,7 +1,10 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.content.Intent
+import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.view.HapticFeedbackConstants
 import android.widget.*
 import butterknife.BindView
@@ -14,6 +17,10 @@ import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
 class ReportCrashActivity : AppCompatActivity() {
 
@@ -32,6 +39,16 @@ class ReportCrashActivity : AppCompatActivity() {
     lateinit var btnCLose: ImageView
     @BindView(R.id.btnDismiss_report_crash)
     lateinit var btnDismiss: Button
+
+    @BindView(R.id.layout_record_report_crash)
+    lateinit var btnRecord: LinearLayout
+    @BindView(R.id.layout_take_photo_report_crash)
+    lateinit var btnTakePhoto: LinearLayout
+
+    @BindView(R.id.tvRecord_report_crash)
+    lateinit var tvRecord: TextView
+
+    private var sFileAudioName: String? = null
 
     private var subType1: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +95,20 @@ class ReportCrashActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onClose()
         }
+
+        btnRecord.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            val intent = Intent(this, AudioRecordActivity::class.java)
+            startActivityForResult(intent, 0)
+        }
+
+        btnTakePhoto.setOnClickListener {
+            val encoded = encodeAudioFile(sFileAudioName!!)
+            if (encoded != "") {
+                TastyToast.makeText(this, encoded, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+                decodeAudioFile(encoded, externalCacheDir!!.absolutePath + "/audio_decoded.3gp")
+            }
+        }
     }
 
     private fun onClose() {
@@ -113,5 +144,57 @@ class ReportCrashActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        tvRecord.text = "Thu âm"
+        if (resultCode == 1) {
+            sFileAudioName = data?.getStringExtra("FileAudioPath")
+            tvRecord.text = "Đã thu âm"
+            TastyToast.makeText(this, sFileAudioName.toString(), TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+        }
+    }
+
+    private fun encodeAudioFile(path: String): String {
+        val audioBytes: ByteArray
+        try {
+            // Just to check file size.. Its is correct i-e; Not Zero
+            val audioFile = File(path)
+            val fileSize = audioFile.length()
+
+            val baos = ByteArrayOutputStream()
+            val fis = FileInputStream(File(path))
+            val buf = ByteArray(1024)
+            var n: Int = fis.read(buf)
+            while (-1 != n) {
+                baos.write(buf, 0, n)
+                n = fis.read(buf)
+            }
+            audioBytes = baos.toByteArray()
+
+            // Here goes the Base64 string
+            val _audioBase64 = Base64.encodeToString(audioBytes, Base64.DEFAULT)
+            return _audioBase64
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return ""
+        }
+    }
+
+    private fun decodeAudioFile(base64AudioData: String, filePath: String) {
+        val decoded: ByteArray = Base64.decode(base64AudioData, Base64.DEFAULT)
+        val fos: FileOutputStream = FileOutputStream(filePath)
+        fos.write(decoded);
+        fos.close();
+
+        try {
+            val mp: MediaPlayer = MediaPlayer()
+            mp.setDataSource(filePath)
+            mp.prepare()
+            mp.start()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
