@@ -169,7 +169,7 @@ class ReportCrashActivity : AppCompatActivity() {
                 if (resultCode == 1) {
                     sFileAudioPath = data!!.getStringExtra("FileAudioPath")
                     tvRecord.text = "Đã thu âm"
-                    TastyToast.makeText(this, sFileAudioPath, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+//                    TastyToast.makeText(this, sFileAudioPath, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
                 }
             }
             1 -> {
@@ -179,7 +179,7 @@ class ReportCrashActivity : AppCompatActivity() {
                 matrix.postRotate(90f)
                 val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
                 sBase64Image = FileUtils.encodeImageFile(newBitmap)
-                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+//                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
             }
         }
     }
