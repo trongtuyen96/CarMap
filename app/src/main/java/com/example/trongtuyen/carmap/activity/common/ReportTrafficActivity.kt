@@ -1,9 +1,12 @@
 package com.example.trongtuyen.carmap.activity.common
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.design.widget.TextInputEditText
 import android.view.HapticFeedbackConstants
 import android.widget.*
@@ -46,10 +49,14 @@ class ReportTrafficActivity : AppCompatActivity() {
 
     @BindView(R.id.tvRecord_report_traffic)
     lateinit var tvRecord: TextView
+    @BindView(R.id.tvTakePhoto_report_traffic)
+    lateinit var tvTakePhoto: TextView
 
     private var subType1: String = ""
 
-    private var sFileAudioName: String = ""
+    private var sFileAudioPath: String = ""
+
+    private var sBase64Image: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +108,12 @@ class ReportTrafficActivity : AppCompatActivity() {
             val intent = Intent(this, AudioRecordActivity::class.java)
             startActivityForResult(intent, 0)
         }
+
+        btnTakePhoto.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, 1)
+        }
     }
 
     private fun onClose() {
@@ -113,8 +126,8 @@ class ReportTrafficActivity : AppCompatActivity() {
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
             // Encode file ghi âm
-            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
-            val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded)
+            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+            val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
             onAddNewReportTraffic(mReport)
         }
     }
@@ -142,11 +155,24 @@ class ReportTrafficActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        tvRecord.text = "Thu âm"
-        if (resultCode == 1) {
-            sFileAudioName = data!!.getStringExtra("FileAudioPath")
-            tvRecord.text = "Đã thu âm"
-            TastyToast.makeText(this, sFileAudioName, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+        when (requestCode) {
+            0 -> {
+                tvRecord.text = "Thu âm"
+                if (resultCode == 1) {
+                    sFileAudioPath = data!!.getStringExtra("FileAudioPath")
+                    tvRecord.text = "Đã thu âm"
+                    TastyToast.makeText(this, sFileAudioPath, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+                }
+            }
+            1 -> {
+                tvTakePhoto.text = "Đã chụp ảnh"
+                val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+                val matrix = Matrix()
+                matrix.postRotate(90f)
+                val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                sBase64Image = FileUtils.encodeImageFile(newBitmap)
+                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+            }
         }
     }
 }

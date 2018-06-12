@@ -60,7 +60,7 @@
         <activity android:name=".activity.common.ReportHazardActivity" />
         <activity android:name=".activity.common.ReportHelpActivity" />
         <activity android:name=".activity.common.AudioRecordActivity" />
-        <activity android:name=".activity.common.CustomCameraActivity"></activity>
+        <activity android:name=".activity.common.CustomCameraActivity" />
     </application>
 
 </manifest>

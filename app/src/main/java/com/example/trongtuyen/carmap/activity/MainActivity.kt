@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.activity.common.CustomCameraActivity
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -762,9 +763,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (dataReport.byteAudioFile != "") {
                     val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
                     FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
-                }
-                else{
+                } else {
                     TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                }
+            }
+            imvImage.setOnClickListener {
+                if (dataReport.byteImageFile != "") {
+                    val intent = Intent(this, CustomCameraActivity::class.java)
+                    intent.putExtra("base64Image", dataReport.byteImageFile)
+                    startActivity(intent)
+                } else {
+                    TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 }
             }
         }

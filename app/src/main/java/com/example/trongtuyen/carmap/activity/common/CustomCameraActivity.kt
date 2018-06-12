@@ -17,8 +17,8 @@ class CustomCameraActivity : AppCompatActivity() {
 
     @BindView(R.id.imCamera_custom_camera)
     lateinit var imCamera: ImageView
-    @BindView(R.id.btnOpen_custom_camera)
-    lateinit var btnOpen: Button
+    @BindView(R.id.imBack_custom_camera)
+    lateinit var btnBack: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +29,11 @@ class CustomCameraActivity : AppCompatActivity() {
     }
 
     private fun initComponents() {
-        btnOpen.setOnClickListener {
-//            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//            startActivityForResult(intent, 0)
+        btnBack.setOnClickListener {
+            finish()
         }
-        val base64 = intent.getStringExtra("base64Image")
-        val newBitmap = FileUtils.decodeImageFile(base64)
+        val base64Image = intent.getStringExtra("base64Image")
+        val newBitmap = FileUtils.decodeImageFile(base64Image)
         imCamera.setImageBitmap(newBitmap)
     }
 
