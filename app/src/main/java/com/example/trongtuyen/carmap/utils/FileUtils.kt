@@ -14,8 +14,8 @@ object FileUtils {
         val audioBytes: ByteArray
         try {
             // Just to check file size.. Its is correct i-e; Not Zero
-            val audioFile = File(path)
-            val fileSize = audioFile.length()
+//            val audioFile = File(path)
+//            val fileSize = audioFile.length()
 
             val baos = ByteArrayOutputStream()
             val fis = FileInputStream(File(path))
@@ -28,8 +28,7 @@ object FileUtils {
             audioBytes = baos.toByteArray()
 
             // Here goes the Base64 string
-            val _audioBase64 = Base64.encodeToString(audioBytes, Base64.DEFAULT)
-            return _audioBase64
+            return Base64.encodeToString(audioBytes, Base64.DEFAULT)
         } catch (e: Exception) {
             e.printStackTrace()
             return ""
@@ -38,12 +37,12 @@ object FileUtils {
 
     fun decodeAudioFile(base64AudioData: String, filePath: String) {
         val decoded: ByteArray = Base64.decode(base64AudioData, Base64.DEFAULT)
-        val fos: FileOutputStream = FileOutputStream(filePath)
+        val fos = FileOutputStream(filePath)
         fos.write(decoded)
         fos.close()
 
         try {
-            val mp: MediaPlayer = MediaPlayer()
+            val mp = MediaPlayer()
             mp.setDataSource(filePath)
             mp.prepare()
             mp.start()
