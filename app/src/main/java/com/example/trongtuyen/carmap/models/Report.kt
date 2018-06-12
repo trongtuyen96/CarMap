@@ -34,10 +34,13 @@ class Report {
     @SerializedName("status")
     @Expose
     var status: Boolean? = null
+    @SerializedName("byteAudioFile")
+    @Expose
+    var byteAudioFile: String? = null
 
     var distance: Double? = null
 
-    constructor(type: String, subtype1: String, subtype2: String, description: String, geometry: Geometry, userID: String, numReport: Number, numDelete: Number, status: Boolean) {
+    constructor(type: String, subtype1: String, subtype2: String, description: String, geometry: Geometry, userID: String, numReport: Number, numDelete: Number, status: Boolean, byteAudioFile: String) {
         this.type = type
         this.subtype1 = subtype1
         this.subtype2 = subtype2
@@ -47,5 +50,6 @@ class Report {
         this.numReport = numReport
         this.numDelete = numDelete
         this.status = status
+        this.byteAudioFile = byteAudioFile
     }
 }

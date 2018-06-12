@@ -13,14 +13,12 @@ import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.*
+import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+
 
 class ReportCrashActivity : AppCompatActivity() {
 
@@ -48,7 +46,7 @@ class ReportCrashActivity : AppCompatActivity() {
     @BindView(R.id.tvRecord_report_crash)
     lateinit var tvRecord: TextView
 
-    private var sFileAudioName: String? = null
+    private var sFileAudioName: String = ""
 
     private var subType1: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,10 +101,10 @@ class ReportCrashActivity : AppCompatActivity() {
         }
 
         btnTakePhoto.setOnClickListener {
-            val encoded = encodeAudioFile(sFileAudioName!!)
+            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
             if (encoded != "") {
                 TastyToast.makeText(this, encoded, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
-                decodeAudioFile(encoded, externalCacheDir!!.absolutePath + "/audio_decoded.3gp")
+                FileUtils.decodeAudioFile(encoded, externalCacheDir!!.absolutePath + "/audio_decoded.3gp")
             }
         }
     }
@@ -120,7 +118,9 @@ class ReportCrashActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-            val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+            // Encode file ghi âm
+            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
+            val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded)
             onAddNewReportCrash(mReport)
         }
     }
@@ -150,51 +150,9 @@ class ReportCrashActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         tvRecord.text = "Thu âm"
         if (resultCode == 1) {
-            sFileAudioName = data?.getStringExtra("FileAudioPath")
+            sFileAudioName = data!!.getStringExtra("FileAudioPath")
             tvRecord.text = "Đã thu âm"
-            TastyToast.makeText(this, sFileAudioName.toString(), TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
-        }
-    }
-
-    private fun encodeAudioFile(path: String): String {
-        val audioBytes: ByteArray
-        try {
-            // Just to check file size.. Its is correct i-e; Not Zero
-            val audioFile = File(path)
-            val fileSize = audioFile.length()
-
-            val baos = ByteArrayOutputStream()
-            val fis = FileInputStream(File(path))
-            val buf = ByteArray(1024)
-            var n: Int = fis.read(buf)
-            while (-1 != n) {
-                baos.write(buf, 0, n)
-                n = fis.read(buf)
-            }
-            audioBytes = baos.toByteArray()
-
-            // Here goes the Base64 string
-            val _audioBase64 = Base64.encodeToString(audioBytes, Base64.DEFAULT)
-            return _audioBase64
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return ""
-        }
-    }
-
-    private fun decodeAudioFile(base64AudioData: String, filePath: String) {
-        val decoded: ByteArray = Base64.decode(base64AudioData, Base64.DEFAULT)
-        val fos: FileOutputStream = FileOutputStream(filePath)
-        fos.write(decoded);
-        fos.close();
-
-        try {
-            val mp: MediaPlayer = MediaPlayer()
-            mp.setDataSource(filePath)
-            mp.prepare()
-            mp.start()
-        } catch (e: Exception) {
-            e.printStackTrace()
+            TastyToast.makeText(this, sFileAudioName, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
         }
     }
 }

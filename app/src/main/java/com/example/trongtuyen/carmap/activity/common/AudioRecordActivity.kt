@@ -53,7 +53,7 @@ class AudioRecordActivity : AppCompatActivity() {
 
     private val LOG_TAG = "AudioRecordTest"
     private val REQUEST_RECORD_AUDIO_PERMISSION = 200
-    private var mFileName: String? = null
+    private var mFileName: String = ""
 
     //    private var mRecordButton: RecordButton? = null
     private var mRecorder: MediaRecorder? = null
@@ -130,7 +130,7 @@ class AudioRecordActivity : AppCompatActivity() {
                 btnRecord.background = getDrawable(R.drawable.bg_btn_send)
                 imRecord.setImageResource(R.drawable.ic_record_voice_over_white_48dp)
                 TastyToast.makeText(this, "Đã ghi âm thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
-                tvPath.text = mFileName.toString()
+                tvPath.text = mFileName
                 bRecorded = true
             }
             mStartRecording = !mStartRecording

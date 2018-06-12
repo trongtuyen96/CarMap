@@ -1,5 +1,6 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +15,7 @@ import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.ReportService
+import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,7 +39,18 @@ class ReportTrafficActivity : AppCompatActivity() {
     @BindView(R.id.btnDismiss_report_traffic)
     lateinit var btnDismiss: Button
 
+    @BindView(R.id.layout_record_report_traffic)
+    lateinit var btnRecord: LinearLayout
+    @BindView(R.id.layout_take_photo_report_traffic)
+    lateinit var btnTakePhoto: LinearLayout
+
+    @BindView(R.id.tvRecord_report_traffic)
+    lateinit var tvRecord: TextView
+
     private var subType1: String = ""
+
+    private var sFileAudioName: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_traffic)
@@ -82,6 +95,12 @@ class ReportTrafficActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onClose()
         }
+
+        btnRecord.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            val intent = Intent(this, AudioRecordActivity::class.java)
+            startActivityForResult(intent, 0)
+        }
     }
 
     private fun onClose() {
@@ -93,7 +112,9 @@ class ReportTrafficActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn mức độ kẹt xe", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
-            val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+            // Encode file ghi âm
+            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
+            val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded)
             onAddNewReportTraffic(mReport)
         }
     }
@@ -117,5 +138,15 @@ class ReportTrafficActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        tvRecord.text = "Thu âm"
+        if (resultCode == 1) {
+            sFileAudioName = data!!.getStringExtra("FileAudioPath")
+            tvRecord.text = "Đã thu âm"
+            TastyToast.makeText(this, sFileAudioName, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+        }
     }
 }
