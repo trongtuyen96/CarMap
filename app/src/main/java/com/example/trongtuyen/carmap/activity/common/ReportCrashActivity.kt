@@ -112,7 +112,7 @@ class ReportCrashActivity : AppCompatActivity() {
         }
 
         btnTakePhoto.setOnClickListener {
-//            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
+            //            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
 //            if (encoded != "") {
 //                TastyToast.makeText(this, encoded, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
 //                FileUtils.decodeAudioFile(encoded, externalCacheDir!!.absolutePath + "/audio_decoded.3gp")
