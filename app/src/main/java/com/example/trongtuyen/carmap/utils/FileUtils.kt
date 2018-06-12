@@ -1,5 +1,7 @@
 package com.example.trongtuyen.carmap.utils
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.util.Base64
 import java.io.ByteArrayOutputStream
@@ -37,8 +39,8 @@ object FileUtils {
     fun decodeAudioFile(base64AudioData: String, filePath: String) {
         val decoded: ByteArray = Base64.decode(base64AudioData, Base64.DEFAULT)
         val fos: FileOutputStream = FileOutputStream(filePath)
-        fos.write(decoded);
-        fos.close();
+        fos.write(decoded)
+        fos.close()
 
         try {
             val mp: MediaPlayer = MediaPlayer()
@@ -48,5 +50,17 @@ object FileUtils {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun encodeImageFile(bitmap: Bitmap): String {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val byte = baos.toByteArray()
+        return Base64.encodeToString(byte, Base64.DEFAULT)
+    }
+
+    fun decodeImageFile(base64ImageData: String): Bitmap {
+        val decoded: ByteArray = Base64.decode(base64ImageData, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decoded, 0, decoded.size)
     }
 }
