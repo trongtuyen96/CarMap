@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.activity.common.CustomCameraActivity
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
@@ -29,6 +30,7 @@ import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
+import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
 import com.example.trongtuyen.carmap.utils.SharePrefs.Companion.mContext
 import com.google.android.gms.common.api.ResolvableApiException
@@ -638,6 +640,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val imvType = viewReportPopup.findViewById<ImageView>(R.id.imvType_marker_report)
             val imvUpVote = viewReportPopup.findViewById<ImageView>(R.id.imvUpVote_marker_report)
             val imvDownVote = viewReportPopup.findViewById<ImageView>(R.id.imvDownVote_marker_report)
+            val imvRecord = viewReportPopup.findViewById<ImageView>(R.id.imRecord_marker_report)
+            val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report)
 
             val dataReport: Report = marker.tag as Report
             if (dataReport.subtype2 == "") {
@@ -753,6 +757,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mPopupWindowReport!!.dismiss()
                 curMarkerReport = null
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
+            imvRecord.setOnClickListener {
+                //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
+                if (dataReport.byteAudioFile != "") {
+                    val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
+                    FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
+                } else {
+                    TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                }
+            }
+            imvImage.setOnClickListener {
+                if (dataReport.byteImageFile != "") {
+                    val intent = Intent(this, CustomCameraActivity::class.java)
+                    intent.putExtra("base64Image", dataReport.byteImageFile)
+                    startActivity(intent)
+                } else {
+                    TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                }
             }
         }
         if (marker.title == "user") {

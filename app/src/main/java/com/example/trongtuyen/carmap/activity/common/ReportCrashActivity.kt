@@ -1,9 +1,12 @@
 package com.example.trongtuyen.carmap.activity.common
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Base64
 import android.view.HapticFeedbackConstants
 import android.widget.*
@@ -13,14 +16,12 @@ import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.*
+import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+
 
 class ReportCrashActivity : AppCompatActivity() {
 
@@ -47,8 +48,12 @@ class ReportCrashActivity : AppCompatActivity() {
 
     @BindView(R.id.tvRecord_report_crash)
     lateinit var tvRecord: TextView
+    @BindView(R.id.tvTakePhoto_report_crash)
+    lateinit var tvTakePhoto: TextView
 
-    private var sFileAudioName: String? = null
+    private var sFileAudioPath: String = ""
+
+    private var sBase64Image: String = ""
 
     private var subType1: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,14 +105,21 @@ class ReportCrashActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val intent = Intent(this, AudioRecordActivity::class.java)
             startActivityForResult(intent, 0)
+//            val intent = Intent(this, CustomCameraActivity::class.java)
+//            intent.putExtra("base64Image", base64Image)
+//            startActivity(intent)
+
         }
 
         btnTakePhoto.setOnClickListener {
-            val encoded = encodeAudioFile(sFileAudioName!!)
-            if (encoded != "") {
-                TastyToast.makeText(this, encoded, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
-                decodeAudioFile(encoded, externalCacheDir!!.absolutePath + "/audio_decoded.3gp")
-            }
+            //            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
+//            if (encoded != "") {
+//                TastyToast.makeText(this, encoded, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+//                FileUtils.decodeAudioFile(encoded, externalCacheDir!!.absolutePath + "/audio_decoded.3gp")
+//            }
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, 1)
         }
     }
 
@@ -120,7 +132,9 @@ class ReportCrashActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-            val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+            // Encode file ghi âm
+            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+            val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
             onAddNewReportCrash(mReport)
         }
     }
@@ -146,55 +160,27 @@ class ReportCrashActivity : AppCompatActivity() {
         })
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        tvRecord.text = "Thu âm"
-        if (resultCode == 1) {
-            sFileAudioName = data?.getStringExtra("FileAudioPath")
-            tvRecord.text = "Đã thu âm"
-            TastyToast.makeText(this, sFileAudioName.toString(), TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
-        }
-    }
-
-    private fun encodeAudioFile(path: String): String {
-        val audioBytes: ByteArray
-        try {
-            // Just to check file size.. Its is correct i-e; Not Zero
-            val audioFile = File(path)
-            val fileSize = audioFile.length()
-
-            val baos = ByteArrayOutputStream()
-            val fis = FileInputStream(File(path))
-            val buf = ByteArray(1024)
-            var n: Int = fis.read(buf)
-            while (-1 != n) {
-                baos.write(buf, 0, n)
-                n = fis.read(buf)
+        when (requestCode) {
+            0 -> {
+                tvRecord.text = "Thu âm"
+                if (resultCode == 1) {
+                    sFileAudioPath = data!!.getStringExtra("FileAudioPath")
+                    tvRecord.text = "Đã thu âm"
+                    TastyToast.makeText(this, sFileAudioPath, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+                }
             }
-            audioBytes = baos.toByteArray()
-
-            // Here goes the Base64 string
-            val _audioBase64 = Base64.encodeToString(audioBytes, Base64.DEFAULT)
-            return _audioBase64
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return ""
-        }
-    }
-
-    private fun decodeAudioFile(base64AudioData: String, filePath: String) {
-        val decoded: ByteArray = Base64.decode(base64AudioData, Base64.DEFAULT)
-        val fos: FileOutputStream = FileOutputStream(filePath)
-        fos.write(decoded);
-        fos.close();
-
-        try {
-            val mp: MediaPlayer = MediaPlayer()
-            mp.setDataSource(filePath)
-            mp.prepare()
-            mp.start()
-        } catch (e: Exception) {
-            e.printStackTrace()
+            1 -> {
+                tvTakePhoto.text = "Đã chụp ảnh"
+                val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+                val matrix = Matrix()
+                matrix.postRotate(90f)
+                val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                sBase64Image = FileUtils.encodeImageFile(newBitmap)
+                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+            }
         }
     }
 }

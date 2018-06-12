@@ -1,7 +1,11 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -18,6 +22,7 @@ import android.support.design.widget.BottomSheetDialog
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.LinearLayout
+import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 
 
@@ -55,8 +60,22 @@ class ReportHazardActivity : AppCompatActivity() {
     @BindView(R.id.btnDismiss_report_hazard)
     lateinit var btnDismiss: Button
 
+    @BindView(R.id.layout_record_report_hazard)
+    lateinit var btnRecord: LinearLayout
+    @BindView(R.id.layout_take_photo_report_hazard)
+    lateinit var btnTakePhoto: LinearLayout
+
+    @BindView(R.id.tvRecord_report_hazard)
+    lateinit var tvRecord: TextView
+    @BindView(R.id.tvTakePhoto_report_hazard)
+    lateinit var tvTakePhoto: TextView
+
     private var subType1: String = ""
     private var subType2: String = ""
+
+    private var sFileAudioPath: String = ""
+
+    private var sBase64Image: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,6 +158,18 @@ class ReportHazardActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onClose()
         }
+
+        btnRecord.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            val intent = Intent(this, AudioRecordActivity::class.java)
+            startActivityForResult(intent, 0)
+        }
+
+        btnTakePhoto.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, 1)
+        }
     }
 
     private fun onClose() {
@@ -149,11 +180,13 @@ class ReportHazardActivity : AppCompatActivity() {
         if (subType1 == "" || subType2 == "") {
             TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
+            // Encode file ghi âm
+            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
             when (subType1) {
                 "on_road" -> {
                     if (subType2 == "object" || subType2 == "construction" || subType2 == "broken_light" || subType2 == "pothole" || subType2 == "vehicle_stop" || subType2 == "road_kill") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                         onAddNewReportHazard(mReport)
                     } else {
                         TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
@@ -162,7 +195,7 @@ class ReportHazardActivity : AppCompatActivity() {
                 "shoulder" -> {
                     if (subType2 == "vehicle_stop" || subType2 == "animal" || subType2 == "missing_sign") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                         onAddNewReportHazard(mReport)
                     } else {
                         TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
@@ -171,7 +204,7 @@ class ReportHazardActivity : AppCompatActivity() {
                 "weather" -> {
                     if (subType2 == "fog" || subType2 == "hail" || subType2 == "flood" || subType2 == "ice") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false)
+                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                         onAddNewReportHazard(mReport)
                     } else {
                         TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
@@ -432,4 +465,26 @@ class ReportHazardActivity : AppCompatActivity() {
         bottomSheetDialog.show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            0 -> {
+                tvRecord.text = "Thu âm"
+                if (resultCode == 1) {
+                    sFileAudioPath = data!!.getStringExtra("FileAudioPath")
+                    tvRecord.text = "Đã thu âm"
+                    TastyToast.makeText(this, sFileAudioPath, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+                }
+            }
+            1 -> {
+                tvTakePhoto.text = "Đã chụp ảnh"
+                val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+                val matrix = Matrix()
+                matrix.postRotate(90f)
+                val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                sBase64Image = FileUtils.encodeImageFile(newBitmap)
+                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+            }
+        }
+    }
 }

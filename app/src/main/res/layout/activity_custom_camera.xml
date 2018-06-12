@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.common.CustomCameraActivity">
+
+    <ImageView
+        android:id="@+id/imCamera_custom_camera"
+        android:layout_width="360dp"
+        android:layout_height="480dp"
+        android:layout_gravity="center" />
+
+    <Button
+        android:id="@+id/imBack_custom_camera"
+        android:layout_width="88dp"
+        android:layout_height="44dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_btn_orange"
+        android:text="TRỞ LẠI"
+        android:textColor="@color/background_front" />
+</LinearLayout>
