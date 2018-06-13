@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout_activity_report_hazard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".activity.common.ReportHazardActivity">
+    tools:context=".activity.common.ReportHazardActivity"
+    android:id="@+id/over_layout_report_hazard">
 
 
     <ImageView
@@ -27,7 +27,8 @@
         android:background="@drawable/bg_btn_report_hazard"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/ic_report_hazard" />
+        app:srcCompat="@drawable/ic_report_hazard"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/tvTitle_report_hazard"

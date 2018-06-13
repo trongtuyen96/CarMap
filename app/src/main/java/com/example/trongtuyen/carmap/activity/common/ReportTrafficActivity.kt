@@ -53,6 +53,9 @@ class ReportTrafficActivity : AppCompatActivity() {
     @BindView(R.id.tvTakePhoto_report_traffic)
     lateinit var tvTakePhoto: TextView
 
+    @BindView(R.id.over_layout_report_traffic)
+    lateinit var layoutReport: RelativeLayout
+
     private var subType1: String = ""
 
     private var sFileAudioPath: String = ""
@@ -115,6 +118,11 @@ class ReportTrafficActivity : AppCompatActivity() {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, 1)
         }
+
+        layoutReport.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            finish()
+        }
     }
 
     private fun onClose() {
@@ -167,7 +175,7 @@ class ReportTrafficActivity : AppCompatActivity() {
             }
             1 -> {
                 tvTakePhoto.text = "Chụp ảnh"
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     tvTakePhoto.text = "Đã chụp ảnh"
                     val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
                     val matrix = Matrix()

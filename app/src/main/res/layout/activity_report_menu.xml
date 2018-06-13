@@ -53,7 +53,8 @@
         android:background="@drawable/bg_btn_report_traffic"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/ic_report_traffic" />
+        app:srcCompat="@drawable/ic_report_traffic"
+        android:padding="10dp"/>
 
     <ImageView
         android:id="@+id/imvReportCrash_activity_report"
@@ -65,7 +66,8 @@
         android:background="@drawable/bg_btn_report_crash"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/ic_report_accident" />
+        app:srcCompat="@drawable/ic_report_accident"
+        android:padding="10dp"/>
 
     <ImageView
         android:id="@+id/imvReportHazard_activity_report"
@@ -77,7 +79,8 @@
         android:background="@drawable/bg_btn_report_hazard"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/ic_report_hazard" />
+        app:srcCompat="@drawable/ic_report_hazard"
+        android:padding="10dp"/>
 
     <ImageView
         android:id="@+id/imvReportAssistance_activity_report"
