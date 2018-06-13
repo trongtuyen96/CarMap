@@ -663,12 +663,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype1) {
                         "moderate" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_moderate)
+                            tvType.text = "Kẹt xe vừa"
                         }
                         "heavy" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_heavy)
+                            tvType.text = "Kẹt xe nặng"
                         }
                         "standstill" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
+                            tvType.text = "Kẹt cứng"
                         }
                     }
                 }
@@ -677,12 +680,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype1) {
                         "minor" -> {
                             imvType.setImageResource(R.drawable.ic_accident_minor)
+                            tvType.text = "Tai nạn nhỏ"
                         }
                         "major" -> {
                             imvType.setImageResource(R.drawable.ic_accident_major)
+                            tvType.text = "Tai nạn nghiêm trọng"
                         }
                         "other_side" -> {
                             imvType.setImageResource(R.drawable.ic_accident_other_side)
+                            tvType.text = "Tai nạn bên đường"
                         }
                     }
                 }
@@ -691,39 +697,51 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype2) {
                         "object" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_object)
+                            tvType.text = "Vật cản"
                         }
                         "construction" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_construction)
+                            tvType.text = "Công trình"
                         }
                         "broken_light" -> {
                             imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                            tvType.text = "Đèn giao thông hư"
                         }
                         "pothole" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
+                            tvType.text = "Hố voi"
                         }
                         "vehicle_stop" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_stopped)
+                            tvType.text = "Xe đậu"
                         }
                         "road_kill" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
+                            tvType.text = "Động vật chết"
                         }
                         "animal" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_animals)
+                            tvType.text = "Động vật qua đường"
                         }
                         "missing_sign" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
+                            tvType.text = "Thiếu biển báo"
                         }
                         "fog" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_fog)
+                            tvType.text = "Sương mù"
                         }
                         "hail" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_hail)
+                            tvType.text = "Mưa đá"
                         }
                         "flood" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_flood)
+                            tvType.text = "Lũ lụt"
                         }
                         "ice" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_ice)
+                            tvType.text = "Đá trơn"
                         }
                     }
                 }
@@ -732,15 +750,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype1) {
                         "no_gas" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
+                            tvType.text = "Hết xăng"
                         }
                         "flat_tire" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_flat_tire)
+                            tvType.text = "Xẹp lốp xe"
                         }
                         "no_battery" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_no_battery)
+                            tvType.text = "Hết bình"
                         }
                         "medical_care" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_medical_care)
+                            tvType.text = "Chăm sóc y tế"
                         }
                     }
                 }
