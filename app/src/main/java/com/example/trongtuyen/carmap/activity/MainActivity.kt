@@ -644,11 +644,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report)
 
             val dataReport: Report = marker.tag as Report
-            if (dataReport.subtype2 == "") {
-                tvType.text = dataReport.subtype1
-            } else {
-                tvType.text = dataReport.subtype2
-            }
+//            if (dataReport.subtype2 == "") {
+//                tvType.text = dataReport.subtype1
+//            } else {
+//                tvType.text = dataReport.subtype2
+//            }
 
             // Làm tròn số double
             val decimalFormat = DecimalFormat("#")
@@ -863,8 +863,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         // Báo có công an
                         btnConfirm.visibility = View.VISIBLE
                         mType = 3
-                        imvType.setImageResource(R.drawable.ic_report_police_44dp)
-                        tvType.text = "CÓ CẢNH SÁT GẦN ĐÓ"
+//                        imvType.setImageResource(R.drawable.ic_report_police_44dp)
+//                        tvType.text = "CÓ CẢNH SÁT GẦN ĐÓ"
+                        imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
+                        tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
                     }
                     if (fingers == 4 && gestureDistance >= 120) {
                         // Báo nên quay đầu
@@ -1219,6 +1221,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         btnHello.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CHÀO LẠI",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewHelloPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1303,6 +1306,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnStrongLightPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1361,6 +1365,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnPolicePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1419,6 +1424,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnSlowDownPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1477,6 +1483,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnTurnAroundPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
