@@ -1207,8 +1207,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 val tvEmail = viewHelloPopup.findViewById<TextView>(R.id.tvEmail_hello_dialog)
                 val btnHello = viewHelloPopup.findViewById<Button>(R.id.btnHello_hello_dialog)
+                val imImage = viewHelloPopup.findViewById<ImageView>(R.id.imImage_hello_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
@@ -1287,8 +1291,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 val tvEmail = viewWarnStrongLightPopup.findViewById<TextView>(R.id.tvEmail_warn_strong_light_dialog)
                 val btnThank = viewWarnStrongLightPopup.findViewById<Button>(R.id.btnThank_warn_strong_light_dialog)
+                val imImage = viewWarnStrongLightPopup.findViewById<ImageView>(R.id.imImage_warn_strong_light_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
@@ -1341,8 +1349,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_police_dialog)
                 val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_police_dialog)
+                val imImage = viewWarnPolicePopup.findViewById<ImageView>(R.id.imImage_warn_police_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
@@ -1389,14 +1401,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             if (message == "slow down") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnSlowDownPopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_slow_down_dialog)
-                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_slow_down_dialog)
+                val tvEmail = viewWarnSlowDownPopup.findViewById<TextView>(R.id.tvEmail_warn_slow_down_dialog)
+                val btnThank = viewWarnSlowDownPopup.findViewById<Button>(R.id.btnThank_warn_slow_down_dialog)
+                val imImage = viewWarnSlowDownPopup.findViewById<ImageView>(R.id.imImage_warn_slow_down_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
@@ -1443,14 +1459,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             if (message == "turn around") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnTurnAroundPopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_turn_around_dialog)
-                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_turn_around_dialog)
+                val tvEmail = viewWarnTurnAroundPopup.findViewById<TextView>(R.id.tvEmail_warn_turn_around_dialog)
+                val btnThank = viewWarnTurnAroundPopup.findViewById<Button>(R.id.btnThank_warn_turn_around_dialog)
+                val imImage = viewWarnTurnAroundPopup.findViewById<ImageView>(R.id.imImage_warn_turn_around_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
@@ -1497,13 +1517,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             if (message == "thank") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnThankPopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
+                val tvEmail = viewWarnThankPopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
+                val imImage = viewWarnThankPopup.findViewById<ImageView>(R.id.imImage_warn_thank_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {

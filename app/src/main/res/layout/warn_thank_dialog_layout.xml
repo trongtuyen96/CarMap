@@ -12,7 +12,8 @@
         android:src="@drawable/ic_like"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:padding="2dp"/>
+        android:padding="2dp"
+        android:id="@+id/imImage_warn_thank_dialog"/>
 
     <TextView
         android:id="@+id/tvEmail_warn_thank_dialog"
