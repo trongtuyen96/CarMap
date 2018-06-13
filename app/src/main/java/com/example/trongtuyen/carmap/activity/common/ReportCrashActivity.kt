@@ -1,5 +1,6 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -166,20 +167,23 @@ class ReportCrashActivity : AppCompatActivity() {
         when (requestCode) {
             0 -> {
                 tvRecord.text = "Thu âm"
-                if (resultCode == 1) {
+                if (resultCode == Activity.RESULT_OK) {
                     sFileAudioPath = data!!.getStringExtra("FileAudioPath")
                     tvRecord.text = "Đã thu âm"
 //                    TastyToast.makeText(this, sFileAudioPath, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
                 }
             }
             1 -> {
-                tvTakePhoto.text = "Đã chụp ảnh"
-                val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
-                val matrix = Matrix()
-                matrix.postRotate(90f)
-                val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                sBase64Image = FileUtils.encodeImageFile(newBitmap)
+                tvTakePhoto.text = "Chụp ảnh"
+                if(resultCode == Activity.RESULT_OK) {
+                    tvTakePhoto.text = "Đã chụp ảnh"
+                    val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+                    val matrix = Matrix()
+                    matrix.postRotate(90f)
+                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
 //                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+                }
             }
         }
     }
