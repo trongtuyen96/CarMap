@@ -1,6 +1,7 @@
 package com.example.trongtuyen.carmap.activity.common
 
 import android.Manifest
+import android.app.Activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.example.trongtuyen.carmap.R
@@ -155,7 +156,7 @@ class AudioRecordActivity : AppCompatActivity() {
             if (bRecorded) {
 //                AppController.fileAudioName = mFileName!!
                 intent.putExtra("FileAudioPath", mFileName)
-                setResult(1, intent)
+                setResult(Activity.RESULT_OK, intent)
                 finish()
             } else {
                 TastyToast.makeText(this, "Bạn cần ghi âm trước khi chọn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
