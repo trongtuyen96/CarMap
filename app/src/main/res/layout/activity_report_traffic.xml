@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".activity.common.ReportTrafficActivity">
+    tools:context=".activity.common.ReportTrafficActivity"
+    android:id="@+id/over_layout_report_traffic">
 
-    <!-- old value #8d000000 -->
 
     <ImageView
         android:id="@+id/btnClose_report_traffic"
@@ -27,7 +27,8 @@
         android:background="@drawable/bg_btn_report_traffic"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/ic_report_traffic" />
+        app:srcCompat="@drawable/ic_report_traffic"
+        android:padding="10dp" />
 
     <TextView
         android:id="@+id/textView5"

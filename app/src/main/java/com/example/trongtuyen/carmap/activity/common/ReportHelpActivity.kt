@@ -41,6 +41,9 @@ class ReportHelpActivity : AppCompatActivity() {
     @BindView(R.id.btnDismiss_report_help)
     lateinit var btnDismiss: Button
 
+    @BindView(R.id.over_layout_report_help)
+    lateinit var layoutReport: RelativeLayout
+
     private var subType1: String = ""
     private var subType2: String = ""
 
@@ -80,6 +83,11 @@ class ReportHelpActivity : AppCompatActivity() {
         btnDismiss.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onClose()
+        }
+
+        layoutReport.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            finish()
         }
     }
 

@@ -11,7 +11,8 @@
         android:background="@drawable/bg_btn_report_crash"
         android:src="@drawable/ic_headlights_on"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:id="@+id/imImage_warn_strong_light_dialog"/>
 
     <TextView
         android:id="@+id/tvEmail_warn_strong_light_dialog"

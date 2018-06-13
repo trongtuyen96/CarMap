@@ -28,4 +28,5 @@
     <color name="bg_sms">#F7630C</color>
     <color name="bg_messenger">#0084ff</color>
     <color name="bg_trans_green">#b065c630</color>
+    <color name="bg_report_menu">#efeded</color>
 </resources>

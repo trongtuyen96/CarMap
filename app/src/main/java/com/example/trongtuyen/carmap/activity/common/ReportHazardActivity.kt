@@ -71,6 +71,9 @@ class ReportHazardActivity : AppCompatActivity() {
     @BindView(R.id.tvTakePhoto_report_hazard)
     lateinit var tvTakePhoto: TextView
 
+    @BindView(R.id.over_layout_report_hazard)
+    lateinit var layoutReport: RelativeLayout
+
     private var subType1: String = ""
     private var subType2: String = ""
 
@@ -170,6 +173,11 @@ class ReportHazardActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, 1)
+        }
+
+        layoutReport.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            finish()
         }
     }
 

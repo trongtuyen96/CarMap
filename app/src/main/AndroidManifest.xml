@@ -43,19 +43,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.common.SignInActivity"
             android:theme="@style/AppTheme.FullScreen" />
+
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.FullScreen" />
+
         <activity android:name=".activity.common.SignUpActivity" />
+
         <activity
             android:name=".activity.common.ReportMenuActivity"
             android:theme="@style/AppTheme.FullScreen" />
+
         <activity
             android:name=".activity.common.ReportTrafficActivity"
             android:theme="@style/AppTheme.FullScreen" />
+
         <activity android:name=".activity.common.ReportCrashActivity" />
         <activity android:name=".activity.common.ReportHazardActivity" />
         <activity android:name=".activity.common.ReportHelpActivity" />

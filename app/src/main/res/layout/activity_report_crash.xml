@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context=".activity.common.ReportCrashActivity">
+    tools:context=".activity.common.ReportCrashActivity"
+    android:id="@+id/over_layout_report_crash">
 
     <ImageView
         android:id="@+id/btnClose_report_crash"
@@ -25,7 +26,8 @@
         android:background="@drawable/bg_btn_report_crash"
         android:clickable="true"
         android:focusable="true"
-        app:srcCompat="@drawable/ic_report_accident" />
+        app:srcCompat="@drawable/ic_report_accident"
+        android:padding="10dp"/>
 
     <TextView
         android:id="@+id/textView5"

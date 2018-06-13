@@ -644,11 +644,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report)
 
             val dataReport: Report = marker.tag as Report
-            if (dataReport.subtype2 == "") {
-                tvType.text = dataReport.subtype1
-            } else {
-                tvType.text = dataReport.subtype2
-            }
+//            if (dataReport.subtype2 == "") {
+//                tvType.text = dataReport.subtype1
+//            } else {
+//                tvType.text = dataReport.subtype2
+//            }
 
             // Làm tròn số double
             val decimalFormat = DecimalFormat("#")
@@ -663,12 +663,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype1) {
                         "moderate" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_moderate)
+                            tvType.text = "Kẹt xe vừa"
                         }
                         "heavy" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_heavy)
+                            tvType.text = "Kẹt xe nặng"
                         }
                         "standstill" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
+                            tvType.text = "Kẹt cứng"
                         }
                     }
                 }
@@ -677,12 +680,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype1) {
                         "minor" -> {
                             imvType.setImageResource(R.drawable.ic_accident_minor)
+                            tvType.text = "Tai nạn nhỏ"
                         }
                         "major" -> {
                             imvType.setImageResource(R.drawable.ic_accident_major)
+                            tvType.text = "Tai nạn nghiêm trọng"
                         }
                         "other_side" -> {
                             imvType.setImageResource(R.drawable.ic_accident_other_side)
+                            tvType.text = "Tai nạn bên đường"
                         }
                     }
                 }
@@ -691,39 +697,51 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype2) {
                         "object" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_object)
+                            tvType.text = "Vật cản"
                         }
                         "construction" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_construction)
+                            tvType.text = "Công trình"
                         }
                         "broken_light" -> {
                             imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                            tvType.text = "Đèn giao thông hư"
                         }
                         "pothole" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
+                            tvType.text = "Hố voi"
                         }
                         "vehicle_stop" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_stopped)
+                            tvType.text = "Xe đậu"
                         }
                         "road_kill" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
+                            tvType.text = "Động vật chết"
                         }
                         "animal" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_animals)
+                            tvType.text = "Động vật qua đường"
                         }
                         "missing_sign" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
+                            tvType.text = "Thiếu biển báo"
                         }
                         "fog" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_fog)
+                            tvType.text = "Sương mù"
                         }
                         "hail" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_hail)
+                            tvType.text = "Mưa đá"
                         }
                         "flood" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_flood)
+                            tvType.text = "Lũ lụt"
                         }
                         "ice" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_ice)
+                            tvType.text = "Đá trơn"
                         }
                     }
                 }
@@ -732,15 +750,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     when (dataReport.subtype1) {
                         "no_gas" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
+                            tvType.text = "Hết xăng"
                         }
                         "flat_tire" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_flat_tire)
+                            tvType.text = "Xẹp lốp xe"
                         }
                         "no_battery" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_no_battery)
+                            tvType.text = "Hết bình"
                         }
                         "medical_care" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_medical_care)
+                            tvType.text = "Chăm sóc y tế"
                         }
                     }
                 }
@@ -863,8 +885,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         // Báo có công an
                         btnConfirm.visibility = View.VISIBLE
                         mType = 3
-                        imvType.setImageResource(R.drawable.ic_report_police_44dp)
-                        tvType.text = "CÓ CẢNH SÁT GẦN ĐÓ"
+//                        imvType.setImageResource(R.drawable.ic_report_police_44dp)
+//                        tvType.text = "CÓ CẢNH SÁT GẦN ĐÓ"
+                        imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
+                        tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
                     }
                     if (fingers == 4 && gestureDistance >= 120) {
                         // Báo nên quay đầu
@@ -1207,14 +1231,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 val tvEmail = viewHelloPopup.findViewById<TextView>(R.id.tvEmail_hello_dialog)
                 val btnHello = viewHelloPopup.findViewById<Button>(R.id.btnHello_hello_dialog)
+                val imImage = viewHelloPopup.findViewById<ImageView>(R.id.imImage_hello_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
                         btnHello.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CHÀO LẠI",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewHelloPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1287,14 +1316,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 val tvEmail = viewWarnStrongLightPopup.findViewById<TextView>(R.id.tvEmail_warn_strong_light_dialog)
                 val btnThank = viewWarnStrongLightPopup.findViewById<Button>(R.id.btnThank_warn_strong_light_dialog)
+                val imImage = viewWarnStrongLightPopup.findViewById<ImageView>(R.id.imImage_warn_strong_light_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnStrongLightPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1341,14 +1375,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_police_dialog)
                 val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_police_dialog)
+                val imImage = viewWarnPolicePopup.findViewById<ImageView>(R.id.imImage_warn_police_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnPolicePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1389,20 +1428,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             if (message == "slow down") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnSlowDownPopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_slow_down_dialog)
-                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_slow_down_dialog)
+                val tvEmail = viewWarnSlowDownPopup.findViewById<TextView>(R.id.tvEmail_warn_slow_down_dialog)
+                val btnThank = viewWarnSlowDownPopup.findViewById<Button>(R.id.btnThank_warn_slow_down_dialog)
+                val imImage = viewWarnSlowDownPopup.findViewById<ImageView>(R.id.imImage_warn_slow_down_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnSlowDownPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1443,20 +1487,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             if (message == "turn around") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnTurnAroundPopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_turn_around_dialog)
-                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_turn_around_dialog)
+                val tvEmail = viewWarnTurnAroundPopup.findViewById<TextView>(R.id.tvEmail_warn_turn_around_dialog)
+                val btnThank = viewWarnTurnAroundPopup.findViewById<Button>(R.id.btnThank_warn_turn_around_dialog)
+                val imImage = viewWarnTurnAroundPopup.findViewById<ImageView>(R.id.imImage_warn_turn_around_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
+                        viewWarnTurnAroundPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1497,13 +1546,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             if (message == "thank") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnThankPopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
+                val tvEmail = viewWarnThankPopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
+                val imImage = viewWarnThankPopup.findViewById<ImageView>(R.id.imImage_warn_thank_dialog)
 
                 tvEmail.text = email
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
 
                 object : CountDownTimer(3000, 500) {
                     override fun onTick(millisUntilFinished: Long) {
