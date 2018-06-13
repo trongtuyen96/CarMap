@@ -2,12 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/report_menu_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.common.ReportMenuActivity"
-    android:background="#ffffff"
-    android:id="@+id/report_menu_layout">
-
+    android:background="@color/bg_report_menu"
+    tools:context=".activity.common.ReportMenuActivity">
 
     <TextView
         android:id="@+id/textView10"
