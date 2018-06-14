@@ -1,136 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:plainpie="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.common.AudioRecordActivity">
-
-
-    <!--<az.plainpie.PieView-->
-    <!--android:id="@+id/pieView_audio_record"-->
-    <!--android:layout_width="200dp"-->
-    <!--android:layout_height="200dp"-->
-    <!--android:layout_alignParentTop="true"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:layout_marginTop="100dp"-->
-    <!--plainpie:inner_pie_padding="30"-->
-    <!--plainpie:inner_text_visibility="true"-->
-    <!--plainpie:percentage="75"-->
-    <!--plainpie:percentage_size="70" />-->
-
-
-    <ProgressBar
-        android:id="@+id/progressBar_audio_record"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="67dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/custom_progress_bar"
-        android:secondaryProgress="0" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/progressBar_audio_record"
-        android:background="@color/textColorSecondary" />
-
-    <TextView
-        android:id="@+id/txtProgress_audio_record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="152dp"
-        android:text="07"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/colorPrimaryLight"
-        android:textSize="60sp"
-        android:textStyle="bold" />
+    tools:context=".activity.common.ReportOtherActivity"
+    android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/btnClose_audio_record"
+        android:id="@+id/btnClose_report_other"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
+        android:layout_gravity="end"
         android:src="@drawable/ic_close" />
 
     <LinearLayout
-        android:id="@+id/layoutRecord_audio_record"
-        android:layout_width="150dp"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="200dp"
-        android:layout_marginStart="20dp"
-        android:background="@drawable/bg_btn_send"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="222dp"
+        android:orientation="vertical"
+        android:id="@+id/layoutTakePhoto_report_other">
 
         <ImageView
-            android:id="@+id/imRecord_audio_record"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_record_voice_over_white_48dp" />
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_carpool_constraction_illu"
+            android:id="@+id/imTakePhoto_report_other"/>
 
         <TextView
-            android:id="@+id/tvRecord_audio_record"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="BẮT ĐẦU"
+            android:text="CHỤP ẢNH TÀI XẾ VI PHẠM"
             android:textAlignment="center"
-            android:textColor="@color/background_front"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imVerified_report_other"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_verified"
+            android:layout_marginTop="4dp"/>
+
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/layoutTakePhoto_report_other"
+        android:background="@color/textColorSecondary" />
+
     <LinearLayout
-        android:id="@+id/layoutPlay_audio_record"
-        android:layout_width="150dp"
-        android:layout_height="60dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/layoutRecord_audio_record"
-        android:layout_marginEnd="14dp"
-        android:background="@drawable/bg_btn_green"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="222dp"
+        android:orientation="vertical"
+        android:id="@+id/layoutLicensePlate_report_other">
 
         <ImageView
-            android:id="@+id/imPlay_audio_record"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/ic_play_arrow_white_48dp" />
-
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_license_plate"
+            android:padding="4dp"/>
         <TextView
-            android:id="@+id/tvPlay_audio_record"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="NGHE"
+            android:text="NHẬP BIỂN SỐ XE"
             android:textAlignment="center"
-            android:textColor="@color/background_front"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/txtPlate_report_other"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="Chụp hình trước để sử dụng ALPR"
+            android:inputType="textCapCharacters"
+            android:textAlignment="center"/>
+
     </LinearLayout>
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_above="@+id/layoutBottom_audio_report"
+        android:layout_above="@+id/layoutBottom_report_other"
         android:background="@color/textColorSecondary" />
 
     <LinearLayout
-        android:id="@+id/layoutBottom_audio_report"
+        android:id="@+id/layoutBottom_report_other"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_alignParentBottom="true"
@@ -139,7 +100,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnDismiss_audio_record"
+            android:id="@+id/btnDismiss_report_other"
             android:layout_width="120dp"
             android:layout_height="70dp"
             android:layout_marginEnd="10dp"
@@ -152,7 +113,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btnSend_audio_record"
+            android:id="@+id/btnSend_report_other"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginEnd="10dp"
@@ -166,16 +127,4 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvPath_audio_record"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layoutPlay_audio_record"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Chưa có bản ghi âm nào"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="italic" />
-
-</RelativeLayout>
+</LinearLayout>

@@ -90,12 +90,17 @@ class ReportMenuActivity : AppCompatActivity() {
             val bottomSheetDialog = BottomSheetDialog(this)
             bottomSheetDialog.setContentView(customBottomSheetView)
 
-            btnCarelessDriver.setOnClickListener {
+            bottomSheetDialog.setCanceledOnTouchOutside(true)
 
+            btnCarelessDriver.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                onReportOtherCarelessDriver()
             }
             btnPiggy.setOnClickListener {
-                
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                onReportOtherPiggy()
             }
+            bottomSheetDialog.show()
         }
 
     }
@@ -121,6 +126,16 @@ class ReportMenuActivity : AppCompatActivity() {
 
     private fun onReportAssist() {
         val intent = Intent(this, ReportHelpActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onReportOtherCarelessDriver() {
+        val intent = Intent(this, ReportOtherActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onReportOtherPiggy() {
+        val intent = Intent(this, ReportOtherActivity::class.java)
         startActivity(intent)
     }
 }
