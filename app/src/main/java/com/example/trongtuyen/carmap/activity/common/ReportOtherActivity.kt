@@ -1,22 +1,30 @@
 package com.example.trongtuyen.carmap.activity.common
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import org.openalpr.OpenALPR
+import org.openalpr.model.Results
+import org.openalpr.model.ResultsError
 import java.io.File
 import java.io.IOException
 
@@ -45,6 +53,8 @@ class ReportOtherActivity : AppCompatActivity() {
 
     private var mCurrentPhotoPath: String = ""
 
+    private var ANDROID_DATA_DIR: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_other)
@@ -54,10 +64,14 @@ class ReportOtherActivity : AppCompatActivity() {
     }
 
     private fun initComponents() {
+
+        ANDROID_DATA_DIR = this.applicationInfo.dataDir
+
         imVerified.visibility = View.INVISIBLE
 
         btnTakePhoto.setOnClickListener {
 
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             // Xoá ảnh cũ
             if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
@@ -85,9 +99,12 @@ class ReportOtherActivity : AppCompatActivity() {
             }
         }
         btnLicensePlate.setOnClickListener {
-
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onALPR()
         }
         btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
             // Xoá ảnh cũ
             if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
@@ -96,6 +113,8 @@ class ReportOtherActivity : AppCompatActivity() {
             finish()
         }
         btnSend.setOnClickListener() {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
             // Xoá ảnh cũ
             if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
@@ -103,6 +122,8 @@ class ReportOtherActivity : AppCompatActivity() {
             }
         }
         imVerified.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
             val intent = Intent(this, CustomCameraActivity::class.java)
             intent.putExtra("imageUri", photoURI)
             startActivity(intent)
@@ -148,5 +169,48 @@ class ReportOtherActivity : AppCompatActivity() {
 //        // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.absolutePath
         return image
+    }
+
+    private fun onALPR(){
+        val progress = ProgressDialog.show(this, "Loading", "Parsing result...", true)
+        val openAlprConfFile = ANDROID_DATA_DIR + File.separatorChar + "runtime_data" + File.separatorChar + "openalpr.conf"
+        val options = BitmapFactory.Options()
+        options.inSampleSize = 10
+
+//                    resultTextView.setText("Processing")
+
+        AsyncTask.execute {
+            val result = OpenALPR.Factory.create(this, ANDROID_DATA_DIR).recognizeWithCountryRegionNConfig("eu", "", mCurrentPhotoPath, openAlprConfFile, 10)
+
+            Log.d("OPEN ALPR", result)
+
+            try {
+                val results = Gson().fromJson(result, Results::class.java)
+                runOnUiThread {
+                    if (results == null || results.results == null || results.results.size == 0) {
+                        Toast.makeText(this, "It was not possible to detect the licence plate.", Toast.LENGTH_LONG).show()
+//                                    resultTextView.setText("It was not possible to detect the licence plate.")
+                    } else {
+                        Toast.makeText(this, "Plate: " + results.results[0].plate
+                                // Trim confidence to two decimal places
+                                + " Confidence: " + String.format("%.2f", results.results[0].confidence) + "%"
+                                // Convert processing time to seconds and trim to two decimal places
+                                + " Processing time: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " seconds", Toast.LENGTH_LONG).show()
+
+                        txtPlate.setText(results.results[0].plate.toString(), TextView.BufferType.EDITABLE)
+                    }
+                }
+
+            } catch (exception: JsonSyntaxException) {
+                val resultsError = Gson().fromJson(result, ResultsError::class.java)
+
+                runOnUiThread {
+                    //                                resultTextView.setText(resultsError.msg)
+                    Toast.makeText(this, resultsError.msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            progress.dismiss()
+        }
     }
 }
