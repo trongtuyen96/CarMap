@@ -17,7 +17,6 @@ import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.utils.FileUtils
 import java.io.File
 import java.io.IOException
 
@@ -44,7 +43,7 @@ class ReportOtherActivity : AppCompatActivity() {
     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
     private lateinit var photoURI: Uri
 
-    private var mCurrentPhotoPath : String = ""
+    private var mCurrentPhotoPath: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +59,7 @@ class ReportOtherActivity : AppCompatActivity() {
         btnTakePhoto.setOnClickListener {
 
             // Xoá ảnh cũ
-            if ( mCurrentPhotoPath != "") {
+            if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
                 oldFile.delete()
             }
@@ -90,7 +89,7 @@ class ReportOtherActivity : AppCompatActivity() {
         }
         btnDismiss.setOnClickListener {
             // Xoá ảnh cũ
-            if ( mCurrentPhotoPath != "") {
+            if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
                 oldFile.delete()
             }
@@ -98,10 +97,15 @@ class ReportOtherActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener() {
             // Xoá ảnh cũ
-            if ( mCurrentPhotoPath != "") {
+            if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
                 oldFile.delete()
             }
+        }
+        imVerified.setOnClickListener {
+            val intent = Intent(this, CustomCameraActivity::class.java)
+            intent.putExtra("imageUri", photoURI)
+            startActivity(intent)
         }
     }
 
@@ -113,16 +117,15 @@ class ReportOtherActivity : AppCompatActivity() {
                     imVerified.visibility = View.VISIBLE
 
                     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
-                    val imageStream = contentResolver.openInputStream(photoURI)
-                    val bitmap = BitmapFactory.decodeStream(imageStream)
-                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
-                    val matrix = Matrix()
-                    matrix.postRotate(90f)
-                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
-
-                    imTakePhoto.setImageBitmap(newBitmap)
-//                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+//                    val imageStream = contentResolver.openInputStream(photoURI)
+//                    val bitmap = BitmapFactory.decodeStream(imageStream)
+//                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
+//                    val matrix = Matrix()
+//                    matrix.postRotate(90f)
+//                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
+//
+//                    imTakePhoto.setImageBitmap(newBitmap)
                 }
             }
         }
