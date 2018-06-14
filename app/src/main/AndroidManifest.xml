@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.trongtuyen.carmap">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,7 +42,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths">
+            </meta-data>
         </provider>
 
         <activity
@@ -71,7 +73,9 @@
         <activity android:name=".activity.common.ReportHelpActivity" />
         <activity android:name=".activity.common.AudioRecordActivity" />
         <activity android:name=".activity.common.CustomCameraActivity" />
-        <activity android:name=".activity.common.ReportOtherActivity"></activity>
+        <activity android:name=".activity.common.ReportOtherActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
     </application>
 
 </manifest>

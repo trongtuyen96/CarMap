@@ -1,22 +1,32 @@
 package com.example.trongtuyen.carmap.activity.common
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.AsyncTask
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import com.sdsmdg.tastytoast.TastyToast
+import org.openalpr.OpenALPR
+import org.openalpr.model.Results
+import org.openalpr.model.ResultsError
 import java.io.File
 import java.io.IOException
 
@@ -39,25 +49,34 @@ class ReportOtherActivity : AppCompatActivity() {
 
     @BindView(R.id.imTakePhoto_report_other)
     lateinit var imTakePhoto: ImageView
+    @BindView(R.id.imLicensePlate_report_other)
+    lateinit var imLicensePlate: ImageView
 
     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
     private lateinit var photoURI: Uri
 
     private var mCurrentPhotoPath: String = ""
 
+    private var ANDROID_DATA_DIR: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_other)
 
+//        this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         ButterKnife.bind(this)
         initComponents()
     }
 
     private fun initComponents() {
+
+        ANDROID_DATA_DIR = this.applicationInfo.dataDir
+
         imVerified.visibility = View.INVISIBLE
 
-        btnTakePhoto.setOnClickListener {
+        imTakePhoto.setOnClickListener {
 
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             // Xoá ảnh cũ
             if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
@@ -84,10 +103,13 @@ class ReportOtherActivity : AppCompatActivity() {
                 }
             }
         }
-        btnLicensePlate.setOnClickListener {
-
+        imLicensePlate.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            onALPR()
         }
         btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
             // Xoá ảnh cũ
             if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
@@ -96,6 +118,8 @@ class ReportOtherActivity : AppCompatActivity() {
             finish()
         }
         btnSend.setOnClickListener() {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
             // Xoá ảnh cũ
             if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
@@ -103,6 +127,8 @@ class ReportOtherActivity : AppCompatActivity() {
             }
         }
         imVerified.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
             val intent = Intent(this, CustomCameraActivity::class.java)
             intent.putExtra("imageUri", photoURI)
             startActivity(intent)
@@ -148,5 +174,52 @@ class ReportOtherActivity : AppCompatActivity() {
 //        // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.absolutePath
         return image
+    }
+
+    private fun onALPR() {
+//        val mDialog = SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+//                .setTitleText("Nhận diện biển số xe tự động")
+//                .setContentText("ALPR đang thực thi")
+//                .showCancelButton(true)
+//                .setCancelClickListener {
+//                    it.dismiss()
+//                }
+        val progress = ProgressDialog.show(this, "Nhận diện biển số tự động", "Đang xử lý kết quả...", true)
+        val openAlprConfFile = ANDROID_DATA_DIR + File.separatorChar + "runtime_data" + File.separatorChar + "openalpr.conf"
+        val options = BitmapFactory.Options()
+        options.inSampleSize = 10
+
+        AsyncTask.execute {
+            val result = OpenALPR.Factory.create(this, ANDROID_DATA_DIR).recognizeWithCountryRegionNConfig("us", "", mCurrentPhotoPath, openAlprConfFile, 10)
+            val results = Gson().fromJson(result, Results::class.java)
+            Log.d("OPEN ALPR", result)
+
+            try {
+                runOnUiThread {
+                    if (results == null || results.results == null || results.results.size == 0) {
+                        TastyToast.makeText(this, "Không thể nhận diện được biển số xe", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+//                                    resultTextView.setText("It was not possible to detect the licence plate.")
+                    } else {
+                        TastyToast.makeText(this, "Biển số: " + results.results[0].plate
+                                // Trim confidence to two decimal places
+                                + " Độ tin cậy: " + String.format("%.2f", results.results[0].confidence) + "%"
+                                // Convert processing time to seconds and trim to two decimal places
+                                + " THời gian thực thi: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " giây", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
+
+                        txtPlate.setText(results.results[0].plate.toString(), TextView.BufferType.EDITABLE)
+                    }
+                }
+
+            } catch (exception: JsonSyntaxException) {
+                val resultsError = Gson().fromJson(result, ResultsError::class.java)
+
+                runOnUiThread {
+                    //                                resultTextView.setText(resultsError.msg)
+                    TastyToast.makeText(this, resultsError.msg, TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            progress.dismiss()
+        }
     }
 }

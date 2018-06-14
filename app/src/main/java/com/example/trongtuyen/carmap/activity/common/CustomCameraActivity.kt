@@ -43,7 +43,7 @@ class CustomCameraActivity : AppCompatActivity() {
         if (intent.getParcelableExtra<Uri>("imageUri") != null){
             val imageStream = contentResolver.openInputStream(intent.getParcelableExtra<Uri>("imageUri"))
             val bitmap = BitmapFactory.decodeStream(imageStream)
-            Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
             val matrix = Matrix()
             matrix.postRotate(90f)
             val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
