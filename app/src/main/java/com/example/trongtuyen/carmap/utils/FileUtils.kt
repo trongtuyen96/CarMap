@@ -2,12 +2,18 @@ package com.example.trongtuyen.carmap.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.media.MediaPlayer
+import android.os.Environment
 import android.util.Base64
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import android.os.Environment.DIRECTORY_PICTURES
+import android.os.Environment.getExternalStorageDirectory
+import android.util.Log
+import android.widget.Toast
+import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 object FileUtils {
     fun encodeAudioFile(path: String): String {
@@ -53,6 +59,7 @@ object FileUtils {
 
     fun encodeImageFile(bitmap: Bitmap): String {
         val baos = ByteArrayOutputStream()
+        // Dùng với thumbnail khi lấy thẳng data từ result
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val byte = baos.toByteArray()
         return Base64.encodeToString(byte, Base64.DEFAULT)
@@ -62,4 +69,6 @@ object FileUtils {
         val decoded: ByteArray = Base64.decode(base64ImageData, Base64.DEFAULT)
         return BitmapFactory.decodeByteArray(decoded, 0, decoded.size)
     }
+
+
 }

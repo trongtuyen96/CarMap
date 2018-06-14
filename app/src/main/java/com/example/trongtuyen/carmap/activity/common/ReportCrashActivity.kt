@@ -3,12 +3,17 @@ package com.example.trongtuyen.carmap.activity.common
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.MediaPlayer
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.support.v4.content.FileProvider
 import android.util.Base64
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.*
 import butterknife.BindView
@@ -22,6 +27,8 @@ import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.*
+import java.net.URI
 
 
 class ReportCrashActivity : AppCompatActivity() {
@@ -58,6 +65,9 @@ class ReportCrashActivity : AppCompatActivity() {
     private var sFileAudioPath: String = ""
 
     private var sBase64Image: String = ""
+
+    // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
+    private lateinit var photoURI: Uri
 
     private var subType1: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,21 +119,34 @@ class ReportCrashActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val intent = Intent(this, AudioRecordActivity::class.java)
             startActivityForResult(intent, 0)
-//            val intent = Intent(this, CustomCameraActivity::class.java)
-//            intent.putExtra("base64Image", base64Image)
-//            startActivity(intent)
-
         }
 
         btnTakePhoto.setOnClickListener {
-            //            val encoded = FileUtils.encodeAudioFile(sFileAudioName)
-//            if (encoded != "") {
-//                TastyToast.makeText(this, encoded, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
-//                FileUtils.decodeAudioFile(encoded, externalCacheDir!!.absolutePath + "/audio_decoded.3gp")
-//            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, 1)
+
+            // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
+//            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            // Ensure that there's a camera activity to handle the intent
+//            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//                // Create the File where the photo should go
+//                var photoFile: File? = null
+//                try {
+//                    photoFile = createImageFile();
+//                } catch (e: IOException) {
+//                    // Error occurred while creating the File
+//                }
+//                // Continue only if the File was successfully created
+//                if (photoFile != null) {
+//                    photoURI = FileProvider.getUriForFile(this,
+//                            "com.example.android.fileprovider",
+//                            photoFile);
+//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                    startActivityForResult(takePictureIntent, 1);
+//                }
+//            }
+
         }
 
         layoutReport.setOnClickListener {
@@ -169,7 +192,6 @@ class ReportCrashActivity : AppCompatActivity() {
         })
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -185,14 +207,49 @@ class ReportCrashActivity : AppCompatActivity() {
                 tvTakePhoto.text = "Chụp ảnh"
                 if (resultCode == Activity.RESULT_OK) {
                     tvTakePhoto.text = "Đã chụp ảnh"
+
+                    // Chỉ lấy thumbnail nên chất lượng ảnh không cao
                     val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.height.toString() + " " + bitmap.width.toString(), Toast.LENGTH_SHORT).show()
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.height.toString() + " " + newBitmap.width.toString(), Toast.LENGTH_SHORT).show()
                     sBase64Image = FileUtils.encodeImageFile(newBitmap)
+
+
+                    // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
+//                    val imageStream = contentResolver.openInputStream(photoURI)
+//                    val bitmap = BitmapFactory.decodeStream(imageStream)
+//                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
+//                    val matrix = Matrix()
+//                    matrix.postRotate(90f)
+//                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width / 8, bitmap.height / 8, matrix, true)
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
+//                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
+
 //                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
                 }
             }
         }
+    }
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+//        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//        val imageFileName = "JPEG_" + timeStamp + "_"
+        val imageFileName = "image"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(
+                imageFileName, /* prefix */
+                ".jpg", /* suffix */
+                storageDir      /* directory */
+        )
+
+        Log.e("PATH", image.absolutePath)
+//        // Save a file: path for use with ACTION_VIEW intents
+//        mCurrentPhotoPath = image.absolutePath
+        return image
     }
 }

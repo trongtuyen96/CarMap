@@ -312,7 +312,7 @@ class ReportHazardActivity : AppCompatActivity() {
                 }
                 "road_kill" -> {
                     imHazardOnRoad.setImageResource(R.drawable.ic_report_hazard_roadkill)
-                    tvHazardOnRoad.text = "Động vật"
+                    tvHazardOnRoad.text = "Động vật chết"
                 }
             }
         }
