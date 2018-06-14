@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.design.widget.BottomSheetDialog
 import android.view.HapticFeedbackConstants
 import android.widget.*
 import butterknife.BindView
@@ -26,6 +27,8 @@ class ReportMenuActivity : AppCompatActivity() {
     @BindView(R.id.btnClose_activity_report)
     lateinit var btnCLose: ImageView
 
+    @BindView(R.id.imvReportOther_activity_report)
+    lateinit var btnReportOther: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +81,28 @@ class ReportMenuActivity : AppCompatActivity() {
             onClose()
         }
 
+        btnReportOther.setOnClickListener {
+            val customBottomSheetView = layoutInflater.inflate(R.layout.custom_bottom_sheet_dialog_2_items, null)
+
+            val btnCarelessDriver = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame1_2_items)
+            val btnPiggy = customBottomSheetView.findViewById<LinearLayout>(R.id.imvFrame2_2_items)
+
+            val bottomSheetDialog = BottomSheetDialog(this)
+            bottomSheetDialog.setContentView(customBottomSheetView)
+
+            bottomSheetDialog.setCanceledOnTouchOutside(true)
+
+            btnCarelessDriver.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                onReportOtherCarelessDriver()
+            }
+            btnPiggy.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                onReportOtherPiggy()
+            }
+            bottomSheetDialog.show()
+        }
+
     }
 
     private fun onClose() {
@@ -101,6 +126,16 @@ class ReportMenuActivity : AppCompatActivity() {
 
     private fun onReportAssist() {
         val intent = Intent(this, ReportHelpActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onReportOtherCarelessDriver() {
+        val intent = Intent(this, ReportOtherActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun onReportOtherPiggy() {
+        val intent = Intent(this, ReportOtherActivity::class.java)
         startActivity(intent)
     }
 }
