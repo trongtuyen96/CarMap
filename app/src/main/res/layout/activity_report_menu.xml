@@ -10,10 +10,10 @@
 
     <TextView
         android:id="@+id/textView10"
-        android:layout_width="121dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/imvReportCrash_activity_report"
-        android:layout_alignTop="@+id/textView9"
+        android:layout_alignStart="@+id/imvReportAssistance_activity_report"
+        android:layout_below="@+id/imvReportAssistance_activity_report"
         android:text="Hỗ trợ"
         android:textAlignment="center"
         android:textColor="@color/textColorSecondary"
@@ -21,11 +21,10 @@
 
     <TextView
         android:id="@+id/textView9"
-        android:layout_width="121dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/imvReportTraffic_activity_report"
-        android:layout_below="@+id/imvReportHazard_activity_report"
-        android:layout_marginTop="-164dp"
+        android:layout_alignStart="@+id/textView5"
+        android:layout_alignTop="@+id/textView10"
         android:text="Nguy hiểm"
         android:textAlignment="center"
         android:textColor="@color/textColorSecondary"
@@ -33,7 +32,7 @@
 
     <TextView
         android:id="@+id/textView5"
-        android:layout_width="121dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/imvReportTraffic_activity_report"
         android:layout_below="@+id/imvReportTraffic_activity_report"
@@ -49,7 +48,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="42dp"
-        android:layout_marginTop="146dp"
+        android:layout_marginTop="100dp"
         android:background="@drawable/bg_btn_report_traffic"
         android:clickable="true"
         android:focusable="true"
@@ -75,7 +74,7 @@
         android:layout_height="120dp"
         android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/imvReportTraffic_activity_report"
-        android:layout_marginBottom="164dp"
+        android:layout_marginBottom="210dp"
         android:background="@drawable/bg_btn_report_hazard"
         android:clickable="true"
         android:focusable="true"
@@ -97,19 +96,18 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/btnClose_activity_report"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="72dp"
         android:fontFamily="sans-serif"
         android:text="CHỌN LOẠI BÁO CÁO"
         android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"
         android:textColor="@color/textColorSecondary"
-        android:textSize="24sp"
+        android:textSize="30sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="121dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/imvReportCrash_activity_report"
         android:layout_below="@+id/imvReportTraffic_activity_report"
@@ -130,12 +128,37 @@
         android:id="@+id/tvClose_activity_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_alignEnd="@+id/textView3"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="52dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="11dp"
         android:text="Đóng sau 7 giây"
         android:textColor="@color/textColorSecondary"
         android:textStyle="italic" />
+
+
+    <ImageView
+        android:id="@+id/imvReportOther_activity_report"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="47dp"
+        android:background="@drawable/bg_btn_report_police"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="10dp"
+        app:srcCompat="@drawable/ic_report_other" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imvReportOther_activity_report"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-47dp"
+        android:text="Tài xế khác"
+        android:textAlignment="center"
+        android:textColor="@color/textColorSecondary"
+        android:textSize="18sp" />
 
 </RelativeLayout>

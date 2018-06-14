@@ -41,8 +41,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
 
         <activity
@@ -54,30 +53,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.common.SignInActivity"
             android:theme="@style/AppTheme.FullScreen" />
-
         <activity
             android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.FullScreen" />
-
         <activity android:name=".activity.common.SignUpActivity" />
-
         <activity
             android:name=".activity.common.ReportMenuActivity"
             android:theme="@style/AppTheme.FullScreen" />
-
         <activity
             android:name=".activity.common.ReportTrafficActivity"
             android:theme="@style/AppTheme.FullScreen" />
-
         <activity android:name=".activity.common.ReportCrashActivity" />
         <activity android:name=".activity.common.ReportHazardActivity" />
         <activity android:name=".activity.common.ReportHelpActivity" />
         <activity android:name=".activity.common.AudioRecordActivity" />
         <activity android:name=".activity.common.CustomCameraActivity" />
+        <activity android:name=".activity.common.ReportOtherActivity"></activity>
     </application>
 
 </manifest>
