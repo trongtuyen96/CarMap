@@ -872,6 +872,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun onSwipeDown(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  down " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers down " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
+
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     if (fingers == 2 && gestureDistance >= 120) {
@@ -902,6 +907,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun onSwipeUp(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return false
@@ -909,6 +917,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun onSwipeLeft(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return false
@@ -916,6 +927,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 override fun onSwipeRight(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
 //                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  right " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  right " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
                     return false

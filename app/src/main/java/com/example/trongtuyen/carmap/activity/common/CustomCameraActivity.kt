@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
@@ -34,6 +35,7 @@ class CustomCameraActivity : AppCompatActivity() {
         }
         val base64Image = intent.getStringExtra("base64Image")
         val newBitmap = FileUtils.decodeImageFile(base64Image)
+//        Toast.makeText(this,newBitmap.density.toString() + " " + newBitmap.height.toString() + " " + newBitmap.width.toString(), Toast.LENGTH_SHORT).show()
         imCamera.setImageBitmap(newBitmap)
     }
 
