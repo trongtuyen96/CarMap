@@ -44,6 +44,8 @@ class ReportOtherActivity : AppCompatActivity() {
     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
     private lateinit var photoURI: Uri
 
+    private var mCurrentPhotoPath : String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_other)
@@ -56,7 +58,12 @@ class ReportOtherActivity : AppCompatActivity() {
         imVerified.visibility = View.INVISIBLE
 
         btnTakePhoto.setOnClickListener {
-            
+
+            // Xoá ảnh cũ
+            if ( mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             // Ensure that there's a camera activity to handle the intent
@@ -82,10 +89,19 @@ class ReportOtherActivity : AppCompatActivity() {
 
         }
         btnDismiss.setOnClickListener {
+            // Xoá ảnh cũ
+            if ( mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             finish()
         }
         btnSend.setOnClickListener() {
-
+            // Xoá ảnh cũ
+            if ( mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
         }
     }
 
@@ -127,7 +143,7 @@ class ReportOtherActivity : AppCompatActivity() {
 
         Log.e("PATH", image.absolutePath)
 //        // Save a file: path for use with ACTION_VIEW intents
-//        mCurrentPhotoPath = image.absolutePath
+        mCurrentPhotoPath = image.absolutePath
         return image
     }
 }
