@@ -16,12 +16,14 @@ import android.support.v4.content.FileProvider
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.sdsmdg.tastytoast.TastyToast
 import org.openalpr.OpenALPR
 import org.openalpr.model.Results
 import org.openalpr.model.ResultsError
@@ -47,6 +49,8 @@ class ReportOtherActivity : AppCompatActivity() {
 
     @BindView(R.id.imTakePhoto_report_other)
     lateinit var imTakePhoto: ImageView
+    @BindView(R.id.imLicensePlate_report_other)
+    lateinit var imLicensePlate: ImageView
 
     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
     private lateinit var photoURI: Uri
@@ -59,6 +63,7 @@ class ReportOtherActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_other)
 
+//        this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         ButterKnife.bind(this)
         initComponents()
     }
@@ -69,7 +74,7 @@ class ReportOtherActivity : AppCompatActivity() {
 
         imVerified.visibility = View.INVISIBLE
 
-        btnTakePhoto.setOnClickListener {
+        imTakePhoto.setOnClickListener {
 
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             // Xoá ảnh cũ
@@ -98,7 +103,7 @@ class ReportOtherActivity : AppCompatActivity() {
                 }
             }
         }
-        btnLicensePlate.setOnClickListener {
+        imLicensePlate.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             onALPR()
         }
@@ -171,31 +176,35 @@ class ReportOtherActivity : AppCompatActivity() {
         return image
     }
 
-    private fun onALPR(){
-        val progress = ProgressDialog.show(this, "Loading", "Parsing result...", true)
+    private fun onALPR() {
+//        val mDialog = SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+//                .setTitleText("Nhận diện biển số xe tự động")
+//                .setContentText("ALPR đang thực thi")
+//                .showCancelButton(true)
+//                .setCancelClickListener {
+//                    it.dismiss()
+//                }
+        val progress = ProgressDialog.show(this, "Nhận diện biển số tự động", "Đang xử lý kết quả...", true)
         val openAlprConfFile = ANDROID_DATA_DIR + File.separatorChar + "runtime_data" + File.separatorChar + "openalpr.conf"
         val options = BitmapFactory.Options()
         options.inSampleSize = 10
 
-//                    resultTextView.setText("Processing")
-
         AsyncTask.execute {
-            val result = OpenALPR.Factory.create(this, ANDROID_DATA_DIR).recognizeWithCountryRegionNConfig("eu", "", mCurrentPhotoPath, openAlprConfFile, 10)
-
+            val result = OpenALPR.Factory.create(this, ANDROID_DATA_DIR).recognizeWithCountryRegionNConfig("us", "", mCurrentPhotoPath, openAlprConfFile, 10)
+            val results = Gson().fromJson(result, Results::class.java)
             Log.d("OPEN ALPR", result)
 
             try {
-                val results = Gson().fromJson(result, Results::class.java)
                 runOnUiThread {
                     if (results == null || results.results == null || results.results.size == 0) {
-                        Toast.makeText(this, "It was not possible to detect the licence plate.", Toast.LENGTH_LONG).show()
+                        TastyToast.makeText(this, "Không thể nhận diện được biển số xe", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
 //                                    resultTextView.setText("It was not possible to detect the licence plate.")
                     } else {
-                        Toast.makeText(this, "Plate: " + results.results[0].plate
+                        TastyToast.makeText(this, "Biển số: " + results.results[0].plate
                                 // Trim confidence to two decimal places
-                                + " Confidence: " + String.format("%.2f", results.results[0].confidence) + "%"
+                                + " Độ tin cậy: " + String.format("%.2f", results.results[0].confidence) + "%"
                                 // Convert processing time to seconds and trim to two decimal places
-                                + " Processing time: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " seconds", Toast.LENGTH_LONG).show()
+                                + " THời gian thực thi: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " giây", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
 
                         txtPlate.setText(results.results[0].plate.toString(), TextView.BufferType.EDITABLE)
                     }
@@ -206,7 +215,7 @@ class ReportOtherActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     //                                resultTextView.setText(resultsError.msg)
-                    Toast.makeText(this, resultsError.msg, Toast.LENGTH_SHORT).show()
+                    TastyToast.makeText(this, resultsError.msg, TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
