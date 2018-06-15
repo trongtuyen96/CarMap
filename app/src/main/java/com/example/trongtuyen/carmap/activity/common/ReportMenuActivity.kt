@@ -10,6 +10,7 @@ import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.controllers.AppController
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -94,11 +95,15 @@ class ReportMenuActivity : AppCompatActivity() {
 
             btnCarelessDriver.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                AppController.typeReportOther = "careless_driver"
                 onReportOtherCarelessDriver()
+                bottomSheetDialog.dismiss()
             }
             btnPiggy.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                AppController.typeReportOther = "piggy"
                 onReportOtherPiggy()
+                bottomSheetDialog.dismiss()
             }
             bottomSheetDialog.show()
         }

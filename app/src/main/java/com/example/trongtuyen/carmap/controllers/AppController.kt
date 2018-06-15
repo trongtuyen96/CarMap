@@ -1,5 +1,6 @@
 package com.example.trongtuyen.carmap.controllers
 
+import android.graphics.Bitmap
 import android.location.Location
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
@@ -39,4 +40,12 @@ object AppController {
 
 //    // fileName của thu âm lúc report
 //    lateinit var fileAudioName : String
+
+    // Bitmap của ảnh Report tài xế khác
+    var bitmapReportOther : Bitmap? = null
+
+    // Base64 của ảnh report tài xế khác
+    var base64ImageReportOther : String = ""
+    var typeReportOther : String = ""
+    var licensePlate : String = ""
 }

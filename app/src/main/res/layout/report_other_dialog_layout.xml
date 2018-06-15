@@ -1,0 +1,146 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="200dp"
+    android:layout_height="274dp"
+    android:background="@drawable/bg_btn_violet"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imImage_report_other_dialog"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_btn_report_police"
+        android:padding="2dp"
+        android:src="@drawable/ic_report_other_careless_driver" />
+
+    <TextView
+        android:id="@+id/tvEmail_report_other_dialog"
+        android:layout_width="200dp"
+        android:layout_height="20dp"
+        android:text="Email"
+        android:textAlignment="center"
+        android:textColor="@color/background_front" />
+
+
+    <View
+        android:id="@+id/divider6"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/background_front" />
+
+    <TextView
+        android:id="@+id/tvMess_report_other_dialog"
+        android:layout_width="200dp"
+        android:layout_height="18dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:text="... CÓ XE CHẠY ẨU"
+        android:textAlignment="center"
+        android:textColor="@color/background_front"
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+    <View
+        android:id="@+id/divider7"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/background_front" />
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="80dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:text="Biển số xe"
+                android:textAlignment="center"
+                android:textColor="@color/background_front"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnLicensePlate_report_other_dialog"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_btn_license_plate"
+                android:text="APTX-4869" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="1dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="2dp"
+            android:background="@color/background_front" />
+
+
+        <LinearLayout
+            android:layout_width="60dp"
+            android:layout_height="80dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:text="Ảnh"
+                android:textAlignment="center"
+                android:textColor="@color/background_front"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/imPicture_report_other_dialog"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_take_photo" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider8"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/background_front" />
+
+
+    <Button
+        android:id="@+id/btnClose_report_other_dialog"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/bg_btn_white"
+        android:text="Đóng" />
+
+</LinearLayout>

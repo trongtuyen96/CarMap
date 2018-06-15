@@ -215,11 +215,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     public override fun onResume() {
         super.onResume()
-        // Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
+//         Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
         // resumeLocationUpdates ?
 
         // Khởi tạo socket
 //        initSocket()
+
+        // Bắt sự kiện socket report other
+        if (AppController.base64ImageReportOther != "" || AppController.licensePlate != "") {
+//            Log.e("SOCKET", AppController.base64ImageReportOther)
+//            Toast.makeText(this, "Vô chỗ gửi rồi", Toast.LENGTH_SHORT).show()
+            for (i in 0 until listUser.size) {
+                if (listUser[i].email != AppController.userProfile!!.email) {
+                    attemptReportOther(AppController.userProfile!!.email!!, listUser[i].socketID.toString(), AppController.typeReportOther, AppController.base64ImageReportOther, AppController.licensePlate)
+//                    Log.e("SOCKET", AppController.userProfile!!.email!!)
+//                    Log.e("SOCKET", listUser[i].socketID.toString())
+//                    Log.e("SOCKET", AppController.typeReportOther)
+//                    Log.e("SOCKET", AppController.base64ImageReportOther)
+//                    Log.e("SOCKET", AppController.licensePlate)
+                }
+            }
+            AppController.base64ImageReportOther = ""
+            AppController.licensePlate = ""
+        }
 
         // Tự động thực hiện
         handler = Handler()
@@ -251,9 +269,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             // Khởi tạo sound và vibrate
             initSoundVibrate()
         } else {
-            //Migrate to Setting write permission screen.
-            val intent: Intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-            intent.setData(Uri.parse("package:" + this.getPackageName()));
+            // Migrate to Setting write permission screen
+            val intent: Intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+            intent.setData(Uri.parse("package:" + this.getPackageName()))
             startActivity(intent);
             TastyToast.makeText(this, "Cho phép chỉnh sửa cài đặt hệ thống", TastyToast.LENGTH_LONG, TastyToast.DEFAULT)
         }
@@ -1167,6 +1185,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.on("event_warn_slow_down_socket", onWarnSlowDown)
         socket.on("event_warn_turn_around_socket", onWarnTurnAround)
         socket.on("event_warn_thank_socket", onWarnThank)
+
+        socket.on("event_report_other_socket", onReportOther)
         socket.connect()
     }
 
@@ -1182,31 +1202,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.off("event_warn_slow_down_socket", onWarnSlowDown)
         socket.off("event_warn_turn_around_socket", onWarnTurnAround)
         socket.off("event_warn_thank_socket", onWarnThank)
+
+        socket.off("event_report_other_socket", onReportOther)
         socket.disconnect()
     }
 
     private val onConnect = Emitter.Listener {
-        this.runOnUiThread({
+        this.runOnUiThread {
             TastyToast.makeText(this.applicationContext,
                     "Đã kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
             // Gán socket ID vào cho socketID của người dùng
             AppController.userProfile?.socketID = socket.id()
             onUpdateSocketID(AppController.userProfile!!)
-        })
+        }
     }
 
     private val onDisconnect = Emitter.Listener {
-        this.runOnUiThread({
+        this.runOnUiThread {
             TastyToast.makeText(this.applicationContext,
                     "Ngắt kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-        })
+        }
     }
 
     private val onConnectError = Emitter.Listener {
-        this.runOnUiThread({
+        this.runOnUiThread {
             TastyToast.makeText(this.applicationContext,
                     "Lỗi kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
-        })
+        }
     }
 
 //    private val onNewMessage = Emitter.Listener { args ->
@@ -1351,7 +1373,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1410,7 +1432,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1469,7 +1491,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1528,7 +1550,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1591,6 +1613,101 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         socket.emit("event_warn_thank_server", email, socket.id(), receiveSocketID, "thank")
     }
 
+    private val onReportOther = Emitter.Listener { args ->
+        this.runOnUiThread(Runnable {
+            //            val data : JSONObject = args[0] as JSONObject
+//            Toast.makeText(this, "Vô chỗ nhận rồi", Toast.LENGTH_SHORT).show()
+            val email: String
+            val sendID: String
+            val type: String
+            val base64Image: String
+            val licensePLate: String
+            try {
+                email = args[0] as String
+                sendID = args[1] as String
+                type = args[2] as String
+                base64Image = args[3] as String
+                licensePLate = args[4] as String
+
+            } catch (e: JSONException) {
+                Log.e("LOG", e.message)
+                return@Runnable
+            }
+            if (type == "careless_driver") {
+                Toast.makeText(this, "Đã vào", Toast.LENGTH_SHORT).show()
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewReportOtherPopup = inflater.inflate(R.layout.report_other_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val tvEmail = viewReportOtherPopup.findViewById<TextView>(R.id.tvEmail_report_other_dialog)
+                val imImage = viewReportOtherPopup.findViewById<ImageView>(R.id.imImage_report_other_dialog)
+                val btnLicensePlate = viewReportOtherPopup.findViewById<Button>(R.id.btnLicensePlate_report_other_dialog)
+                val imPicture = viewReportOtherPopup.findViewById<ImageView>(R.id.imPicture_report_other_dialog)
+                val btnClose = viewReportOtherPopup.findViewById<Button>(R.id.btnClose_report_other_dialog)
+
+                tvEmail.text = email
+
+                btnLicensePlate.text = licensePLate
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
+
+                imPicture.setOnClickListener {
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    val intent = Intent(this, CustomCameraActivity::class.java)
+                    intent.putExtra("base64Image", base64Image)
+                    startActivity(intent)
+                }
+
+                btnClose.setOnClickListener {
+                    mPopupWindowHello!!.dismiss()
+                }
+            }
+            if (type == "piggy") {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewReportOtherPopup = inflater.inflate(R.layout.report_other_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val tvEmail = viewReportOtherPopup.findViewById<TextView>(R.id.tvEmail_report_other_dialog)
+                val imImage = viewReportOtherPopup.findViewById<ImageView>(R.id.imImage_report_other_dialog)
+                val btnLicensePlate = viewReportOtherPopup.findViewById<Button>(R.id.btnLicensePlate_report_other_dialog)
+                val imPicture = viewReportOtherPopup.findViewById<ImageView>(R.id.imPicture_report_other_dialog)
+                val btnClose = viewReportOtherPopup.findViewById<Button>(R.id.btnClose_report_other_dialog)
+                val tvMess = viewReportOtherPopup.findViewById<TextView>(R.id.tvMess_report_other_dialog)
+
+                tvEmail.text = email
+
+                btnLicensePlate.text = licensePLate
+
+                tvMess.text = "... CÓ XE CHIM MỒI"
+
+                imImage.setImageResource(R.drawable.ic_piggy_bank)
+
+                val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
+                imImage.startAnimation(animShake)
+
+                imPicture.setOnClickListener {
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    val intent = Intent(this, CustomCameraActivity::class.java)
+                    intent.putExtra("base64Image", base64Image)
+                    startActivity(intent)
+                }
+
+                btnClose.setOnClickListener {
+                    mPopupWindowHello!!.dismiss()
+                }
+            }
+        })
+    }
+
+    private fun attemptReportOther(email: String, receiveSocketID: String, type: String, base64Image: String, licensePlate: String) {
+        if (!socket.connected()) return
+
+        // perform the sending message attempt.
+        socket.emit("event_report_other_server", email, socket.id(), receiveSocketID, type, base64Image, licensePlate)
+    }
 // =====================================================================
 
 
