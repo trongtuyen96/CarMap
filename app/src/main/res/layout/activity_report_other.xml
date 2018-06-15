@@ -99,7 +99,7 @@
         <LinearLayout
             android:id="@+id/layoutBottom_report_other"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="110dp"
             android:background="@color/button_bg_inactive"
             android:orientation="horizontal">
 

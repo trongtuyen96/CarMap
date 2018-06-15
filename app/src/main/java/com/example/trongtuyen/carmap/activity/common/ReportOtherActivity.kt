@@ -21,6 +21,8 @@ import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.utils.FileUtils
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.sdsmdg.tastytoast.TastyToast
@@ -58,6 +60,8 @@ class ReportOtherActivity : AppCompatActivity() {
     private var mCurrentPhotoPath: String = ""
 
     private var ANDROID_DATA_DIR: String? = null
+
+    private var sBase64Image: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,6 +129,9 @@ class ReportOtherActivity : AppCompatActivity() {
                 val oldFile = File(mCurrentPhotoPath)
                 oldFile.delete()
             }
+
+            AppController.licensePlate = txtPlate.text.toString()
+            finish()
         }
         imVerified.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -152,6 +159,29 @@ class ReportOtherActivity : AppCompatActivity() {
 //                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
 //
 //                    imTakePhoto.setImageBitmap(newBitmap)
+
+                    // Chỉ lấy thumbnail nên chất lượng ảnh không cao
+//                    val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+//                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.height.toString() + " " + bitmap.width.toString(), Toast.LENGTH_SHORT).show()
+//                    val matrix = Matrix()
+//                    matrix.postRotate(90f)
+//                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.height.toString() + " " + newBitmap.width.toString(), Toast.LENGTH_SHORT).show()
+
+
+                    // Solution cần bảo tồn
+                    val options = BitmapFactory.Options()
+                    // Số inSampleSize là ảnh mới sẽ bằng 1 / inSampleSize của ảnh gốc, twucs chiều dài và rộng giảm đi inSampleSize lần
+                    options.inSampleSize = 8
+                    val imageStream = contentResolver.openInputStream(photoURI)
+                    val bitmap = BitmapFactory.decodeStream(imageStream, null, options)
+                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
+                    val matrix = Matrix()
+                    matrix.postRotate(90f)
+                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
+                    AppController.base64ImageReportOther = sBase64Image
                 }
             }
         }
