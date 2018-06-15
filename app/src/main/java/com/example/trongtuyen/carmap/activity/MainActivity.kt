@@ -15,8 +15,11 @@ import android.support.design.widget.NavigationView
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
+import android.text.Layout
 import android.util.Log
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.*
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.activity.common.CustomCameraActivity
@@ -53,6 +56,8 @@ import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
+import kotlinx.android.synthetic.main.place_info_layout.*
+import kotlinx.android.synthetic.main.place_info_layout.view.*
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -129,6 +134,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Gesture Detector
     private lateinit var mDetector: GestureDetector
 
+    // Place Info
+    private var mPopupWindowPlaceInfo: PopupWindow? = null
+
+    private var isPlaceInfoWindowUp = false
+
+    private var currentSelectedPlace:Place? = null
+
+    private fun showPlaceInfoPopup(place: Place){
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewPlacePopup = inflater.inflate(R.layout.place_info_layout, null)
+        mPopupWindowPlaceInfo = PopupWindow(viewPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowPlaceInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+        isPlaceInfoWindowUp = true
+
+        val tvPlaceName = viewPlacePopup.findViewById<TextView>(R.id.tvPlace_name)
+        val tvPlaceAddress = viewPlacePopup.findViewById<TextView>(R.id.tvPlace_address)
+
+        tvPlaceName.text = place.name
+        tvPlaceAddress.text = place.address
+
+        viewPlacePopup.btnStartDirection.setOnClickListener {
+            onBtnStartDirectionClick(place)
+        }
+        viewPlacePopup.btnSelected_place.setOnClickListener {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17f))
+        }
+        imvReport.visibility= GONE
+    }
+
+    private fun onBtnStartDirectionClick(place: Place){
+        Toast.makeText(this,place.name,Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -138,7 +176,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         placeAutoComplete!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 Log.d("Maps", "Place selected: " + place.name)
+                dismissPopupWindowPlaceInfo()
+                removeCurrentSelectedPlace()
+                currentSelectedPlace = place
                 addMarker(place)
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.latLng))
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
+                showPlaceInfoPopup(place)
             }
 
             override fun onError(status: Status) {
@@ -388,7 +432,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         initLocation()
 
-        // Set myLocationButton visible and clickable
+        // Set myLocationButton visible
+        imvMyLoc.visibility = VISIBLE
     }
 
     // Location functions
@@ -502,11 +547,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
+        when {
+            drawer_layout.isDrawerOpen(GravityCompat.START) -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
+            isPlaceInfoWindowUp -> {
+                dismissPopupWindowPlaceInfo()
+                return
+            }
+            currentSelectedPlace!=null-> {
+                removeCurrentSelectedPlace()
+                return
+            }
+            else -> super.onBackPressed()
         }
+    }
+
+    private fun dismissPopupWindowPlaceInfo(){
+        mPopupWindowPlaceInfo?.dismiss()
+        isPlaceInfoWindowUp = false
+        imvReport.visibility = VISIBLE
+    }
+
+    private fun removeCurrentSelectedPlace(){
+        currentSelectedPlaceMarker?.remove()
+        placeAutoComplete?.setText(null)
+        currentSelectedPlace = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -562,15 +629,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    private var currentSelectedPlaceMarker:Marker? = null
+
     fun addMarker(p: Place) {
         val markerOptions = MarkerOptions()
         markerOptions.position(p.latLng)
         markerOptions.title(p.name.toString() + "")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 
-        mMap.addMarker(markerOptions)
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
+        currentSelectedPlaceMarker = mMap.addMarker(markerOptions)
+        currentSelectedPlaceMarker?.title = "currentSelectedPlaceMarker"
     }
 
     // ======================================================================
@@ -621,6 +689,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 // ======================================================================
     override fun onMarkerClick(p0: Marker): Boolean {
 //        p0.showInfoWindow()
+        if (p0.title=="currentSelectedPlaceMarker"){
+            if (!isPlaceInfoWindowUp&&currentSelectedPlace!=null){
+                showPlaceInfoPopup(currentSelectedPlace!!)
+            }
+        }
         onOpenReportMarker(p0)
         return false
     }

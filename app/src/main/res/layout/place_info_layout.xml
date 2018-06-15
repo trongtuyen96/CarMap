@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/textColorSecondary"
+    android:orientation="horizontal"
+    android:weightSum="10">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="7"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:clickable="true"
+        android:id="@+id/btnSelected_place"
+        android:focusable="true">
+        <TextView
+            android:id="@+id/tvPlace_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Place Name"
+            android:textAppearance="@android:style/TextAppearance.Material.Large"
+            android:textColor="@color/background_front"
+            android:textSize="30sp"
+            android:textStyle="italic" />
+
+        <!--<TextView-->
+            <!--android:id="@+id/tvDistance_marker_report"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Cách 500m"-->
+            <!--android:textColor="@color/background_front"-->
+            <!--android:textSize="24sp"-->
+            <!--android:textStyle="bold" />-->
+
+        <TextView
+            android:id="@+id/tvPlace_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Place Address"
+            android:textColor="@color/background_front" />
+
+        <!--<TextView-->
+            <!--android:id="@+id/tvDescription_marker_report"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Mô tả ngắn gọn"-->
+            <!--android:textColor="@color/background_front"-->
+            <!--android:textSize="12sp"-->
+            <!--android:textStyle="italic" />-->
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:layout_weight="3"
+        android:clickable="true"
+        android:focusable="true"
+        android:id="@+id/btnStartDirection">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="GO"
+            android:gravity="center_vertical|right"
+            android:textColor="@color/background_front"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:paddingStart="10dp"/>
+        <ImageView
+            android:layout_width="46dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@android:drawable/ic_menu_directions"/>
+    </LinearLayout>
+
+</LinearLayout>
