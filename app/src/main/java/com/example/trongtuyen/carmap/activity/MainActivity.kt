@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Bắt sự kiện socket report other
         if (AppController.base64ImageReportOther != "" || AppController.licensePlate != "") {
 //            Log.e("SOCKET", AppController.base64ImageReportOther)
-            Toast.makeText(this, "Vô chỗ gửi rồi", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Vô chỗ gửi rồi", Toast.LENGTH_SHORT).show()
             for (i in 0 until listUser.size) {
                 if (listUser[i].email != AppController.userProfile!!.email) {
                     attemptReportOther(AppController.userProfile!!.email!!, listUser[i].socketID.toString(), AppController.typeReportOther, AppController.base64ImageReportOther, AppController.licensePlate)
@@ -1373,7 +1373,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1432,7 +1432,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1491,7 +1491,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1550,7 +1550,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -1616,7 +1616,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val onReportOther = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
-            Toast.makeText(this, "Vô chỗ nhận rồi", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Vô chỗ nhận rồi", Toast.LENGTH_SHORT).show()
             val email: String
             val sendID: String
             val type: String
