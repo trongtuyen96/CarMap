@@ -2,10 +2,13 @@ package com.example.trongtuyen.carmap.activity
 
 import `in`.championswimmer.sfg.lib.SimpleFingerGestures
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.res.Configuration
+import android.graphics.Color
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.*
@@ -22,11 +25,14 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.CustomCameraActivity
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.direction.DirectionFinder
+import com.example.trongtuyen.carmap.direction.Route
 import com.example.trongtuyen.carmap.models.Geometry
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
@@ -46,10 +52,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.sdsmdg.tastytoast.TastyToast
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -62,12 +65,70 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.io.UnsupportedEncodingException
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener,DirectionFinder.DirectionListener {
+    private lateinit var polylinePaths: MutableList<Polyline>
+    private var originMarkers: MutableList<Marker>? = ArrayList()
+    private var destinationMarkers: MutableList<Marker>? = ArrayList()
+
+    private fun removeCurrentDirectionPolyline(){
+        if (originMarkers != null) {
+            for (marker in originMarkers!!) {
+                marker.remove()
+            }
+        }
+
+        if (destinationMarkers != null) {
+            for (marker in destinationMarkers!!) {
+                marker.remove()
+            }
+        }
+
+        if (::polylinePaths.isInitialized){
+            for (polyline in polylinePaths) {
+                polyline.remove()
+            }
+            polylinePaths.clear()
+        }
+    }
+
+    override fun onDirectionFinderStart() {
+        removeCurrentDirectionPolyline()
+    }
+
+    override fun onDirectionFinderSuccess(routes: List<Route>) {
+        polylinePaths = ArrayList()
+        originMarkers = ArrayList<Marker>()
+        destinationMarkers = ArrayList<Marker>()
+
+        for (route in routes) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16f))
+//            (findViewById(R.id.tvDuration) as TextView).setText(route.duration.text)
+//            (findViewById(R.id.tvDistance) as TextView).setText(route.distance.text)
+
+//            (originMarkers as ArrayList<Marker>).add(mMap.addMarker(MarkerOptions()
+//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+//                    .title(route.startAddress)
+//                    .position(route.startLocation!!)))
+//            (destinationMarkers as ArrayList<Marker>).add(mMap.addMarker(MarkerOptions()
+//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+//                    .title(route.endAddress)
+//                    .position(route.endLocation!!)))
+
+            val polylineOptions = PolylineOptions().geodesic(true).color(Color.CYAN).width(10f)
+
+            for (i in 0 until route.points!!.size)
+                polylineOptions.add(route.points!![i])
+
+            (polylinePaths as ArrayList<Polyline>).add(mMap.addPolyline(polylineOptions))
+        }
+    }
 
     // Static variables
     companion object {
@@ -164,7 +225,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onBtnStartDirectionClick(place: Place){
-        Toast.makeText(this,place.name,Toast.LENGTH_SHORT).show()
+        var origin:String? = null
+        val geocoder = Geocoder(this, Locale.getDefault())
+        try{
+            val addresses = geocoder.getFromLocation(lastLocation.latitude, lastLocation.longitude, 1)
+            val obj = addresses[0]
+            origin = obj.getAddressLine(0)
+            Toast.makeText(this,origin,Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            e.printStackTrace()
+//            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+//            return null
+        }
+
+        val destination = place.name.toString()
+        if (origin==null) {
+            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show()
+            return
+        }
+//        if (destination.isEmpty()) {
+//            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+
+        try {
+            DirectionFinder(this, origin, destination).execute()
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -550,6 +639,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
+            ::polylinePaths.isInitialized&&polylinePaths.isNotEmpty()->{
+                removeCurrentDirectionPolyline()
                 return
             }
             isPlaceInfoWindowUp -> {
