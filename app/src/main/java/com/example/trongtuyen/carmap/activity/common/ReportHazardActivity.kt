@@ -493,7 +493,12 @@ class ReportHazardActivity : AppCompatActivity() {
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
+                    if (bitmap.density > 320) {
+                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
+                    } else {
+                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "normal")
+                    }
+
 //                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
                 }
             }

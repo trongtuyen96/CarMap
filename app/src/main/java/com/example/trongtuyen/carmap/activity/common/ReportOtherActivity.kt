@@ -172,15 +172,23 @@ class ReportOtherActivity : AppCompatActivity() {
                     // Solution cần bảo tồn
                     val options = BitmapFactory.Options()
                     // Số inSampleSize là ảnh mới sẽ bằng 1 / inSampleSize của ảnh gốc, twucs chiều dài và rộng giảm đi inSampleSize lần
+
+
                     options.inSampleSize = 8
                     val imageStream = contentResolver.openInputStream(photoURI)
+
+
                     val bitmap = BitmapFactory.decodeStream(imageStream, null, options)
                     Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 
-                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
+                    if (bitmap.density > 320) {
+                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
+                    } else {
+                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "normal")
+                    }
                     AppController.base64ImageReportOther = sBase64Image
                 }
             }
