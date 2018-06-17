@@ -104,14 +104,29 @@ class ReportCrashActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onSend()
         }
         btnCLose.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
         btnDismiss.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
 
@@ -123,6 +138,12 @@ class ReportCrashActivity : AppCompatActivity() {
 
         btnTakePhoto.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
 
 //            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 //            startActivityForResult(intent, 1)
