@@ -21,7 +21,10 @@ import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
+import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
+import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
@@ -181,19 +184,27 @@ class ReportCrashActivity : AppCompatActivity() {
         finish()
     }
 
+
     private fun onSend() {
         if (subType1 == "") {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
+            var bBothAudioAndImage = false
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-            // Encode file ghi âm
-            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-            val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
-            onAddNewReportCrash(mReport)
+            if (sFileAudioPath != "" || sBase64Image != "") {
+                // Encode file ghi âm
+                val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                onAddNewReportCrash(mReport, false)
+            } else {
+                // Gửi cái có file ảnh trước
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                onAddNewReportCrash(mReport, true)
+            }
         }
     }
 
-    private fun onAddNewReportCrash(report: Report) {
+    private fun onAddNewReportCrash(report: Report, bothAudioAndImage: Boolean) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
 
         val call = service.addNewReport(report)
@@ -204,12 +215,38 @@ class ReportCrashActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
-                    finish()
+                    if (bothAudioAndImage == true) {
+                        // Encode file ghi âm
+                        val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                        onUpdateBase64Voice(response.body()._id.toString(), encoded)
+                        finish()
+                    } else {
+                        TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        finish()
+                    }
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportCrashActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
+            }
+        })
+    }
+
+    private fun onUpdateBase64Voice(id: String, base64Voice: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateBase64Voice(id, base64Voice)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@ReportCrashActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
             }
         })
     }
@@ -290,16 +327,16 @@ class ReportCrashActivity : AppCompatActivity() {
 //            val halfPhotoWidth = photoWidth / 2
 //            val halfPhotoHeight = photoHeight / 2
 
-            // Calculate the largest inSampleSize value that is a power of 2
-            //and keeps both height and width larger than the requested height and width.
+        // Calculate the largest inSampleSize value that is a power of 2
+        //and keeps both height and width larger than the requested height and width.
 
-            // Test and replace with || ( or )
-            while ((photoWidth / scaleFactor) >= TARGET_IMAGE_WIDTH && (photoHeight / scaleFactor) >= TARGET_IMAGE_HEIGHT) {
+        // Test and replace with || ( or )
+        while ((photoWidth / scaleFactor) >= TARGET_IMAGE_WIDTH && (photoHeight / scaleFactor) >= TARGET_IMAGE_HEIGHT) {
 
-                scaleFactor *= 2
-            }
+            scaleFactor *= 2
+        }
 //        }
-        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight/scaleFactor).toString(), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
         return scaleFactor
     }
 
