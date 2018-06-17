@@ -231,7 +231,7 @@ class ReportCrashActivity : AppCompatActivity() {
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
                     options.inSampleSize = calculateInSampleSize(options)
                     Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
-
+                    options.inDensity = 320
                     options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
 //                    imageStream = contentResolver.openInputStream(photoURI)
@@ -248,14 +248,14 @@ class ReportCrashActivity : AppCompatActivity() {
                     }
 
 
-                    TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+//                    TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
                 }
             }
         }
     }
 
-    val TARGET_IMAGE_WIDTH: Int = 645
-    val TARGET_IMAGE_HEIGHT: Int = 860
+    val TARGET_IMAGE_WIDTH: Int = 872
+    val TARGET_IMAGE_HEIGHT: Int = 1164
     // This method is used to calculate largest inSampleSize
     //which is used to decode bitmap in required bitmap.
     private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {
