@@ -3,9 +3,12 @@ package com.example.trongtuyen.carmap.activity.common
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.widget.*
 import butterknife.BindView
@@ -20,11 +23,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.support.design.widget.BottomSheetDialog
+import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.LinearLayout
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
+import java.io.File
+import java.io.IOException
 
 
 class ReportHazardActivity : AppCompatActivity() {
@@ -80,6 +86,9 @@ class ReportHazardActivity : AppCompatActivity() {
     private var sFileAudioPath: String = ""
 
     private var sBase64Image: String = ""
+
+    // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
+    private lateinit var photoURI: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -152,14 +161,26 @@ class ReportHazardActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onSend()
         }
         btnCLose.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
         btnDismiss.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
 
@@ -171,12 +192,20 @@ class ReportHazardActivity : AppCompatActivity() {
 
         btnTakePhoto.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, 1)
         }
 
         layoutReport.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             finish()
         }
     }
@@ -487,21 +516,99 @@ class ReportHazardActivity : AppCompatActivity() {
             }
             1 -> {
                 tvTakePhoto.text = "Chụp ảnh"
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     tvTakePhoto.text = "Đã chụp ảnh"
-                    val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+
+                    // Chỉ lấy thumbnail nên chất lượng ảnh không cao
+//                    val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+//                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.height.toString() + " " + bitmap.width.toString(), Toast.LENGTH_SHORT).show()
+//                    val matrix = Matrix()
+//                    matrix.postRotate(90f)
+//                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.height.toString() + " " + newBitmap.width.toString(), Toast.LENGTH_SHORT).show()
+//                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
+
+
+                    // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
+//                    val imageStream = contentResolver.openInputStream(photoURI)
+//                    val bitmap = BitmapFactory.decodeStream(imageStream)
+
+                    val options = BitmapFactory.Options()
+                    // Số inSampleSize là ảnh mới sẽ bằng 1 / inSampleSize của ảnh gốc, tức chiều dài và rộng giảm đi inSampleSize lần
+                    // inJustRebound = true là sẽ đọc resource của ảnh chứ ko laod ảnh vào bộ nhớ, sẽ giảm bộ nhớ sử dụng
+
+                    options.inJustDecodeBounds = true
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, options)
+                    options.inSampleSize = calculateInSampleSize(options)
+                    Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
+                    options.inDensity = 320
+                    options.inJustDecodeBounds = false
+                    val imageStream = contentResolver.openInputStream(photoURI)
+//                    imageStream = contentResolver.openInputStream(photoURI)
+                    val bitmap = BitmapFactory.decodeStream(imageStream, null, options)
+
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
                     if (bitmap.density > 320) {
                         sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
                     } else {
                         sBase64Image = FileUtils.encodeImageFile(newBitmap, "normal")
                     }
 
-//                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+
+//                    TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
                 }
             }
         }
+    }
+
+    val TARGET_IMAGE_WIDTH: Int = 872
+    val TARGET_IMAGE_HEIGHT: Int = 1164
+    // This method is used to calculate largest inSampleSize
+    //which is used to decode bitmap in required bitmap.
+    private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {
+        // Raw height and width of image
+        val photoWidth = bmOptions.outWidth
+        val photoHeight = bmOptions.outHeight
+
+        Toast.makeText(this, "BEFORE: " + photoWidth + " " + photoHeight, Toast.LENGTH_SHORT).show()
+        var scaleFactor = 2
+//        if (photoWidth > TARGET_IMAGE_WIDTH || photoHeight > TARGET_IMAGE_HEIGHT) {
+//            val halfPhotoWidth = photoWidth / 2
+//            val halfPhotoHeight = photoHeight / 2
+
+        // Calculate the largest inSampleSize value that is a power of 2
+        //and keeps both height and width larger than the requested height and width.
+
+        // Test and replace with || ( or )
+        while ((photoWidth / scaleFactor) >= TARGET_IMAGE_WIDTH && (photoHeight / scaleFactor) >= TARGET_IMAGE_HEIGHT) {
+
+            scaleFactor *= 2
+        }
+//        }
+        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
+        return scaleFactor
+    }
+
+    private var mCurrentPhotoPath: String = ""
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+//        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//        val imageFileName = "JPEG_" + timeStamp + "_"
+        val imageFileName = "image"
+        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(
+                imageFileName, /* prefix */
+                ".jpg", /* suffix */
+                storageDir      /* directory */
+        )
+
+        Log.e("PATH", image.absolutePath)
+//        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.absolutePath
+        return image
     }
 }
