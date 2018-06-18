@@ -6,11 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.res.Configuration
+import android.graphics.Color
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
-import android.support.annotation.RequiresApi
 import android.support.design.widget.NavigationView
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
@@ -27,6 +28,8 @@ import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
+import com.example.trongtuyen.carmap.models.direction.DirectionFinder
+import com.example.trongtuyen.carmap.models.direction.Route
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
@@ -43,10 +46,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.sdsmdg.tastytoast.TastyToast
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -57,12 +57,14 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.io.UnsupportedEncodingException
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener {
 
     // Static variables
     companion object {
@@ -129,6 +131,133 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     // Gesture Detector
     private lateinit var mDetector: GestureDetector
 
+    // Place Info
+    private var mPopupWindowPlaceInfo: PopupWindow? = null
+
+    private var isPlaceInfoWindowUp = false
+
+    private var currentSelectedPlace: Place? = null
+
+    // Của Direction
+    private lateinit var polylinePaths: MutableList<Polyline>
+    private var originMarkers: MutableList<Marker>? = ArrayList()
+    private var destinationMarkers: MutableList<Marker>? = ArrayList()
+
+
+    // ======================================================================
+// ======== ON DIRECTION ================================================
+// ======================================================================
+    private fun showPlaceInfoPopup(place: Place) {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewPlacePopup = inflater.inflate(R.layout.place_info_layout, null)
+        mPopupWindowPlaceInfo = PopupWindow(viewPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowPlaceInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+        isPlaceInfoWindowUp = true
+
+        val tvPlaceName = viewPlacePopup.findViewById<TextView>(R.id.tvPlaceName_place_info)
+        val tvPlaceAddress = viewPlacePopup.findViewById<TextView>(R.id.tvPlaceAddress_place_info)
+        val btnStartDirection = viewPlacePopup.findViewById<LinearLayout>(R.id.btnStartDirection_place_info)
+        val btnSelectedPlace = viewPlacePopup.findViewById<LinearLayout>(R.id.btnSelectedPlace_place_info)
+
+        tvPlaceName.text = place.name
+        tvPlaceAddress.text = place.address
+
+        btnStartDirection.setOnClickListener {
+            onBtnStartDirectionClick(place)
+        }
+
+        btnSelectedPlace.setOnClickListener {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17f))
+        }
+//        imvReport.visibility = View.GONE
+    }
+
+    private fun onBtnStartDirectionClick(place: Place) {
+        var origin: String? = null
+        val geocoder = Geocoder(this, Locale.getDefault())
+        try {
+            val addresses = geocoder.getFromLocation(lastLocation.latitude, lastLocation.longitude, 1)
+            val obj = addresses[0]
+            origin = obj.getAddressLine(0)
+            Toast.makeText(this, origin, Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            //            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
+            //            return null
+        }
+
+        val destination = place.name.toString()
+        if (origin == null) {
+            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        //        if (destination.isEmpty()) {
+        //            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show()
+        //            return
+        //        }
+
+        try {
+            DirectionFinder(this, origin, destination).execute()
+        } catch (e: UnsupportedEncodingException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun removeCurrentDirectionPolyline() {
+        if (originMarkers != null) {
+            for (marker in originMarkers!!) {
+                marker.remove()
+            }
+        }
+
+        if (destinationMarkers != null) {
+            for (marker in destinationMarkers!!) {
+                marker.remove()
+            }
+        }
+
+        if (::polylinePaths.isInitialized) {
+            for (polyline in polylinePaths) {
+                polyline.remove()
+            }
+            polylinePaths.clear()
+        }
+    }
+
+    override fun onDirectionFinderStart() {
+        removeCurrentDirectionPolyline()
+    }
+
+    override fun onDirectionFinderSuccess(routes: List<Route>) {
+        polylinePaths = ArrayList()
+        originMarkers = ArrayList<Marker>()
+        destinationMarkers = ArrayList<Marker>()
+
+        for (route in routes) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16f))
+            //            (findViewById(R.id.tvDuration) as TextView).setText(route.duration.text)
+            //            (findViewById(R.id.tvDistance) as TextView).setText(route.distance.text)
+
+            //            (originMarkers as ArrayList<Marker>).add(mMap.addMarker(MarkerOptions()
+            //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+            //                    .title(route.startAddress)
+            //                    .position(route.startLocation!!)))
+            //            (destinationMarkers as ArrayList<Marker>).add(mMap.addMarker(MarkerOptions()
+            //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+            //                    .title(route.endAddress)
+            //                    .position(route.endLocation!!)))
+
+            val polylineOptions = PolylineOptions().geodesic(true).color(Color.CYAN).width(10f)
+
+            for (i in 0 until route.points!!.size)
+                polylineOptions.add(route.points!![i])
+            (polylinePaths as ArrayList<Polyline>).add(mMap.addPolyline(polylineOptions))
+        }
+    }
+
+    // ======================================================================
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -138,7 +267,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         placeAutoComplete!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 Log.d("Maps", "Place selected: " + place.name)
+                dismissPopupWindowPlaceInfo()
+                removeCurrentSelectedPlace()
+                currentSelectedPlace = place
+
                 addMarker(place)
+
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.latLng))
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
+                showPlaceInfoPopup(place)
             }
 
             override fun onError(status: Status) {
@@ -406,7 +543,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         initLocation()
 
-        // Set myLocationButton visible and clickable
+        // Set myLocationButton visible
+        imvMyLoc.visibility = View.VISIBLE
     }
 
     // Location functions
@@ -520,11 +658,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
+//        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+//            drawer_layout.closeDrawer(GravityCompat.START)
+//        } else {
+//            super.onBackPressed()
+//        }
+        when {
+            drawer_layout.isDrawerOpen(GravityCompat.START) -> {
+                drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
+            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty() -> {
+                removeCurrentDirectionPolyline()
+                return
+            }
+            isPlaceInfoWindowUp -> {
+                dismissPopupWindowPlaceInfo()
+                return
+            }
+            currentSelectedPlace != null -> {
+                removeCurrentSelectedPlace()
+                return
+            }
+            else -> super.onBackPressed()
         }
+    }
+
+    private fun dismissPopupWindowPlaceInfo() {
+        mPopupWindowPlaceInfo?.dismiss()
+        isPlaceInfoWindowUp = false
+        imvReport.visibility = View.VISIBLE
+    }
+
+    private fun removeCurrentSelectedPlace() {
+        currentSelectedPlaceMarker?.remove()
+        placeAutoComplete?.setText(null)
+        currentSelectedPlace = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -580,15 +749,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    private var currentSelectedPlaceMarker: Marker? = null
     fun addMarker(p: Place) {
         val markerOptions = MarkerOptions()
         markerOptions.position(p.latLng)
         markerOptions.title(p.name.toString() + "")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 
-        mMap.addMarker(markerOptions)
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
+//        mMap.addMarker(markerOptions)
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
+//        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
+
+        currentSelectedPlaceMarker = mMap.addMarker(markerOptions)
+        currentSelectedPlaceMarker?.title = "current_place"
     }
 
     // ======================================================================
@@ -639,6 +812,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 // ======================================================================
     override fun onMarkerClick(p0: Marker): Boolean {
 //        p0.showInfoWindow()
+
+        if (p0.title == "current_place") {
+            if (!isPlaceInfoWindowUp && currentSelectedPlace != null) {
+                showPlaceInfoPopup(currentSelectedPlace!!)
+            }
+        }
+
         onOpenReportMarker(p0)
         return false
     }
@@ -1010,6 +1190,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mPopupWindowUser?.dismiss()
             curMarkerUser = null
         }
+//        if (p0?.title == "current_place") {
+//            mPopupWindowPlaceInfo?.dismiss()
+//        }
 
     }
 
