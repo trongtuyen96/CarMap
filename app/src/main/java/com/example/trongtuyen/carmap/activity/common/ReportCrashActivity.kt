@@ -21,7 +21,10 @@ import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
+import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
+import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
@@ -104,14 +107,29 @@ class ReportCrashActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onSend()
         }
         btnCLose.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
         btnDismiss.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
 
@@ -123,29 +141,36 @@ class ReportCrashActivity : AppCompatActivity() {
 
         btnTakePhoto.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, 1)
 
-            // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
-//            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//            // Ensure that there's a camera activity to handle the intent
-//            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//                // Create the File where the photo should go
-//                var photoFile: File? = null
-//                try {
-//                    photoFile = createImageFile();
-//                } catch (e: IOException) {
-//                    // Error occurred while creating the File
-//                }
-//                // Continue only if the File was successfully created
-//                if (photoFile != null) {
-//                    photoURI = FileProvider.getUriForFile(this,
-//                            "com.example.android.fileprovider",
-//                            photoFile);
-//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                    startActivityForResult(takePictureIntent, 1);
-//                }
-//            }
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
+
+//            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            startActivityForResult(intent, 1)
+
+//             ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                // Create the File where the photo should go
+                var photoFile: File? = null
+                try {
+                    photoFile = createImageFile();
+                } catch (e: IOException) {
+                    // Error occurred while creating the File
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    photoURI = FileProvider.getUriForFile(this,
+                            "com.example.android.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, 1);
+                }
+            }
 
         }
 
@@ -159,19 +184,26 @@ class ReportCrashActivity : AppCompatActivity() {
         finish()
     }
 
+
     private fun onSend() {
         if (subType1 == "") {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-            // Encode file ghi âm
-            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-            val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
-            onAddNewReportCrash(mReport)
+            if (sFileAudioPath != "" || sBase64Image != "") {
+                // Encode file ghi âm
+                val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                onAddNewReportCrash(mReport, false)
+            } else {
+                // Gửi cái có file ảnh trước
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                onAddNewReportCrash(mReport, true)
+            }
         }
     }
 
-    private fun onAddNewReportCrash(report: Report) {
+    private fun onAddNewReportCrash(report: Report, bothAudioAndImage: Boolean) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
 
         val call = service.addNewReport(report)
@@ -182,12 +214,38 @@ class ReportCrashActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
-                    finish()
+                    if (bothAudioAndImage == true) {
+                        // Encode file ghi âm
+                        val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                        onUpdateBase64Voice(response.body()._id.toString(), encoded)
+                        finish()
+                    } else {
+                        TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        finish()
+                    }
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportCrashActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
+            }
+        })
+    }
+
+    private fun onUpdateBase64Voice(id: String, base64Voice: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateBase64Voice(id, base64Voice)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@ReportCrashActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
             }
         })
     }
@@ -209,31 +267,79 @@ class ReportCrashActivity : AppCompatActivity() {
                     tvTakePhoto.text = "Đã chụp ảnh"
 
                     // Chỉ lấy thumbnail nên chất lượng ảnh không cao
-                    val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
-                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.height.toString() + " " + bitmap.width.toString(), Toast.LENGTH_SHORT).show()
-                    val matrix = Matrix()
-                    matrix.postRotate(90f)
-                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.height.toString() + " " + newBitmap.width.toString(), Toast.LENGTH_SHORT).show()
-                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
+//                    val bitmap: Bitmap = data!!.extras.get("data") as Bitmap
+//                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.height.toString() + " " + bitmap.width.toString(), Toast.LENGTH_SHORT).show()
+//                    val matrix = Matrix()
+//                    matrix.postRotate(90f)
+//                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.height.toString() + " " + newBitmap.width.toString(), Toast.LENGTH_SHORT).show()
+//                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
 
 
                     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
 //                    val imageStream = contentResolver.openInputStream(photoURI)
 //                    val bitmap = BitmapFactory.decodeStream(imageStream)
-//                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
-//                    val matrix = Matrix()
-//                    matrix.postRotate(90f)
-//                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width / 8, bitmap.height / 8, matrix, true)
-//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
-//                    sBase64Image = FileUtils.encodeImageFile(newBitmap)
 
-//                TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+                    val options = BitmapFactory.Options()
+                    // Số inSampleSize là ảnh mới sẽ bằng 1 / inSampleSize của ảnh gốc, tức chiều dài và rộng giảm đi inSampleSize lần
+                    // inJustRebound = true là sẽ đọc resource của ảnh chứ ko laod ảnh vào bộ nhớ, sẽ giảm bộ nhớ sử dụng
+
+                    options.inJustDecodeBounds = true
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, options)
+                    options.inSampleSize = calculateInSampleSize(options)
+                    Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
+                    options.inDensity = 320
+                    options.inJustDecodeBounds = false
+                    val imageStream = contentResolver.openInputStream(photoURI)
+//                    imageStream = contentResolver.openInputStream(photoURI)
+                    val bitmap = BitmapFactory.decodeStream(imageStream, null, options)
+
+                    val matrix = Matrix()
+                    matrix.postRotate(90f)
+                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
+                    if (bitmap.density > 320) {
+                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
+                    } else {
+                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "normal")
+                    }
+
+
+//                    TastyToast.makeText(this, sBase64Image, TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
                 }
             }
         }
     }
 
+    val TARGET_IMAGE_WIDTH: Int = 872
+    val TARGET_IMAGE_HEIGHT: Int = 1164
+    // This method is used to calculate largest inSampleSize
+    //which is used to decode bitmap in required bitmap.
+    private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {
+        // Raw height and width of image
+        val photoWidth = bmOptions.outWidth
+        val photoHeight = bmOptions.outHeight
+
+        Toast.makeText(this, "BEFORE: " + photoWidth + " " + photoHeight, Toast.LENGTH_SHORT).show()
+        var scaleFactor = 2
+//        if (photoWidth > TARGET_IMAGE_WIDTH || photoHeight > TARGET_IMAGE_HEIGHT) {
+//            val halfPhotoWidth = photoWidth / 2
+//            val halfPhotoHeight = photoHeight / 2
+
+        // Calculate the largest inSampleSize value that is a power of 2
+        //and keeps both height and width larger than the requested height and width.
+
+        // Test and replace with || ( or )
+        while ((photoWidth / scaleFactor) >= TARGET_IMAGE_WIDTH && (photoHeight / scaleFactor) >= TARGET_IMAGE_HEIGHT) {
+
+            scaleFactor *= 2
+        }
+//        }
+        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
+        return scaleFactor
+    }
+
+    private var mCurrentPhotoPath: String = ""
     @Throws(IOException::class)
     private fun createImageFile(): File {
         // Create an image file name
@@ -249,7 +355,7 @@ class ReportCrashActivity : AppCompatActivity() {
 
         Log.e("PATH", image.absolutePath)
 //        // Save a file: path for use with ACTION_VIEW intents
-//        mCurrentPhotoPath = image.absolutePath
+        mCurrentPhotoPath = image.absolutePath
         return image
     }
 }

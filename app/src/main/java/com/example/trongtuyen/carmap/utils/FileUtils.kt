@@ -57,10 +57,16 @@ object FileUtils {
         }
     }
 
-    fun encodeImageFile(bitmap: Bitmap): String {
+    fun encodeImageFile(bitmap: Bitmap, type: String): String {
         val baos = ByteArrayOutputStream()
         // Dùng với thumbnail khi lấy thẳng data từ result
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+
+        if(type == "normal") {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
+        }
+        if (type == "large"){
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, baos)
+        }
         val byte = baos.toByteArray()
         return Base64.encodeToString(byte, Base64.DEFAULT)
     }

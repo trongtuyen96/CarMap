@@ -31,4 +31,7 @@ interface ReportService {
     @GET("report/nearby")
     fun getNearbyReports(@Query("lat") lat: Double?, @Query("lng") lng: Double?, @Query("radius") radius: Float): Call<NearbyReportsResponse>
 
+    @PUT("report/{id}/updateBase64Voice")
+    fun updateBase64Voice(@Path("id") id: String, @Field("base64Voice") base64Voice: String): Call<ReportResponse>
+
 }
