@@ -5,13 +5,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.design.widget.TextInputEditText
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.*
@@ -23,6 +21,7 @@ import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.ReportService
+import com.example.trongtuyen.carmap.services.models.ReportResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
@@ -143,14 +142,19 @@ class ReportTrafficActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn mức độ kẹt xe", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
-            // Encode file ghi âm
-            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-            val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
-            onAddNewReportTraffic(mReport)
+            if (sFileAudioPath != "" || sBase64Image != "") {
+                // Encode file ghi âm
+                val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                onAddNewReportTraffic(mReport, false)
+            } else {
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                onAddNewReportTraffic(mReport, true)
+            }
         }
     }
 
-    private fun onAddNewReportTraffic(report: Report) {
+    private fun onAddNewReportTraffic(report: Report, bothAudioAndImage: Boolean) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
 
         val call = service.addNewReport(report)
@@ -161,12 +165,38 @@ class ReportTrafficActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
-                    finish()
+                    if (bothAudioAndImage == true) {
+                        // Encode file ghi âm
+                        val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                        onUpdateBase64Voice(response.body()._id.toString(), encoded)
+                        finish()
+                    } else {
+                        TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        finish()
+                    }
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportTrafficActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
+            }
+        })
+    }
+
+    private fun onUpdateBase64Voice(id: String, base64Voice: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateBase64Voice(id, base64Voice)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@ReportTrafficActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
             }
         })
     }

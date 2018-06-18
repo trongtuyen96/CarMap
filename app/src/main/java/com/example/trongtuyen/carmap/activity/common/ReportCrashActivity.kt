@@ -189,7 +189,6 @@ class ReportCrashActivity : AppCompatActivity() {
         if (subType1 == "") {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
-            var bBothAudioAndImage = false
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
             if (sFileAudioPath != "" || sBase64Image != "") {
                 // Encode file ghi âm

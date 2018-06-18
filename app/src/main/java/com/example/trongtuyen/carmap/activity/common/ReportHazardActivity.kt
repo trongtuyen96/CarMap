@@ -27,6 +27,7 @@ import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.LinearLayout
+import com.example.trongtuyen.carmap.services.models.ReportResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import java.io.File
@@ -218,14 +219,19 @@ class ReportHazardActivity : AppCompatActivity() {
         if (subType1 == "" || subType2 == "") {
             TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
-            // Encode file ghi âm
-            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
             when (subType1) {
                 "on_road" -> {
                     if (subType2 == "object" || subType2 == "construction" || subType2 == "broken_light" || subType2 == "pothole" || subType2 == "vehicle_stop" || subType2 == "road_kill") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
-                        onAddNewReportHazard(mReport)
+                        if (sFileAudioPath != "" || sBase64Image != "") {
+                            // Encode file ghi âm
+                            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                            onAddNewReportHazard(mReport, false)
+                        } else {
+                            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                            onAddNewReportHazard(mReport, true)
+                        }
                     } else {
                         TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                     }
@@ -233,8 +239,15 @@ class ReportHazardActivity : AppCompatActivity() {
                 "shoulder" -> {
                     if (subType2 == "vehicle_stop" || subType2 == "animal" || subType2 == "missing_sign") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
-                        onAddNewReportHazard(mReport)
+                        if (sFileAudioPath != "" || sBase64Image != "") {
+                            // Encode file ghi âm
+                            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                            onAddNewReportHazard(mReport, false)
+                        } else {
+                            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                            onAddNewReportHazard(mReport, true)
+                        }
                     } else {
                         TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                     }
@@ -242,8 +255,15 @@ class ReportHazardActivity : AppCompatActivity() {
                 "weather" -> {
                     if (subType2 == "fog" || subType2 == "hail" || subType2 == "flood" || subType2 == "ice") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
-                        onAddNewReportHazard(mReport)
+                        if (sFileAudioPath != "" || sBase64Image != "") {
+                            // Encode file ghi âm
+                            val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                            onAddNewReportHazard(mReport, false)
+                        } else {
+                            val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                            onAddNewReportHazard(mReport, true)
+                        }
                     } else {
                         TastyToast.makeText(this, "Vui lòng chọn loại nguy hiểm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                     }
@@ -252,7 +272,7 @@ class ReportHazardActivity : AppCompatActivity() {
         }
     }
 
-    private fun onAddNewReportHazard(report: Report) {
+    private fun onAddNewReportHazard(report: Report, bothAudioAndImage: Boolean) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
 
         val call = service.addNewReport(report)
@@ -263,8 +283,15 @@ class ReportHazardActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
-                    finish()
+                    if (bothAudioAndImage == true) {
+                        // Encode file ghi âm
+                        val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
+                        onUpdateBase64Voice(response.body()._id.toString(), encoded)
+                        finish()
+                    } else {
+                        TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        finish()
+                    }
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportHazardActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -501,6 +528,25 @@ class ReportHazardActivity : AppCompatActivity() {
             }
         }
         bottomSheetDialog.show()
+    }
+
+    private fun onUpdateBase64Voice(id: String, base64Voice: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateBase64Voice(id, base64Voice)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@ReportHazardActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
