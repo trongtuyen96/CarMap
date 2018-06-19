@@ -36,6 +36,8 @@ import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
 import com.example.trongtuyen.carmap.utils.SharePrefs.Companion.mContext
+import com.github.angads25.toggle.LabeledSwitch
+import com.github.angads25.toggle.interfaces.OnToggledListener
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -112,6 +114,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var mPopupWindowUser: PopupWindow? = null
 
     private var mPopupWindowHello: PopupWindow? = null
+
+    private var mPopupWindowFilter: PopupWindow? = null
 
     // List of user of other cars
     private lateinit var listUser: List<User>
@@ -301,6 +305,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         imvMyLoc.setOnClickListener(this)
         imvReport.setOnClickListener(this)
 //        imvHamburger.setOnClickListener(this)
+
+        imvFilter.setOnClickListener(this)
 
         mContext = this.applicationContext
     }
@@ -506,6 +512,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this, ReportMenuActivity::class.java)
                 startActivity(intent)
             }
+            R.id.imvFilter -> {
+                onFilterButtonClicked()
+            }
         }
     }
 
@@ -655,6 +664,47 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             TastyToast.makeText(this, "Vị trí hiện không khả dụng!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         }
+    }
+
+    private fun onFilterButtonClicked() {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
+        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+        val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
+        val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
+        val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
+
+        switchCar.colorOn = R.color.bg_call
+        switchCar.colorOff = R.color.dangerous
+
+        switchReport.colorOn = R.color.bg_call
+        switchReport.colorOff = R.color.dangerous
+
+        btnClose.setOnClickListener {
+            mPopupWindowFilter!!.dismiss()
+        }
+
+        switchCar.setOnToggledListener(object: OnToggledListener{
+            override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
+                if(isOn){
+                    Toast.makeText(this@MainActivity, "Car on", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@MainActivity, "Car off", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+
+        switchReport.setOnToggledListener(object: OnToggledListener{
+            override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
+                if(isOn){
+                    Toast.makeText(this@MainActivity, "Report on", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@MainActivity, "Report off", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
     }
 
     override fun onBackPressed() {
