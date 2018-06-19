@@ -81,7 +81,7 @@
                     android:id="@+id/tvOthers_report_help"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Tài xế khác"
+                    android:text="Nhờ tài xế khác"
                     android:textAlignment="center"
                     android:textColor="@color/textColorSecondary"
                     android:textSize="18sp" />
