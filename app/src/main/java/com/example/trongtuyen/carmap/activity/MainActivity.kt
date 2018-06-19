@@ -676,11 +676,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
         val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
 
-        switchCar.colorOn = R.color.bg_call
-        switchCar.colorOff = R.color.dangerous
-
-        switchReport.colorOn = R.color.bg_call
-        switchReport.colorOff = R.color.dangerous
 
         btnClose.setOnClickListener {
             mPopupWindowFilter!!.dismiss()
