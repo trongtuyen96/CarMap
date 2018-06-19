@@ -20,6 +20,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.CustomCameraActivity
 import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
 import com.example.trongtuyen.carmap.activity.common.SignInActivity
@@ -67,17 +68,17 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
-    private lateinit var currentPolyline:Polyline
+    private lateinit var currentPolyline: Polyline
     override fun onPolylineClick(p0: Polyline) {
-        if (p0==currentPolyline)
+        if (p0 == currentPolyline)
             return
-        p0.color=Color.BLUE
-        currentPolyline.color=Color.GRAY
+        p0.color = Color.BLUE
+        currentPolyline.color = Color.GRAY
         p0.zIndex = 1F
         currentPolyline.zIndex = 0F
         currentPolyline = p0
         val currentRoute = currentPolyline.tag as Route
-        Toast.makeText(this,currentRoute.duration!!.text +" | "+currentRoute.distance!!.text,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, currentRoute.duration!!.text + " | " + currentRoute.distance!!.text, Toast.LENGTH_SHORT).show()
     }
 
     // Static variables
@@ -189,7 +190,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onBtnStartDirectionClick(place: Place) {
-        val origin = lastLocation.latitude.toString()+","+lastLocation.longitude.toString()
+        val origin = lastLocation.latitude.toString() + "," + lastLocation.longitude.toString()
 
         val destination = place.name.toString()
 
@@ -238,22 +239,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             val polyline = drawPolyline(route, polylineOptions)
 
-            if (firstRoute){
+            if (firstRoute) {
                 firstRoute = false
                 currentPolyline = polyline
-                currentPolyline.zIndex= 1F
+                currentPolyline.zIndex = 1F
                 currentPolyline.color = Color.BLUE
             }
         }
     }
 
-    private fun drawPolyline(route: Route, options: PolylineOptions): Polyline{
+    private fun drawPolyline(route: Route, options: PolylineOptions): Polyline {
         for (i in 0 until route.points!!.size)
             options.add(route.points!![i])
 
         val polyline = mMap.addPolyline(options)
-        polyline.isClickable=true
-        polyline.tag=route
+        polyline.isClickable = true
+        polyline.tag = route
         polylinePaths.add(polyline)
         return polyline
     }
@@ -676,32 +677,61 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
         val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
 
-        switchCar.colorOn = R.color.bg_call
-        switchCar.colorOff = R.color.dangerous
+        if (AppController.settingFilterCar == "true") {
+            switchCar.isOn = true
+        } else {
+            switchCar.isOn = false
+        }
 
-        switchReport.colorOn = R.color.bg_call
-        switchReport.colorOff = R.color.dangerous
+        if (AppController.settingFilterReport == "true") {
+            switchReport.isOn = true
+        } else {
+            switchReport.isOn = false
+        }
+
 
         btnClose.setOnClickListener {
             mPopupWindowFilter!!.dismiss()
+            if (AppController.settingFilterCar == "true") {
+                if (listUser.isNotEmpty()) {
+                    drawValidUsers()
+                }
+            } else {
+                for (i in 0 until listUserMarker.size) {
+                    listUserMarker[i].remove()
+                }
+            }
+            if (AppController.settingFilterReport == "true") {
+                if (listReport.isNotEmpty()) {
+                    drawValidReports()
+                }
+            } else {
+                for (i in 0 until listReportMarker.size) {
+                    listReportMarker[i].remove()
+                }
+            }
         }
 
-        switchCar.setOnToggledListener(object: OnToggledListener{
+        switchCar.setOnToggledListener(object : OnToggledListener {
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
-                if(isOn){
-                    Toast.makeText(this@MainActivity, "Car on", Toast.LENGTH_SHORT).show()
+                if (isOn) {
+//                    Toast.makeText(this@MainActivity, "Car on", Toast.LENGTH_SHORT).show()
+                    AppController.settingFilterCar = "true"
                 } else {
-                    Toast.makeText(this@MainActivity, "Car off", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "Car off", Toast.LENGTH_SHORT).show()
+                    AppController.settingFilterCar = "false"
                 }
             }
         })
 
-        switchReport.setOnToggledListener(object: OnToggledListener{
+        switchReport.setOnToggledListener(object : OnToggledListener {
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
-                if(isOn){
-                    Toast.makeText(this@MainActivity, "Report on", Toast.LENGTH_SHORT).show()
+                if (isOn) {
+//                    Toast.makeText(this@MainActivity, "Report on", Toast.LENGTH_SHORT).show()
+                    AppController.settingFilterReport = "true"
                 } else {
-                    Toast.makeText(this@MainActivity, "Report off", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@MainActivity, "Report off", Toast.LENGTH_SHORT).show()
+                    AppController.settingFilterReport = "false"
                 }
             }
         })
@@ -1291,7 +1321,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onAllUserProfileSuccess(response: List<User>) {
         listUser = response
-        drawValidUsers()
+
+        if (AppController.settingFilterCar == "true") {
+            drawValidUsers()
+        }
     }
 
     private fun onGetNearbyUsers() {
@@ -2005,7 +2038,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             listReport[i].distance = response.distances!![i]
         }
 
-        drawValidReports()
+        if (AppController.settingFilterReport == "true") {
+            drawValidReports()
+        }
 
     }
 
