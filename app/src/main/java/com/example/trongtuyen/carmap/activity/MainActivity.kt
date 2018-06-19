@@ -677,13 +677,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
         val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
 
-        if(AppController.settingFilterCar == "true"){
+        if (AppController.settingFilterCar == "true") {
             switchCar.isOn = true
         } else {
             switchCar.isOn = false
         }
 
-        if(AppController.settingFilterReport == "true"){
+        if (AppController.settingFilterReport == "true") {
             switchReport.isOn = true
         } else {
             switchReport.isOn = false
@@ -692,15 +692,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         btnClose.setOnClickListener {
             mPopupWindowFilter!!.dismiss()
-            if(AppController.settingFilterCar == "true"){
-                drawValidUsers()
+            if (AppController.settingFilterCar == "true") {
+                if (listUser.isNotEmpty()) {
+                    drawValidUsers()
+                }
             } else {
-                listUserMarker.clear()
+                for (i in 0 until listUserMarker.size) {
+                    listUserMarker[i].remove()
+                }
             }
-            if(AppController.settingFilterReport == "true"){
-                drawValidReports()
+            if (AppController.settingFilterReport == "true") {
+                if (listReport.isNotEmpty()) {
+                    drawValidReports()
+                }
             } else {
-                listReportMarker.clear()
+                for (i in 0 until listReportMarker.size) {
+                    listReportMarker[i].remove()
+                }
             }
         }
 
