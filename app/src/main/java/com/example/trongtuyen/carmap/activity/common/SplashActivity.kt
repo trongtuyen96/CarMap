@@ -11,6 +11,7 @@ import android.widget.Toast
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.activity.MainActivity
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.swipeRefresh
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.AuthenticationService
