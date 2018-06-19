@@ -64,7 +64,19 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
+    private lateinit var currentPolyline:Polyline
+    override fun onPolylineClick(p0: Polyline) {
+        if (p0==currentPolyline)
+            return
+        p0.color=Color.BLUE
+        currentPolyline.color=Color.GRAY
+        p0.zIndex = 1F
+        currentPolyline.zIndex = 0F
+        currentPolyline = p0
+        val currentRoute = currentPolyline.tag as Route
+        Toast.makeText(this,currentRoute.duration!!.text +" | "+currentRoute.distance!!.text,Toast.LENGTH_SHORT).show()
+    }
 
     // Static variables
     companion object {
@@ -173,28 +185,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onBtnStartDirectionClick(place: Place) {
-        var origin: String? = null
-        val geocoder = Geocoder(this, Locale.getDefault())
-        try {
-            val addresses = geocoder.getFromLocation(lastLocation.latitude, lastLocation.longitude, 1)
-            val obj = addresses[0]
-            origin = obj.getAddressLine(0)
-            Toast.makeText(this, origin, Toast.LENGTH_SHORT).show()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            //            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show()
-            //            return null
-        }
+        val origin = lastLocation.latitude.toString()+","+lastLocation.longitude.toString()
 
         val destination = place.name.toString()
-        if (origin == null) {
-            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show()
-            return
-        }
-        //        if (destination.isEmpty()) {
-        //            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show()
-        //            return
-        //        }
 
         try {
             DirectionFinder(this, origin, destination).execute()
@@ -232,27 +225,33 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         polylinePaths = ArrayList()
         originMarkers = ArrayList<Marker>()
         destinationMarkers = ArrayList<Marker>()
+        var firstRoute = true
 
         for (route in routes) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16f))
-            //            (findViewById(R.id.tvDuration) as TextView).setText(route.duration.text)
-            //            (findViewById(R.id.tvDistance) as TextView).setText(route.distance.text)
 
-            //            (originMarkers as ArrayList<Marker>).add(mMap.addMarker(MarkerOptions()
-            //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
-            //                    .title(route.startAddress)
-            //                    .position(route.startLocation!!)))
-            //            (destinationMarkers as ArrayList<Marker>).add(mMap.addMarker(MarkerOptions()
-            //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
-            //                    .title(route.endAddress)
-            //                    .position(route.endLocation!!)))
+            val polylineOptions = PolylineOptions().geodesic(true).width(10f).color(Color.GRAY)
 
-            val polylineOptions = PolylineOptions().geodesic(true).color(Color.CYAN).width(10f)
+            val polyline = drawPolyline(route, polylineOptions)
 
-            for (i in 0 until route.points!!.size)
-                polylineOptions.add(route.points!![i])
-            (polylinePaths as ArrayList<Polyline>).add(mMap.addPolyline(polylineOptions))
+            if (firstRoute){
+                firstRoute = false
+                currentPolyline = polyline
+                currentPolyline.zIndex= 1F
+                currentPolyline.color = Color.BLUE
+            }
         }
+    }
+
+    private fun drawPolyline(route: Route, options: PolylineOptions): Polyline{
+        for (i in 0 until route.points!!.size)
+            options.add(route.points!![i])
+
+        val polyline = mMap.addPolyline(options)
+        polyline.isClickable=true
+        polyline.tag=route
+        polylinePaths.add(polyline)
+        return polyline
     }
 
     // ======================================================================
@@ -536,6 +535,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mMap.setOnMarkerClickListener(this)
         mMap.setOnInfoWindowClickListener(this)
         mMap.setOnInfoWindowCloseListener(this)
+        mMap.setOnPolylineClickListener(this)
 
         initLocationPermission()
 

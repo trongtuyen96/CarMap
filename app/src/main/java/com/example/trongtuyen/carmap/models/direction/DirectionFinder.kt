@@ -1,6 +1,9 @@
 package com.example.trongtuyen.carmap.models.direction
 
+import android.annotation.SuppressLint
 import android.os.AsyncTask
+import android.util.Log
+import com.example.trongtuyen.carmap.R.string.google_maps_key
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONException
 import org.json.JSONObject
@@ -16,10 +19,15 @@ import java.util.ArrayList
 
 
 class DirectionFinder(private val listener: DirectionListener, private val origin: String, private val destination: String) {
+    companion object {
+        private const val DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?"
+        private const val GOOGLE_API_KEY = "AIzaSyDTWxpGP0Zjgifxrau0BrNdzebFmuUKEpI"
+        private const val TAG = "DirectionFinder"
+    }
 
     interface DirectionListener {
         fun onDirectionFinderStart()
-        fun onDirectionFinderSuccess(route: List<Route>)
+        fun onDirectionFinderSuccess(routes: List<Route>)
     }
 
     @Throws(UnsupportedEncodingException::class)
@@ -30,12 +38,17 @@ class DirectionFinder(private val listener: DirectionListener, private val origi
 
     @Throws(UnsupportedEncodingException::class)
     private fun createUrl(): String {
-        val urlOrigin = URLEncoder.encode(origin, "utf-8")
-        val urlDestination = URLEncoder.encode(destination, "utf-8")
+        var url = DIRECTION_URL_API
+        url += "origin=" + URLEncoder.encode(origin, "utf-8")
+        url += "&destination=" + URLEncoder.encode(destination, "utf-8")
+        url += "&alternatives=true"
 
-        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&key=" + GOOGLE_API_KEY
+        url += "&key=$GOOGLE_API_KEY"
+        Log.v(TAG,url)
+        return url
     }
 
+    @SuppressLint("StaticFieldLeak")
     private inner class DownloadRawData : AsyncTask<String, Void, String>() {
 
         override fun doInBackground(vararg params: String): String? {
@@ -142,10 +155,5 @@ class DirectionFinder(private val listener: DirectionListener, private val origi
         }
 
         return decoded
-    }
-
-    companion object {
-        private val DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?"
-        private val GOOGLE_API_KEY = "AIzaSyDTWxpGP0Zjgifxrau0BrNdzebFmuUKEpI"
     }
 }
