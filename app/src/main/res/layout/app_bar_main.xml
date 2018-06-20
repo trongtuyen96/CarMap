@@ -67,9 +67,17 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imvMyLoc"
         app:srcCompat="@drawable/ic_car_report" />
+
+    <ImageView
+        android:id="@+id/imvFilter"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/imvMyLoc"
+        app:layout_constraintTop_toBottomOf="@+id/imvMyLoc"
+        app:srcCompat="@drawable/ic_pickup_filter" />
 
 </android.support.constraint.ConstraintLayout>

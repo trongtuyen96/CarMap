@@ -84,4 +84,9 @@ dependencies {
     // ALPR - Automatic License Plate Recognition
     implementation 'com.github.SandroMachado:openalpr-android:1.1.2'
 
+    // Custom Switch
+    implementation 'com.github.angads25:toggle:1.0.0'
+
+    // Recycler View
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }

@@ -149,6 +149,10 @@ class SignUpActivity : AppCompatActivity() {
         AppController.userProfile = response.user
         AppController.accessToken = response.token //Save access token
 
+        // Tạo mới dữ liệu cài đặt
+        AppController.settingFilterCar = "true"
+        AppController.settingFilterReport = "true"
+
         //        Intent returnIntent = new Intent();
         //        setResult(Activity.RESULT_OK,returnIntent);
         //        finish();

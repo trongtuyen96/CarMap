@@ -7,15 +7,16 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.NavigationView
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
@@ -37,6 +38,8 @@ import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
 import com.example.trongtuyen.carmap.utils.SharePrefs.Companion.mContext
+import com.github.angads25.toggle.LabeledSwitch
+import com.github.angads25.toggle.interfaces.OnToggledListener
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -58,7 +61,6 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -66,17 +68,46 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
-    private lateinit var currentPolyline:Polyline
+    private lateinit var currentPolyline: Polyline
     override fun onPolylineClick(p0: Polyline) {
-        if (p0==currentPolyline)
+        if (p0 == currentPolyline)
             return
-        p0.color=Color.BLUE
-        currentPolyline.color=Color.GRAY
+        p0.color = Color.BLUE
+        currentPolyline.color = Color.GRAY
         p0.zIndex = 1F
         currentPolyline.zIndex = 0F
         currentPolyline = p0
         val currentRoute = currentPolyline.tag as Route
-        Toast.makeText(this,currentRoute.duration!!.text +" | "+currentRoute.distance!!.text,Toast.LENGTH_SHORT).show()
+        dismissPopupWindowRouteInfo()
+        showRouteInfoPopup(currentRoute)
+    }
+
+    private var isRouteInfoWindowUp:Boolean = false
+
+    private fun showRouteInfoPopup(route: Route) {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewPlacePopup = inflater.inflate(R.layout.steps_layout, null)
+        mPopupWindowRouteInfo = PopupWindow(viewPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        imvReport.visibility = View.GONE
+        mPopupWindowRouteInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+
+        isRouteInfoWindowUp = true
+
+        val tvRouteDuration = viewPlacePopup.findViewById<TextView>(R.id.tvDuration_route_info)
+        val tvRouteDistance = viewPlacePopup.findViewById<TextView>(R.id.tvDistance_route_info)
+        val btnStartNavigation = viewPlacePopup.findViewById<LinearLayout>(R.id.btnStartNavigation_route_info)
+        val btnSteps = viewPlacePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
+
+        tvRouteDuration.text = route.duration!!.text
+        tvRouteDistance.text = route.distance!!.text
+
+        btnStartNavigation.setOnClickListener {
+            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
+        }
+
+        btnSteps.setOnClickListener {
+            Toast.makeText(this,"onBtnStepsClick",Toast.LENGTH_SHORT).show()
+        }
     }
 
     // Static variables
@@ -114,6 +145,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var mPopupWindowHello: PopupWindow? = null
 
+    private var mPopupWindowFilter: PopupWindow? = null
+
     // List of user of other cars
     private lateinit var listUser: List<User>
 
@@ -146,6 +179,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     // Place Info
     private var mPopupWindowPlaceInfo: PopupWindow? = null
+
+    private var mPopupWindowRouteInfo: PopupWindow? = null
 
     private var isPlaceInfoWindowUp = false
 
@@ -186,7 +221,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun onBtnStartDirectionClick(place: Place) {
-        val origin = lastLocation.latitude.toString()+","+lastLocation.longitude.toString()
+        val origin = lastLocation.latitude.toString() + "," + lastLocation.longitude.toString()
 
         val destination = place.name.toString()
 
@@ -223,6 +258,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onDirectionFinderSuccess(routes: List<Route>) {
+        dismissPopupWindowPlaceInfo()
         polylinePaths = ArrayList()
         originMarkers = ArrayList<Marker>()
         destinationMarkers = ArrayList<Marker>()
@@ -235,22 +271,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             val polyline = drawPolyline(route, polylineOptions)
 
-            if (firstRoute){
+            if (firstRoute) {
                 firstRoute = false
                 currentPolyline = polyline
-                currentPolyline.zIndex= 1F
+                currentPolyline.zIndex = 1F
                 currentPolyline.color = Color.BLUE
+                showRouteInfoPopup(route)
             }
         }
     }
 
-    private fun drawPolyline(route: Route, options: PolylineOptions): Polyline{
+    private fun drawPolyline(route: Route, options: PolylineOptions): Polyline {
         for (i in 0 until route.points!!.size)
             options.add(route.points!![i])
 
         val polyline = mMap.addPolyline(options)
-        polyline.isClickable=true
-        polyline.tag=route
+        polyline.isClickable = true
+        polyline.tag = route
         polylinePaths.add(polyline)
         return polyline
     }
@@ -295,13 +332,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Load user profile
         loadUserProfile()
 
-        // Khởi tạo socket
+        // Init socket
         initSocket()
 
         // onClickListener cho các nút
         imvMyLoc.setOnClickListener(this)
         imvReport.setOnClickListener(this)
 //        imvHamburger.setOnClickListener(this)
+
+        imvFilter.setOnClickListener(this)
 
         mContext = this.applicationContext
     }
@@ -408,8 +447,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             // Migrate to Setting write permission screen
             val intent: Intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-            intent.setData(Uri.parse("package:" + this.getPackageName()))
-            startActivity(intent);
+            intent.data = Uri.parse("package:" + this.packageName)
+            startActivity(intent)
             TastyToast.makeText(this, "Cho phép chỉnh sửa cài đặt hệ thống", TastyToast.LENGTH_LONG, TastyToast.DEFAULT)
         }
     }
@@ -506,6 +545,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.imvReport -> {
                 val intent = Intent(this, ReportMenuActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.imvFilter -> {
+                onFilterButtonClicked()
             }
         }
     }
@@ -658,6 +700,65 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    @SuppressLint("InflateParams")
+    private fun onFilterButtonClicked() {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
+        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+        val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
+        val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
+        val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
+
+        switchCar.isOn = AppController.settingFilterCar == "true"
+
+        switchReport.isOn = AppController.settingFilterReport == "true"
+
+
+        btnClose.setOnClickListener {
+            mPopupWindowFilter!!.dismiss()
+            if (AppController.settingFilterCar == "true") {
+                if (listUser.isNotEmpty()) {
+                    drawValidUsers()
+                }
+            } else {
+                for (i in 0 until listUserMarker.size) {
+                    listUserMarker[i].remove()
+                }
+            }
+            if (AppController.settingFilterReport == "true") {
+                if (listReport.isNotEmpty()) {
+                    drawValidReports()
+                }
+            } else {
+                for (i in 0 until listReportMarker.size) {
+                    listReportMarker[i].remove()
+                }
+            }
+        }
+
+        switchCar.setOnToggledListener { _, isOn ->
+            if (isOn) {
+//                    Toast.makeText(this@MainActivity, "Car on", Toast.LENGTH_SHORT).show()
+                AppController.settingFilterCar = "true"
+            } else {
+//                    Toast.makeText(this@MainActivity, "Car off", Toast.LENGTH_SHORT).show()
+                AppController.settingFilterCar = "false"
+            }
+        }
+
+        switchReport.setOnToggledListener { _, isOn ->
+            if (isOn) {
+//                    Toast.makeText(this@MainActivity, "Report on", Toast.LENGTH_SHORT).show()
+                AppController.settingFilterReport = "true"
+            } else {
+//                    Toast.makeText(this@MainActivity, "Report off", Toast.LENGTH_SHORT).show()
+                AppController.settingFilterReport = "false"
+            }
+        }
+    }
+
     override fun onBackPressed() {
 //        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
 //            drawer_layout.closeDrawer(GravityCompat.START)
@@ -669,8 +770,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 drawer_layout.closeDrawer(GravityCompat.START)
                 return
             }
-            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty() -> {
+            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty()&&isRouteInfoWindowUp-> {
                 removeCurrentDirectionPolyline()
+                dismissPopupWindowRouteInfo()
                 return
             }
             isPlaceInfoWindowUp -> {
@@ -689,6 +791,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mPopupWindowPlaceInfo?.dismiss()
         isPlaceInfoWindowUp = false
         imvReport.visibility = View.VISIBLE
+    }
+
+    private fun dismissPopupWindowRouteInfo() {
+        mPopupWindowRouteInfo?.dismiss()
+        isRouteInfoWindowUp = false
+        if (mPopupWindowPlaceInfo!=null&&!polylinePaths.isNotEmpty()){
+            mPopupWindowPlaceInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+            isPlaceInfoWindowUp = true
+        }
     }
 
     private fun removeCurrentSelectedPlace() {
@@ -769,7 +880,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 // ======== ON NAVIGATION BUTTON EVENT ==================================
 // ======================================================================
     private fun loadUserProfile() {
-        if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
+        if (AppController.accessToken != null && AppController.accessToken.toString().isNotEmpty()) {
             val service = APIServiceGenerator.createService(UserService::class.java)
             val call = service.userProfile
             call.enqueue(object : Callback<UserProfileResponse> {
@@ -824,6 +935,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return false
     }
 
+    @SuppressLint("InflateParams", "SetTextI18n")
     private fun onOpenReportMarker(marker: Marker) {
         if (marker.title == "report") {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -1004,7 +1116,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mPopupWindowUser!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
-            val imvAvatar = viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
+            viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
             val tvName = viewUserPopup.findViewById<TextView>(R.id.tvName_marker_user)
 //            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
             val tvEmail = viewUserPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
@@ -1242,7 +1354,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun onAllUserProfileSuccess(response: List<User>) {
         listUser = response
-        drawValidUsers()
+
+        if (AppController.settingFilterCar == "true") {
+            drawValidUsers()
+        }
     }
 
     private fun onGetNearbyUsers() {
@@ -1956,7 +2071,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             listReport[i].distance = response.distances!![i]
         }
 
-        drawValidReports()
+        if (AppController.settingFilterReport == "true") {
+            drawValidReports()
+        }
 
     }
 
@@ -2049,20 +2166,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
             Toast.makeText(mContext, "Custom: onFling", Toast.LENGTH_SHORT).show()
-            if (e1!!.getX() < e2!!.getX()) {
-                Log.d(TAG, "Left to Right swipe performed");
+            if (e1!!.x < e2!!.x) {
+                Log.d(TAG, "Left to Right swipe performed")
             }
 
-            if (e1.getX() > e2.getX()) {
-                Log.d(TAG, "Right to Left swipe performed");
+            if (e1.x > e2.x) {
+                Log.d(TAG, "Right to Left swipe performed")
             }
 
-            if (e1.getY() < e2.getY()) {
-                Log.d(TAG, "Up to Down swipe performed");
+            if (e1.y < e2.y) {
+                Log.d(TAG, "Up to Down swipe performed")
             }
 
-            if (e1.getY() > e2.getY()) {
-                Log.d(TAG, "Down to Up swipe performed");
+            if (e1.y > e2.y) {
+                Log.d(TAG, "Down to Up swipe performed")
             }
 
             return true

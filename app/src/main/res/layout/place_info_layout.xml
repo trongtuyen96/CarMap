@@ -12,9 +12,7 @@
         android:id="@+id/btnSelectedPlace_place_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
         android:paddingBottom="8dp"
-        android:layout_marginStart="0dp"
         android:paddingStart="20dp"
         android:layout_marginTop="1dp"
         android:layout_weight="7"
@@ -77,7 +75,8 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -85,15 +84,16 @@
             android:gravity="center_vertical|end"
             android:paddingStart="10dp"
             android:text="Chỉ\nđường"
+            android:paddingEnd="8dp"
             android:textAlignment="center"
             android:textColor="@color/background_front"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="44dp"
+            android:layout_width="36dp"
             android:layout_height="match_parent"
-            app:srcCompat="@android:drawable/ic_menu_directions" />
+            app:srcCompat="@drawable/ic_directions_white_48dp" />
     </LinearLayout>
 
 </LinearLayout>
