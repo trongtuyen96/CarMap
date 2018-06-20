@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.common.WorkSettingActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimaryLight">
+
+        <ImageView
+            android:id="@+id/imBack_work_setting"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_keyboard_arrow_left_white_48dp"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/background_front"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/tvAddress_work_setting"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="60dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:text="CÀI ĐẶT NƠI LÀM VIỆC"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textColor="@color/background_front"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/place_autocomplete_work_setting"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"/>
+
+    <ImageView
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:src="@drawable/ic_share_work"
+        android:layout_gravity="center"
+        android:layout_marginTop="60dp"/>
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="Hãy chọn vị trí nơi làm việc của bạn"
+        android:textAlignment="center"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/button_bg_inactive"
+        android:orientation="horizontal"
+        android:layout_marginTop="134dp">
+
+        <Button
+            android:id="@+id/btnDismiss_work_setting"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_btn_dismiss"
+            android:text="HUỶ"
+            android:textColor="@color/background_front"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnChoose_work_setting"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_btn_send"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:text="CHỌN"
+            android:textColor="@color/background_front"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+
+
+</LinearLayout>
