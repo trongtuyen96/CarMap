@@ -39,8 +39,8 @@ class WorkSettingActivity : AppCompatActivity() {
 
     private fun initComponents() {
 
-        if (intent.getStringExtra("home_location") != "") {
-            tvAddress.text = intent.getStringExtra("home_location")
+        if (intent.getStringExtra("work_location") != "") {
+            tvAddress.text = intent.getStringExtra("work_location")
         }
 
         // Obtain placeAutoComplete fragment
