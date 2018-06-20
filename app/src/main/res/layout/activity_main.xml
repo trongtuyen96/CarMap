@@ -232,7 +232,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
-                        android:text="Cài đặt cho gì gì đó" />
+                        android:text="Thiết lập các tuỳ chỉnh" />
                 </LinearLayout>
 
             </LinearLayout>
