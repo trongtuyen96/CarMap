@@ -67,7 +67,7 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
     private lateinit var currentPolyline: Polyline
     override fun onPolylineClick(p0: Polyline) {
         if (p0 == currentPolyline)
@@ -291,7 +291,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         initActionBarDrawerToggle()
 
-        nav_view.setNavigationItemSelectedListener(this)
+//        nav_view.setNavigationItemSelectedListener(this)
 
 //        // Set up Hamburger button toggle Navigation Drawer
 //        setupHamburgerButton()
@@ -309,7 +309,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         imvFilter.setOnClickListener(this)
 
+        // Khởi tạo các nút trên menu drawer
+        initMenuItemDrawer()
+
         mContext = this.applicationContext
+    }
+
+    private fun initMenuItemDrawer(){
+        layoutHomeMenu.setOnClickListener(this)
+        layoutWorkMenu.setOnClickListener(this)
+        layoutHistoryMenu.setOnClickListener(this)
+        layoutSettingMenu.setOnClickListener(this)
+        layoutQuickSettingSound.setOnClickListener(this)
+        layoutSignOut.setOnClickListener(this)
     }
 
     private var isTouchSoundsEnabled: Boolean = false
@@ -515,6 +527,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.imvFilter -> {
                 onFilterButtonClicked()
+            }
+            R.id.layoutHomeMenu -> {
+
+            }
+            R.id.layoutWorkMenu -> {
+
+            }
+            R.id.layoutHistoryMenu -> {
+
+            }
+            R.id.layoutSettingMenu -> {
+
+            }
+            R.id.layoutQuickSettingSound -> {
+
+            }
+            R.id.layoutSignOut -> {
+                onSignOut()
             }
         }
     }
@@ -776,11 +806,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         currentSelectedPlace = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+////        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -792,42 +822,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        when (item.itemId) {
-            R.id.nav_camera -> {
-//                onGetAllUser()
-                onGetNearbyUsers()
-            }
-            R.id.nav_gallery -> {
-                if (::lastLocation.isInitialized) {
-                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
-
-                    val newGeo = Geometry("Point", listGeo)
-                    Log.e("LOC", lastLocation.longitude.toString())
-                    Log.e("LOC", lastLocation.latitude.toString())
-                    val user = User("", "", "", "", "", "", "", newGeo)
-                    onUpdateHomeLocation(user)
-                }
-            }
-            R.id.nav_slideshow -> {
-//                onGetAllReport()
-                onGetNearbyReports()
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_signout -> {
-                onSignOut()
-            }
-        }
-
-        drawer_layout.closeDrawer(GravityCompat.START)
-        return true
-    }
+//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//        // Handle navigation view item clicks here.
+//        when (item.itemId) {
+//            R.id.nav_camera -> {
+////                onGetAllUser()
+//                onGetNearbyUsers()
+//            }
+//            R.id.nav_gallery -> {
+//                if (::lastLocation.isInitialized) {
+//                    val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
+//
+//                    val newGeo = Geometry("Point", listGeo)
+//                    Log.e("LOC", lastLocation.longitude.toString())
+//                    Log.e("LOC", lastLocation.latitude.toString())
+//                    val user = User("", "", "", "", "", "", "", newGeo)
+//                    onUpdateHomeLocation(user)
+//                }
+//            }
+//            R.id.nav_slideshow -> {
+////                onGetAllReport()
+//                onGetNearbyReports()
+//            }
+//            R.id.nav_manage -> {
+//
+//            }
+//            R.id.nav_share -> {
+//
+//            }
+//            R.id.nav_signout -> {
+//                onSignOut()
+//            }
+//        }
+//
+//        drawer_layout.closeDrawer(GravityCompat.START)
+//        return true
+//    }
 
     private var currentSelectedPlaceMarker: Marker? = null
     fun addMarker(p: Place) {
@@ -854,7 +884,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             call.enqueue(object : Callback<UserProfileResponse> {
                 override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                     if (response.isSuccessful) {
-                        AppController.userProfile = response.body().user
+                        AppController.userProfile = response.body()?.user
                         updateInformation()
                     } else {
                         val apiError = ErrorUtils.parseError(response)
@@ -1305,7 +1335,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
-                    onAllUserProfileSuccess(response.body())
+                    onAllUserProfileSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -1334,7 +1364,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
                     // Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
-                    onAllUserProfileSuccess(response.body())
+                    onAllUserProfileSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -1986,7 +2016,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         call.enqueue(object : Callback<List<Report>> {
             override fun onResponse(call: Call<List<Report>>, response: Response<List<Report>>) {
                 if (response.isSuccessful) {
-                    onAllReportSuccess(response.body())
+                    onAllReportSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -2007,7 +2037,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onResponse(call: Call<NearbyReportsResponse>, response: Response<NearbyReportsResponse>) {
                 if (response.isSuccessful) {
                     // Toast.makeText(this@MainActivity, "Phạm vi 3 km", Toast.LENGTH_SHORT).show()
-                    onNearbyReportsSuccess(response.body())
+                    onNearbyReportsSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
