@@ -57,6 +57,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvAddressHome_menu"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
@@ -66,21 +67,29 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="6dp"
                     android:layout_marginBottom="4dp"
+                    android:layout_marginTop="6dp"
                     android:background="@color/divider" />
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
+                <LinearLayout
+                    android:id="@+id/layoutEditHome"
+                    android:layout_width="34dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
-                    android:src="@drawable/ic_edit_location_44dp" />
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_edit_location_44dp" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/divider" />
@@ -113,6 +122,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tvAddressWork_menu"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
@@ -122,21 +132,28 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="6dp"
                     android:layout_marginBottom="4dp"
+                    android:layout_marginTop="6dp"
                     android:background="@color/divider" />
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center_vertical"
+                <LinearLayout
+                    android:id="@+id/layoutEditWork"
+                    android:layout_width="34dp"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
-                    android:src="@drawable/ic_edit_location_44dp" />
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_edit_location_44dp" />
+                </LinearLayout>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/divider" />
@@ -179,7 +196,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/divider" />
@@ -222,7 +239,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/divider" />
@@ -294,7 +311,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
                 android:background="@color/divider" />
