@@ -68,18 +68,6 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
-    private lateinit var currentPolyline: Polyline
-    override fun onPolylineClick(p0: Polyline) {
-        if (p0 == currentPolyline)
-            return
-        p0.color = Color.BLUE
-        currentPolyline.color = Color.GRAY
-        p0.zIndex = 1F
-        currentPolyline.zIndex = 0F
-        currentPolyline = p0
-        val currentRoute = currentPolyline.tag as Route
-        Toast.makeText(this, currentRoute.duration!!.text + " | " + currentRoute.distance!!.text, Toast.LENGTH_SHORT).show()
-    }
 
     // Static variables
     companion object {
@@ -161,9 +149,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var destinationMarkers: MutableList<Marker>? = ArrayList()
 
 
-    // ======================================================================
-// ======== ON DIRECTION ================================================
-// ======================================================================
+
+
+    // ==================================================================================================================================== //
+    // ======== VỀ DIRECTION ============================================================================================================== //
+    // ==================================================================================================================================== //
     private fun showPlaceInfoPopup(place: Place) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewPlacePopup = inflater.inflate(R.layout.place_info_layout, null)
@@ -226,6 +216,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         removeCurrentDirectionPolyline()
     }
 
+    private lateinit var currentPolyline: Polyline
+
+    override fun onPolylineClick(p0: Polyline) {
+        if (p0 == currentPolyline)
+            return
+        p0.color = Color.BLUE
+        currentPolyline.color = Color.GRAY
+        p0.zIndex = 1F
+        currentPolyline.zIndex = 0F
+        currentPolyline = p0
+        val currentRoute = currentPolyline.tag as Route
+        Toast.makeText(this, currentRoute.duration!!.text + " | " + currentRoute.distance!!.text, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onDirectionFinderSuccess(routes: List<Route>) {
         polylinePaths = ArrayList()
         originMarkers = ArrayList<Marker>()
@@ -259,9 +263,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         return polyline
     }
 
-    // ======================================================================
 
 
+
+    // ========================================================================================================================================= //
+    // ======== VỀ MAIN ======================================================================================================================== //
+    // ========================================================================================================================================= //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -417,8 +424,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
 
-        // Lần đầu chạy sau 7s
-        handler.postDelayed(runnable, 7000)  //the time is in miliseconds
+        // Lần đầu chạy sau 5s
+        handler.postDelayed(runnable, 5000)  //the time is in miliseconds
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
             // Khởi tạo sound và vibrate
@@ -431,7 +438,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             TastyToast.makeText(this, "Cho phép chỉnh sửa cài đặt hệ thống", TastyToast.LENGTH_LONG, TastyToast.DEFAULT)
         }
     }
-
 
     private fun initActionBarDrawerToggle() {
         mActionBarDrawerToggle = ActionBarDrawerToggle(
@@ -448,6 +454,48 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         super.onConfigurationChanged(newConfig)
         mActionBarDrawerToggle.onConfigurationChanged(newConfig)
     }
+
+    override fun onClick(v: View) {
+        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        when (v.id) {
+            R.id.imvMyLoc -> {
+                onMyLocationButtonClicked()
+            }
+
+            R.id.imvReport -> {
+                val intent = Intent(this, ReportMenuActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.imvFilter -> {
+                onFilterButtonClicked()
+            }
+            R.id.layoutHomeMenu -> {
+
+            }
+            R.id.layoutWorkMenu -> {
+
+            }
+            R.id.layoutHistoryMenu -> {
+
+            }
+            R.id.layoutSettingMenu -> {
+
+            }
+            R.id.layoutQuickSettingSound -> {
+
+            }
+            R.id.layoutSignOut -> {
+                onSignOut()
+            }
+        }
+    }
+
+
+
+
+    // ================================================================================================================================================== //
+    // ======== VỀ PERMISSION LOCATION VÀ MAP =========================================================================================================== //
+    // ================================================================================================================================================== //
 
     // Permission Requirement functions
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
@@ -512,41 +560,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-    }
-
-    override fun onClick(v: View) {
-        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-        when (v.id) {
-            R.id.imvMyLoc -> {
-                onMyLocationButtonClicked()
-            }
-
-            R.id.imvReport -> {
-                val intent = Intent(this, ReportMenuActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.imvFilter -> {
-                onFilterButtonClicked()
-            }
-            R.id.layoutHomeMenu -> {
-
-            }
-            R.id.layoutWorkMenu -> {
-
-            }
-            R.id.layoutHistoryMenu -> {
-
-            }
-            R.id.layoutSettingMenu -> {
-
-            }
-            R.id.layoutQuickSettingSound -> {
-
-            }
-            R.id.layoutSignOut -> {
-                onSignOut()
-            }
-        }
     }
 
     @SuppressLint("MissingPermission")
@@ -685,6 +698,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     null /* Looper */)
         }
     }
+
+
+
+
+    // ================================================================================================================================================== //
+    // ======== VỀ CÁC NÚT TRÊN APP BAR MAIN ============================================================================================================ //
+    // ================================================================================================================================================== //
 
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
@@ -878,9 +898,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         currentSelectedPlaceMarker?.title = "current_place"
     }
 
-    // ======================================================================
-// ======== ON NAVIGATION BUTTON EVENT ==================================
-// ======================================================================
+
+
+
+    // ================================================================================================================================================= //
+    // ======== VỀ THÔNG TIN NGƯỜI DÙNG USER =========================================================================================================== //
+    // ================================================================================================================================================= //
     private fun loadUserProfile() {
         if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
             val service = APIServiceGenerator.createService(UserService::class.java)
@@ -918,12 +941,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         startActivity(intent)
         this.finish()
     }
-// ======================================================================
 
 
-    // ======================================================================
-// ======== MARKER CLICK GROUP ==========================================
-// ======================================================================
+
+
+    // ================================================================================================================================================= //
+    // ======== VỂ CLICK MARKER ======================================================================================================================== //
+    // ================================================================================================================================================= //
     override fun onMarkerClick(p0: Marker): Boolean {
 //        p0.showInfoWindow()
 
@@ -1332,12 +1356,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
         return user
     }
-// ========================================================================
 
 
-    // ========================================================================
-// ======== API CALL AND LISTENERS ========================================
-// ========================================================================
+
+
+    // ====================================================================================================================================================== //
+    // ======== VỀ GỌI API VÀ LISTENER USER ================================================================================================================= //
+    // ====================================================================================================================================================== //
     private fun onGetAllUser() {
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.allUserProfile
@@ -1471,12 +1496,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         })
     }
-// =====================================================================
 
 
-    // ======================================================================
-// ======== SOCKET EVENT ================================================
-// ======================================================================
+
+
+    // ======================================================================================================================================================== //
+    // ======== SOCKET EVENT ================================================================================================================================== //
+    // ======================================================================================================================================================== //
     private fun initSocket() {
         socket = SocketService().getSocket()
         socket.on(Socket.EVENT_CONNECT, onConnect)
@@ -2013,12 +2039,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // perform the sending message attempt.
         socket.emit("event_report_other_server", email, socket.id(), receiveSocketID, type, base64Image, licensePlate)
     }
-// =====================================================================
 
 
-    // ======================================================================
-// ======== REPORT ======================================================
-// ======================================================================
+
+
+    // ====================================================================================================================================================== //
+    // ======== VỀ GỌI API VÀ LISTENER REPORT =============================================================================================================== //
+    // ====================================================================================================================================================== //
     private fun onGetAllReport() {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.allReport
@@ -2136,8 +2163,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         listReportMarker.add(marker)
         marker.tag = report
     }
-// ======================================================================
 
+
+
+
+    // ====================================================================================================================================================== //
+    // ======== GESTURE DETECTOR ============================================================================================================================ //
+    // ====================================================================================================================================================== //
 //    private lateinit var mContext: Context
 
     class CustomGestureDetector : GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
