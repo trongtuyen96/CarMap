@@ -23,6 +23,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.support.design.widget.BottomSheetDialog
+import android.support.v4.content.FileProvider
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
@@ -192,13 +193,45 @@ class ReportHazardActivity : AppCompatActivity() {
         }
 
         btnTakePhoto.setOnClickListener {
+//            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//            if (mCurrentPhotoPath != "") {
+//                val oldFile = File(mCurrentPhotoPath)
+//                oldFile.delete()
+//            }
+//            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            startActivityForResult(intent, 1)
+
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
+            // Xoá ảnh cũ
             if (mCurrentPhotoPath != "") {
                 val oldFile = File(mCurrentPhotoPath)
                 oldFile.delete()
             }
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, 1)
+
+//            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            startActivityForResult(intent, 1)
+
+//             ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                // Create the File where the photo should go
+                var photoFile: File? = null
+                try {
+                    photoFile = createImageFile();
+                } catch (e: IOException) {
+                    // Error occurred while creating the File
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    photoURI = FileProvider.getUriForFile(this,
+                            "com.example.android.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, 1);
+                }
+            }
         }
 
         layoutReport.setOnClickListener {
