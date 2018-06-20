@@ -166,7 +166,7 @@ class SignInActivity : AppCompatActivity() {
         call.enqueue(object : Callback<AuthenticationResponse> {
             override fun onResponse(call: Call<AuthenticationResponse>, response: Response<AuthenticationResponse>) {
                 if (response.isSuccessful) {
-                    onAuthenticationSuccess(response.body())
+                    onAuthenticationSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@SignInActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()

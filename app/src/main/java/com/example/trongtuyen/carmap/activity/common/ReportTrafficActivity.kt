@@ -201,7 +201,7 @@ class ReportTrafficActivity : AppCompatActivity() {
                     if (bothAudioAndImage == true) {
                         // Encode file ghi âm
                         val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                        onUpdateBase64Voice(response.body()._id.toString(), encoded)
+                        onUpdateBase64Voice(response.body()!!._id.toString(), encoded)
                         finish()
                     } else {
                         TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
