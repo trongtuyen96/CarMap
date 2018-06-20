@@ -2,6 +2,7 @@ package com.example.trongtuyen.carmap.activity
 
 import `in`.championswimmer.sfg.lib.SimpleFingerGestures
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -21,9 +22,7 @@ import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.R.id.*
-import com.example.trongtuyen.carmap.activity.common.CustomCameraActivity
-import com.example.trongtuyen.carmap.activity.common.ReportMenuActivity
-import com.example.trongtuyen.carmap.activity.common.SignInActivity
+import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
@@ -149,8 +148,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var destinationMarkers: MutableList<Marker>? = ArrayList()
 
 
-
-
     // ==================================================================================================================================== //
     // ======== VỀ DIRECTION ============================================================================================================== //
     // ==================================================================================================================================== //
@@ -264,8 +261,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
 
-
-
     // ========================================================================================================================================= //
     // ======== VỀ MAIN ======================================================================================================================== //
     // ========================================================================================================================================= //
@@ -316,6 +311,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         imvFilter.setOnClickListener(this)
 
+
         // Khởi tạo các nút trên menu drawer
         initMenuItemDrawer()
 
@@ -329,6 +325,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         layoutSettingMenu.setOnClickListener(this)
         layoutQuickSettingSound.setOnClickListener(this)
         layoutSignOut.setOnClickListener(this)
+        layoutEditHome.setOnClickListener(this)
+        layoutEditWork.setOnClickListener(this)
     }
 
     private var isTouchSoundsEnabled: Boolean = false
@@ -487,10 +485,35 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             R.id.layoutSignOut -> {
                 onSignOut()
             }
+            R.id.layoutEditHome -> {
+                val intent = Intent(this, HomeSettingActivity::class.java)
+                intent.putExtra("home_location", tvAddressHome_menu.text.toString())
+                startActivityForResult(intent, 1)
+            }
+            R.id.layoutEditWork -> {
+                val intent = Intent(this, WorkSettingActivity::class.java)
+                intent.putExtra("work_location", tvAddressWork_menu.text.toString())
+                startActivityForResult(intent, 2)
+            }
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            1 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    tvAddressHome_menu.text = data!!.getStringExtra("home_location_new")
+                }
+            }
+            2 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
+                }
+            }
+        }
 
+    }
 
 
     // ================================================================================================================================================== //
@@ -700,8 +723,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
 
-
-
     // ================================================================================================================================================== //
     // ======== VỀ CÁC NÚT TRÊN APP BAR MAIN ============================================================================================================ //
     // ================================================================================================================================================== //
@@ -899,8 +920,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
 
-
-
     // ================================================================================================================================================= //
     // ======== VỀ THÔNG TIN NGƯỜI DÙNG USER =========================================================================================================== //
     // ================================================================================================================================================= //
@@ -941,8 +960,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         startActivity(intent)
         this.finish()
     }
-
-
 
 
     // ================================================================================================================================================= //
@@ -1358,8 +1375,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
 
-
-
     // ====================================================================================================================================================== //
     // ======== VỀ GỌI API VÀ LISTENER USER ================================================================================================================= //
     // ====================================================================================================================================================== //
@@ -1496,8 +1511,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         })
     }
-
-
 
 
     // ======================================================================================================================================================== //
@@ -2041,8 +2054,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
 
-
-
     // ====================================================================================================================================================== //
     // ======== VỀ GỌI API VÀ LISTENER REPORT =============================================================================================================== //
     // ====================================================================================================================================================== //
@@ -2163,8 +2174,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         listReportMarker.add(marker)
         marker.tag = report
     }
-
-
 
 
     // ====================================================================================================================================================== //
