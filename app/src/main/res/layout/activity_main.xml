@@ -30,20 +30,20 @@
             <include layout="@layout/nav_header_main" />
 
             <LinearLayout
+                android:id="@+id/layoutHomeMenu"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:id="@+id/layoutHomeMenu">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_share_home"/>
+                    android:src="@drawable/ic_share_home" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="180dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:orientation="vertical">
@@ -62,6 +62,20 @@
                         android:layout_marginStart="10dp"
                         android:text="Chọn địa chỉ nhà" />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@color/divider" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_edit_location_44dp" />
             </LinearLayout>
 
             <View
@@ -72,20 +86,20 @@
                 android:background="@color/divider" />
 
             <LinearLayout
+                android:id="@+id/layoutWorkMenu"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:id="@+id/layoutWorkMenu">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_share_work"/>
+                    android:src="@drawable/ic_share_work" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="180dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:orientation="vertical">
@@ -104,6 +118,20 @@
                         android:layout_marginStart="10dp"
                         android:text="Chọn nơi làm việc " />
                 </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@color/divider" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_edit_location_44dp" />
             </LinearLayout>
 
             <View
@@ -114,17 +142,17 @@
                 android:background="@color/divider" />
 
             <LinearLayout
+                android:id="@+id/layoutHistoryMenu"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:id="@+id/layoutHistoryMenu">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_share_history"/>
+                    android:src="@drawable/ic_share_history" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -157,17 +185,17 @@
                 android:background="@color/divider" />
 
             <LinearLayout
+                android:id="@+id/layoutSettingMenu"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:id="@+id/layoutSettingMenu">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="10dp"
-                    android:src="@drawable/ic_share_current"/>
+                    android:src="@drawable/ic_share_current" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -240,10 +268,10 @@
                 android:text="Cài đặt nhanh" />
 
             <LinearLayout
+                android:id="@+id/layoutQuickSettingSound"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:orientation="horizontal"
-                android:id="@+id/layoutQuickSettingSound">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/imQuickSettingSound"
@@ -251,7 +279,7 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="40dp"
-                    android:src="@drawable/ic_sound_on"/>
+                    android:src="@drawable/ic_sound_on" />
 
                 <TextView
                     android:id="@+id/tvQuickSettingSound"
@@ -259,8 +287,8 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
                     android:gravity="center_vertical"
-                    android:text="ÂM THANH: BẬT"
                     android:paddingStart="10dp"
+                    android:text="MỞ"
                     android:textStyle="bold" />
             </LinearLayout>
 
