@@ -30,20 +30,20 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     // Google Map, Search, Places
-    implementation 'com.google.android.gms:play-services-maps:12.0.0'
-    implementation 'com.google.android.gms:play-services-location:12.0.0'
-    implementation 'com.google.android.gms:play-services-places:12.0.0'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-places:15.0.1'
 
     // Binding Java and View
-    implementation 'com.jakewharton:butterknife:8.6.0'
+    implementation 'com.jakewharton:butterknife:8.8.0'
     // kapt instead of annotationProcessor : fix null in butterknife
-    kapt 'com.jakewharton:butterknife-compiler:8.6.0'
+    kapt 'com.jakewharton:butterknife-compiler:8.8.0'
 
     // Retrofit & RxAndroid & RxJava
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
@@ -51,7 +51,7 @@ dependencies {
     implementation 'io.reactivex:rxjava:1.2.2'
 
     // Adapter & GSon parser
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    implementation 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.0.0'
 
     // OkHttp for network request
