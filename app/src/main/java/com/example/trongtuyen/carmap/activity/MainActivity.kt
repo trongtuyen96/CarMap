@@ -315,7 +315,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mContext = this.applicationContext
     }
 
-    private fun initMenuItemDrawer(){
+    private fun initMenuItemDrawer() {
         layoutHomeMenu.setOnClickListener(this)
         layoutWorkMenu.setOnClickListener(this)
         layoutHistoryMenu.setOnClickListener(this)
@@ -701,7 +701,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
         mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, 180, 320)
 
         val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
@@ -723,8 +723,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         btnClose.setOnClickListener {
             mPopupWindowFilter!!.dismiss()
             if (AppController.settingFilterCar == "true") {
-                if (listUser.isNotEmpty()) {
-                    drawValidUsers()
+                if (::listUser.isInitialized) {
+                    if (listUser.isNotEmpty()) {
+                        drawValidUsers()
+                    }
                 }
             } else {
                 for (i in 0 until listUserMarker.size) {
@@ -732,8 +734,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
             if (AppController.settingFilterReport == "true") {
-                if (listReport.isNotEmpty()) {
-                    drawValidReports()
+                if (::listReport.isInitialized) {
+                    if (listReport.isNotEmpty()) {
+                        drawValidReports()
+                    }
                 }
             } else {
                 for (i in 0 until listReportMarker.size) {
@@ -884,7 +888,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             call.enqueue(object : Callback<UserProfileResponse> {
                 override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                     if (response.isSuccessful) {
-                        AppController.userProfile = response.body()?.user
+                        AppController.userProfile = response.body()!!.user
                         updateInformation()
                     } else {
                         val apiError = ErrorUtils.parseError(response)
@@ -1021,7 +1025,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         "vehicle_stop" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_stopped)
-                            tvType.text = "Xe đậu"
+                            if (dataReport.subtype1 == "on_road") {
+                                tvType.text = "Xe đậu"
+                            }
+                            if (dataReport.subtype1 == "shoulder") {
+                                tvType.text = "Xe đậu bên lề"
+                            }
                         }
                         "road_kill" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
@@ -1055,7 +1064,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
                 "help" -> {
                     imvType.background = getDrawable(R.drawable.bg_btn_report_assistance)
-                    when (dataReport.subtype1) {
+                    when (dataReport.subtype2) {
                         "no_gas" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
                             tvType.text = "Hết xăng"
@@ -2119,7 +2128,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             "hazard" -> {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_hazard))
             }
-            "assistance" -> {
+            "help" -> {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.traffic_bar_report_assistance))
             }
         }
