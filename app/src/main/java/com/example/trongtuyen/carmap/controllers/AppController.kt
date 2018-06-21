@@ -19,6 +19,8 @@ object AppController {
     internal var SETTINGS_FILTER_CAR = "setting_filter_car"
     internal var SETTINGS_FILTER_REPORT = "setting_filter_report"
     internal var SETTINGS_SOUND_MODE = "setting_sound_mode"
+    internal var LONG_HOME_LOCATION = "long_home_location"
+    internal var LAT_HOME_LOCATION = "lat_home_location"
 
     var accessToken: String?
         get() = SharePrefs.instance?.GetString(USER_ACCESS_TOKEN)

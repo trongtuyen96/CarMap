@@ -317,13 +317,39 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun initMenuItemDrawer() {
+
         layoutHomeMenu.setOnClickListener(this)
+
         layoutWorkMenu.setOnClickListener(this)
+
         layoutHistoryMenu.setOnClickListener(this)
+
         layoutSettingMenu.setOnClickListener(this)
+
         layoutQuickSettingSound.setOnClickListener(this)
+        // Set lần đầu cho setting âm thanh
+        when (AppController.soundMode) {
+            1 -> {
+                AppController.soundMode = 2
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_alerts)
+                tvQuickSettingSound.text = "CHỈ CÁC BÁO HIỆU"
+            }
+            2 -> {
+                AppController.soundMode = 3
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_mute)
+                tvQuickSettingSound.text = "TẮT"
+            }
+            3 -> {
+                AppController.soundMode = 1
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
+                tvQuickSettingSound.text = "MỞ"
+            }
+        }
+
         layoutSignOut.setOnClickListener(this)
+
         layoutEditHome.setOnClickListener(this)
+
         layoutEditWork.setOnClickListener(this)
     }
 
@@ -408,7 +434,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
                     val user = User("", "", "", "", "", "", "", newGeo)
-                    onUpdateHomeLocation(user)
+                    onUpdateCurrentLocation(user)
 
                     // Cập nhật người dùng xung quanh
                     onGetNearbyUsers()
@@ -579,7 +605,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
                                             val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                                             val newGeo = Geometry("Point", listGeo)
-                                            AppController.userProfile?.homeLocation = newGeo
+                                            AppController.userProfile?.currentLocation = newGeo
                                         }
                                     }
                         }
@@ -673,7 +699,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
                             val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                             val newGeo = Geometry("Point", listGeo)
-                            AppController.userProfile?.homeLocation = newGeo
+                            AppController.userProfile?.currentLocation = newGeo
                         }
                     }
         }
@@ -694,7 +720,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (::lastLocation.isInitialized) {
                         val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                         val newGeo = Geometry("Point", listGeo)
-                        AppController.userProfile?.homeLocation = newGeo
+                        AppController.userProfile?.currentLocation = newGeo
                     }
 
                 }
@@ -1504,7 +1530,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // Còn ở server Geo là theo thứ tự longitude, latitude
         // Random
         val random = Random()
-        markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
+        markerOptions.position(LatLng(user.currentLocation!!.coordinates!![1], user.currentLocation!!.coordinates!![0]))
         markerOptions.title("user")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
         val marker = mMap.addMarker(markerOptions)
@@ -1512,13 +1538,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         marker.tag = user
     }
 
-    private fun onUpdateHomeLocation(user: User) {
+    private fun onUpdateCurrentLocation(user: User) {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.updateHomeLocation(user)
+        val call = service.updateCurrentLocation(user)
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
-                    // Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+//                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()

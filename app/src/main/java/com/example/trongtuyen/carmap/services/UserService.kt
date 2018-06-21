@@ -22,8 +22,8 @@ interface UserService {
 
     // @FormUrlEncoded
     // Bỏ FormUrlEncoded vì gây lỗi với @Body
-    @PUT("user/updateHomeLocation")
-    fun updateHomeLocation(@Body user: User): Call<UserProfileResponse>
+    @PUT("user/updateCurrentLocation")
+    fun updateCurrentLocation(@Body user: User): Call<UserProfileResponse>
 
     @PUT("user/updateSocketID")
     fun updateSocketID(@Body user: User): Call<UserProfileResponse>
