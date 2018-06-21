@@ -466,7 +466,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 startActivity(intent)
             }
             R.id.imvFilter -> {
-                onFilterButtonClicked()
+                if(mPopupWindowFilter!= null)
+                {
+                    if(mPopupWindowFilter!!.isShowing){
+                        mPopupWindowFilter!!.dismiss()
+                    }
+                    else{
+                        onFilterButtonClicked()
+                    }
+                }
+                else{
+                    onFilterButtonClicked()
+                }
             }
             R.id.layoutHomeMenu -> {
 
@@ -1039,6 +1050,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
                 tvLocation.text = address
             }
+
             tvDescription.text = dataReport.description.toString()
             when (dataReport.type) {
                 "traffic" -> {

@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tvName"
             android:layout_toEndOf="@+id/tvName"
-            android:text="v1.0" />
+            android:text="@string/buildVersion" />
 
     </RelativeLayout>
 
