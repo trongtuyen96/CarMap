@@ -575,6 +575,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             2 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
+                    val listGeo: List<Double> = listOf(0.0, 0.0)
+                    val newGeo = Geometry("Point", listGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0,0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)
+                    onUpdateWorkLocation(user)
                 }
             }
         }
@@ -1032,6 +1036,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //            val yourCountry = yourAddresses.get(0).getAddressLine(2)
                 val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
                 tvAddressHome_menu.text = address
+            }
+        }
+
+        if (user!!.latWorkLocation != null && user.longWorkLocation != null) {
+            // Lấy địa chỉ nhà sử dụng Geocoder
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val yourAddresses: List<Address>
+            yourAddresses = geocoder.getFromLocation(user.latWorkLocation!!, user.longWorkLocation!!, 1)
+
+            if (yourAddresses.isNotEmpty()) {
+                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
+                tvAddressWork_menu.text = address
             }
         }
 
