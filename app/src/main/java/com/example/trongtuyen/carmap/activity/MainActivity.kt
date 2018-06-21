@@ -32,6 +32,7 @@ import com.example.trongtuyen.carmap.models.direction.DirectionFinder
 import com.example.trongtuyen.carmap.models.direction.Route
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
+import com.example.trongtuyen.carmap.services.models.ReportResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
@@ -577,7 +578,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0,0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)
                     onUpdateWorkLocation(user)
                 }
             }
@@ -1242,16 +1243,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             curMarkerReport = marker
             imvUpVote.setOnClickListener {
+                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
                 mPopupWindowReport!!.dismiss()
                 curMarkerReport = null
-                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
+
+            // Nếu là người sở hữu, sửa nút DownVote thành nút Xoá
+            var isDelete = false
+            if (AppController.userProfile!!._id == dataReport.userID) {
+                imvDownVote.setImageResource(R.drawable.ic_delete_white)
+                isDelete = true
             }
             imvDownVote.setOnClickListener {
-                Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
-                mPopupWindowReport!!.dismiss()
-                curMarkerReport = null
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                if (isDelete) {
+                    Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
+                    onDeleteReport(dataReport._id.toString())
+                    mPopupWindowReport!!.dismiss()
+                    curMarkerReport = null
+                } else {
+                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+                    mPopupWindowReport!!.dismiss()
+                    curMarkerReport = null
+                }
             }
             imvRecord.setOnClickListener {
                 //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
@@ -2329,6 +2344,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         marker.tag = report
     }
 
+    private fun onDeleteReport(reportID : String){
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.deleteReport(reportID)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                     TastyToast.makeText(this@MainActivity, "Đã xoá báo cáo", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                t.printStackTrace()
+            }
+        })
+    }
 
     // ====================================================================================================================================================== //
     // ======== GESTURE DETECTOR ============================================================================================================================ //
