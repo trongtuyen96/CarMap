@@ -145,7 +145,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="36dp"
-        android:background="@drawable/bg_btn_report_police"
+        android:background="@drawable/bg_btn_report_watcher"
         android:clickable="true"
         android:focusable="true"
         android:padding="10dp"

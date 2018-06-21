@@ -14,7 +14,6 @@ import android.location.Location
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
-import android.support.design.widget.NavigationView
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
@@ -22,7 +21,6 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -60,7 +58,6 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -1290,8 +1287,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         // Báo có công an
                         btnConfirm.visibility = View.VISIBLE
                         mType = 3
-//                        imvType.setImageResource(R.drawable.ic_report_police_44dp)
-//                        tvType.text = "CÓ CẢNH SÁT GẦN ĐÓ"
+//                        imvType.setImageResource(R.drawable.ic_report_watcher_44dp)
                         imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
                         tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
                     }
@@ -1348,7 +1344,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         attemptWarnSlowDown(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                     3 -> {
-                        attemptWarnPolice(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                        attemptWarnWatcher(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                     4 -> {
                         attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
@@ -1567,7 +1563,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        socket.on("chat message", onNewMessage)
         socket.on("event_hello_socket", onSayHello)
         socket.on("event_warn_strong_light_socket", onWarnStrongLight)
-        socket.on("event_warn_police_socket", onWarnPolice)
+        socket.on("event_warn_watcher_socket", onWarnWatcher)
         socket.on("event_warn_slow_down_socket", onWarnSlowDown)
         socket.on("event_warn_turn_around_socket", onWarnTurnAround)
         socket.on("event_warn_thank_socket", onWarnThank)
@@ -1584,7 +1580,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        socket.on("chat message", onNewMessage)
         socket.off("event_hello_socket", onSayHello)
         socket.off("event_warn_strong_light_socket", onWarnStrongLight)
-        socket.off("event_warn_police_socket", onWarnPolice)
+        socket.off("event_warn_watcher_socket", onWarnWatcher)
         socket.off("event_warn_slow_down_socket", onWarnSlowDown)
         socket.off("event_warn_turn_around_socket", onWarnTurnAround)
         socket.off("event_warn_thank_socket", onWarnThank)
@@ -1774,7 +1770,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_warn_strong_light_server", email, socket.id(), receiveSocketID, "strong light")
     }
 
-    private val onWarnPolice = Emitter.Listener { args ->
+    private val onWarnWatcher = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
@@ -1789,15 +1785,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 Log.e("LOG", e.message)
                 return@Runnable
             }
-            if (message == "police") {
+            if (message == "watcher") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_police_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnWatcherPopup = inflater.inflate(R.layout.warn_watcher_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_police_dialog)
-                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_police_dialog)
-                val imImage = viewWarnPolicePopup.findViewById<ImageView>(R.id.imImage_warn_police_dialog)
+                val tvEmail = viewWarnWatcherPopup.findViewById<TextView>(R.id.tvEmail_warn_watcher_dialog)
+                val btnThank = viewWarnWatcherPopup.findViewById<Button>(R.id.btnThank_warn_watcher_dialog)
+                val imImage = viewWarnWatcherPopup.findViewById<ImageView>(R.id.imImage_warn_watcher_dialog)
 
                 tvEmail.text = email
 
@@ -1809,7 +1805,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
-                        viewWarnPolicePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        viewWarnWatcherPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1826,11 +1822,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptWarnPolice(email: String, receiveSocketID: String) {
+    private fun attemptWarnWatcher(email: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_warn_police_server", email, socket.id(), receiveSocketID, "police")
+        socket.emit("event_warn_watcher_server", email, socket.id(), receiveSocketID, "watcher")
     }
 
     private val onWarnSlowDown = Emitter.Listener { args ->

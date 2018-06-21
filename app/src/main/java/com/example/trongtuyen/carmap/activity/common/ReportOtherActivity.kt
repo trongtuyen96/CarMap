@@ -254,7 +254,7 @@ class ReportOtherActivity : AppCompatActivity() {
                                 // Trim confidence to two decimal places
                                 + " Độ tin cậy: " + String.format("%.2f", results.results[0].confidence) + "%"
                                 // Convert processing time to seconds and trim to two decimal places
-                                + " THời gian thực thi: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " giây", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
+                                + " Thời gian thực thi: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " giây", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
 
                         txtPlate.setText(results.results[0].plate.toString(), TextView.BufferType.EDITABLE)
                     }
