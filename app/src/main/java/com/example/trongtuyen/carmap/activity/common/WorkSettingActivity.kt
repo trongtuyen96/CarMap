@@ -10,10 +10,12 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.controllers.AppController
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
 import com.google.android.gms.location.places.ui.PlaceSelectionListener
+import com.sdsmdg.tastytoast.TastyToast
 
 class WorkSettingActivity : AppCompatActivity() {
 
@@ -28,6 +30,10 @@ class WorkSettingActivity : AppCompatActivity() {
 
     // PlaceAutoCompleteFragment
     private var placeAutoComplete: PlaceAutocompleteFragment? = null
+
+    private var isNewChosen = false
+
+    private var chosenPlace: Place? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +54,8 @@ class WorkSettingActivity : AppCompatActivity() {
         placeAutoComplete!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 tvAddress.text = place.address
+                chosenPlace = place
+                isNewChosen = true
             }
 
             override fun onError(status: Status) {
@@ -64,10 +72,16 @@ class WorkSettingActivity : AppCompatActivity() {
         }
 
         btnChoose.setOnClickListener {
-            intent.putExtra("work_location_new", tvAddress.text.toString())
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
+            if (isNewChosen) {
+                AppController.userProfile!!.latWorkLocation = chosenPlace!!.latLng.latitude
+                AppController.userProfile!!.longWorkLocation = chosenPlace!!.latLng.longitude
+                intent.putExtra("work_location_new", tvAddress.text.toString())
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            } else {
+                TastyToast.makeText(this, "Vui lòng chọn địa chỉ mới", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+            }
 
+        }
     }
 }

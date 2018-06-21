@@ -34,4 +34,7 @@ interface ReportService {
     @PUT("report/{id}/updateBase64Voice")
     fun updateBase64Voice(@Path("id") id: String, @Field("base64Voice") base64Voice: String): Call<ReportResponse>
 
+    @DELETE("report/{id}/delete")
+    fun deleteReport(@Path("id") id: String): Call<ReportResponse>
+
 }

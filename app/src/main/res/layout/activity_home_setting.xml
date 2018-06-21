@@ -62,11 +62,11 @@
     <TextView
         android:id="@+id/tvAddress_home_setting"
         android:layout_width="300dp"
-        android:layout_height="60dp"
+        android:layout_height="90dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginBottom="220dp"
+        android:layout_marginBottom="180dp"
         android:text="Hãy chọn vị trí nhà của bạn"
         android:textAlignment="center"
         android:textSize="18sp" />

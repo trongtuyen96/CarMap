@@ -11,7 +11,7 @@ import com.example.trongtuyen.carmap.utils.SharePrefs
 
 object AppController {
     // Save current user info - include token
-    lateinit var userLocation: Location
+//    lateinit var userLocation: Location
 
     var userProfile: User? = null
 

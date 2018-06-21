@@ -178,10 +178,10 @@ class ReportTrafficActivity : AppCompatActivity() {
             if (sFileAudioPath != "" || sBase64Image != "") {
                 // Encode file ghi âm
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                 onAddNewReportTraffic(mReport, false)
             } else {
-                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
                 onAddNewReportTraffic(mReport, true)
             }
         }

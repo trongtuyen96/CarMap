@@ -45,6 +45,8 @@ class ReportOtherActivity : AppCompatActivity() {
     lateinit var btnSend: Button
     @BindView(R.id.btnDismiss_report_other)
     lateinit var btnDismiss: Button
+    @BindView(R.id.btnClose_report_other)
+    lateinit var btnClose: ImageView
 
     @BindView(R.id.imVerified_report_other)
     lateinit var imVerified: ImageView
@@ -112,6 +114,16 @@ class ReportOtherActivity : AppCompatActivity() {
             onALPR()
         }
         btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
+            finish()
+        }
+        btnClose.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 
             // Xoá ảnh cũ
@@ -242,7 +254,7 @@ class ReportOtherActivity : AppCompatActivity() {
                                 // Trim confidence to two decimal places
                                 + " Độ tin cậy: " + String.format("%.2f", results.results[0].confidence) + "%"
                                 // Convert processing time to seconds and trim to two decimal places
-                                + " THời gian thực thi: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " giây", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
+                                + " Thời gian thực thi: " + String.format("%.2f", results.processingTimeMs!! / 1000.0 % 60) + " giây", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
 
                         txtPlate.setText(results.results[0].plate.toString(), TextView.BufferType.EDITABLE)
                     }

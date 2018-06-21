@@ -14,7 +14,6 @@ import android.location.Location
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
-import android.support.design.widget.NavigationView
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
@@ -33,6 +32,7 @@ import com.example.trongtuyen.carmap.models.direction.DirectionFinder
 import com.example.trongtuyen.carmap.models.direction.Route
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
+import com.example.trongtuyen.carmap.services.models.ReportResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
@@ -60,7 +60,6 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -320,13 +319,39 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun initMenuItemDrawer() {
+
         layoutHomeMenu.setOnClickListener(this)
+
         layoutWorkMenu.setOnClickListener(this)
+
         layoutHistoryMenu.setOnClickListener(this)
+
         layoutSettingMenu.setOnClickListener(this)
+
         layoutQuickSettingSound.setOnClickListener(this)
+        // Set lần đầu cho setting âm thanh
+        when (AppController.soundMode) {
+            1 -> {
+                AppController.soundMode = 2
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_alerts)
+                tvQuickSettingSound.text = "CHỈ CÁC BÁO HIỆU"
+            }
+            2 -> {
+                AppController.soundMode = 3
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_mute)
+                tvQuickSettingSound.text = "TẮT"
+            }
+            3 -> {
+                AppController.soundMode = 1
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
+                tvQuickSettingSound.text = "MỞ"
+            }
+        }
+
         layoutSignOut.setOnClickListener(this)
+
         layoutEditHome.setOnClickListener(this)
+
         layoutEditWork.setOnClickListener(this)
     }
 
@@ -410,14 +435,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Cập nhật địa điểm hiện tại
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo)
-                    onUpdateHomeLocation(user)
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0)
+                    onUpdateCurrentLocation(user)
 
                     // Cập nhật người dùng xung quanh
                     onGetNearbyUsers()
 
                     // Cập nhật biển báo xung quanh
                     onGetNearbyReports()
+
+//                    // Gán user hiện tại từ listUser vào AppController
+//                    var i = 0
+//                    if (::listUser.isInitialized) {
+//                        if (listUser.isNotEmpty()) {
+//                            Toast.makeText(this@MainActivity, i.toString(),Toast.LENGTH_SHORT).show()
+//                            while (AppController.userProfile?._id != listUser[i]._id) {
+//                                i += 1
+//                            }
+//                            AppController.userProfile = listUser[i]
+//                        }
+//                    }
                 }
                 handler.postDelayed(this, 15000)
             }
@@ -466,7 +503,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 startActivity(intent)
             }
             R.id.imvFilter -> {
-                onFilterButtonClicked()
+                if (mPopupWindowFilter != null) {
+                    if (mPopupWindowFilter!!.isShowing) {
+                        mPopupWindowFilter!!.dismiss()
+                    } else {
+                        onFilterButtonClicked()
+                    }
+                } else {
+                    onFilterButtonClicked()
+                }
             }
             R.id.layoutHomeMenu -> {
 
@@ -522,11 +567,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             1 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     tvAddressHome_menu.text = data!!.getStringExtra("home_location_new")
+                    val listGeo: List<Double> = listOf(0.0, 0.0)
+                    val newGeo = Geometry("Point", listGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0)
+                    onUpdateHomeLocation(user)
                 }
             }
             2 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
+                    val listGeo: List<Double> = listOf(0.0, 0.0)
+                    val newGeo = Geometry("Point", listGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)
+                    onUpdateWorkLocation(user)
                 }
             }
         }
@@ -571,7 +624,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
                                             val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                                             val newGeo = Geometry("Point", listGeo)
-                                            AppController.userProfile?.homeLocation = newGeo
+                                            AppController.userProfile?.currentLocation = newGeo
                                         }
                                     }
                         }
@@ -665,7 +718,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
                             val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                             val newGeo = Geometry("Point", listGeo)
-                            AppController.userProfile?.homeLocation = newGeo
+                            AppController.userProfile?.currentLocation = newGeo
                         }
                     }
         }
@@ -686,7 +739,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (::lastLocation.isInitialized) {
                         val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                         val newGeo = Geometry("Point", listGeo)
-                        AppController.userProfile?.homeLocation = newGeo
+                        AppController.userProfile?.currentLocation = newGeo
                     }
 
                 }
@@ -760,7 +813,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
         mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, 180, 320)
+        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
 
         val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
@@ -967,6 +1020,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val user = AppController.userProfile
         tvName.text = user?.name
         tvEmail.text = user?.email
+
+
+        if (user!!.latHomeLocation != null && user.longHomeLocation != null) {
+            // Lấy địa chỉ nhà sử dụng Geocoder
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val yourAddresses: List<Address>
+            yourAddresses = geocoder.getFromLocation(user.latHomeLocation!!, user.longHomeLocation!!, 1)
+
+//            Toast.makeText(this, "MENU lat: " + user.latHomeLocation + " long: " + user.longHomeLocation, Toast.LENGTH_SHORT).show()
+//            Log.e("LAT LONG", "MENU lat: " + user.latHomeLocation + " long: " + user.longHomeLocation)
+//
+            if (yourAddresses.isNotEmpty()) {
+//            val yourAddress = yourAddresses.get(0).getAddressLine(0)
+//            val yourCity = yourAddresses.get(0).getAddressLine(1)
+//            val yourCountry = yourAddresses.get(0).getAddressLine(2)
+                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
+                tvAddressHome_menu.text = address
+            }
+        }
+
+        if (user!!.latWorkLocation != null && user.longWorkLocation != null) {
+            // Lấy địa chỉ nhà sử dụng Geocoder
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val yourAddresses: List<Address>
+            yourAddresses = geocoder.getFromLocation(user.latWorkLocation!!, user.longWorkLocation!!, 1)
+
+            if (yourAddresses.isNotEmpty()) {
+                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
+                tvAddressWork_menu.text = address
+            }
+        }
+
 //        Helper.loadAvatarWithoutPlaceHolder(getActivity(), avatar, user.getAvatar(), net.diadiemmuasam.user.R.drawable.default_avatar)
     }
 
@@ -1039,6 +1124,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
                 tvLocation.text = address
             }
+
             tvDescription.text = dataReport.description.toString()
             when (dataReport.type) {
                 "traffic" -> {
@@ -1157,16 +1243,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             curMarkerReport = marker
             imvUpVote.setOnClickListener {
+                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
                 mPopupWindowReport!!.dismiss()
                 curMarkerReport = null
-                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
+
+            // Nếu là người sở hữu, sửa nút DownVote thành nút Xoá
+            var isDelete = false
+            if (AppController.userProfile!!._id == dataReport.userID) {
+                imvDownVote.setImageResource(R.drawable.ic_delete_white)
+                isDelete = true
             }
             imvDownVote.setOnClickListener {
-                Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
-                mPopupWindowReport!!.dismiss()
-                curMarkerReport = null
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                if (isDelete) {
+                    Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
+                    onDeleteReport(dataReport._id.toString())
+                    mPopupWindowReport!!.dismiss()
+                    curMarkerReport = null
+                } else {
+                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+                    mPopupWindowReport!!.dismiss()
+                    curMarkerReport = null
+                }
             }
             imvRecord.setOnClickListener {
                 //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
@@ -1278,8 +1378,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         // Báo có công an
                         btnConfirm.visibility = View.VISIBLE
                         mType = 3
-//                        imvType.setImageResource(R.drawable.ic_report_police_44dp)
-//                        tvType.text = "CÓ CẢNH SÁT GẦN ĐÓ"
+//                        imvType.setImageResource(R.drawable.ic_report_watcher_44dp)
                         imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
                         tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
                     }
@@ -1336,7 +1435,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         attemptWarnSlowDown(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                     3 -> {
-                        attemptWarnPolice(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                        attemptWarnWatcher(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     }
                     4 -> {
                         attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
@@ -1391,18 +1490,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
 //    }
 
-    private fun getUserFromMarker(marker: Marker): User {
-        val listGeo: List<Double> = listOf(0.0, 0.0)
-        val newGeo = Geometry("Point", listGeo)
-        var user = User("", "", "", "", "", "", "", newGeo)
-        for (i in 0 until (listUser.size)) {
-            // Except current user
-            if (listUser[i].email == marker.snippet) {
-                user = listUser[i]
-            }
-        }
-        return user
-    }
+//    private fun getUserFromMarker(marker: Marker): User {
+//        val listGeo: List<Double> = listOf(0.0, 0.0)
+//        val newGeo = Geometry("Point", listGeo)
+//        var user = User("", "", "", "", "", "", "", newGeo)
+//        for (i in 0 until (listUser.size)) {
+//            // Except current user
+//            if (listUser[i].email == marker.snippet) {
+//                user = listUser[i]
+//            }
+//        }
+//        return user
+//    }
 
 
     // ====================================================================================================================================================== //
@@ -1496,7 +1595,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // Còn ở server Geo là theo thứ tự longitude, latitude
         // Random
         val random = Random()
-        markerOptions.position(LatLng(user.homeLocation!!.coordinates!![1], user.homeLocation!!.coordinates!![0]))
+        markerOptions.position(LatLng(user.currentLocation!!.coordinates!![1], user.currentLocation!!.coordinates!![0]))
         markerOptions.title("user")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
         val marker = mMap.addMarker(markerOptions)
@@ -1504,13 +1603,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         marker.tag = user
     }
 
-    private fun onUpdateHomeLocation(user: User) {
+    private fun onUpdateCurrentLocation(user: User) {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.updateHomeLocation(user)
+        val call = service.updateCurrentLocation(user)
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
-                    // Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body().user?.homeLocation?.coordinates!![0] + "- lat: " + response.body().user?.homeLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+//                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -1529,7 +1628,47 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
+                    // Đã update vào trong AppController
                     // Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
+    private fun onUpdateHomeLocation(user: User) {
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateHomeLocation(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful) {
+                    // Đã update vào AppController ở HomeSettingActivity
+//                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
+    private fun onUpdateWorkLocation(user: User) {
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateWorkLocation(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful) {
+//                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -1555,7 +1694,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        socket.on("chat message", onNewMessage)
         socket.on("event_hello_socket", onSayHello)
         socket.on("event_warn_strong_light_socket", onWarnStrongLight)
-        socket.on("event_warn_police_socket", onWarnPolice)
+        socket.on("event_warn_watcher_socket", onWarnWatcher)
         socket.on("event_warn_slow_down_socket", onWarnSlowDown)
         socket.on("event_warn_turn_around_socket", onWarnTurnAround)
         socket.on("event_warn_thank_socket", onWarnThank)
@@ -1572,7 +1711,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        socket.on("chat message", onNewMessage)
         socket.off("event_hello_socket", onSayHello)
         socket.off("event_warn_strong_light_socket", onWarnStrongLight)
-        socket.off("event_warn_police_socket", onWarnPolice)
+        socket.off("event_warn_watcher_socket", onWarnWatcher)
         socket.off("event_warn_slow_down_socket", onWarnSlowDown)
         socket.off("event_warn_turn_around_socket", onWarnTurnAround)
         socket.off("event_warn_thank_socket", onWarnThank)
@@ -1762,7 +1901,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_warn_strong_light_server", email, socket.id(), receiveSocketID, "strong light")
     }
 
-    private val onWarnPolice = Emitter.Listener { args ->
+    private val onWarnWatcher = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
@@ -1777,15 +1916,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 Log.e("LOG", e.message)
                 return@Runnable
             }
-            if (message == "police") {
+            if (message == "watcher") {
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewWarnPolicePopup = inflater.inflate(R.layout.warn_police_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnPolicePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                val viewWarnWatcherPopup = inflater.inflate(R.layout.warn_watcher_dialog_layout, null)
+                mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewWarnPolicePopup.findViewById<TextView>(R.id.tvEmail_warn_police_dialog)
-                val btnThank = viewWarnPolicePopup.findViewById<Button>(R.id.btnThank_warn_police_dialog)
-                val imImage = viewWarnPolicePopup.findViewById<ImageView>(R.id.imImage_warn_police_dialog)
+                val tvEmail = viewWarnWatcherPopup.findViewById<TextView>(R.id.tvEmail_warn_watcher_dialog)
+                val btnThank = viewWarnWatcherPopup.findViewById<Button>(R.id.btnThank_warn_watcher_dialog)
+                val imImage = viewWarnWatcherPopup.findViewById<ImageView>(R.id.imImage_warn_watcher_dialog)
 
                 tvEmail.text = email
 
@@ -1797,7 +1936,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         btnThank.text = String.format(Locale.getDefault(), "%s (%d)",
                                 "CẢM ƠN",
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1)
-                        viewWarnPolicePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        viewWarnWatcherPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     }
 
                     override fun onFinish() {
@@ -1814,11 +1953,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptWarnPolice(email: String, receiveSocketID: String) {
+    private fun attemptWarnWatcher(email: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_warn_police_server", email, socket.id(), receiveSocketID, "police")
+        socket.emit("event_warn_watcher_server", email, socket.id(), receiveSocketID, "watcher")
     }
 
     private val onWarnSlowDown = Emitter.Listener { args ->
@@ -2205,6 +2344,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         marker.tag = report
     }
 
+    private fun onDeleteReport(reportID : String){
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.deleteReport(reportID)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                     TastyToast.makeText(this@MainActivity, "Đã xoá báo cáo", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                t.printStackTrace()
+            }
+        })
+    }
 
     // ====================================================================================================================================================== //
     // ======== GESTURE DETECTOR ============================================================================================================================ //

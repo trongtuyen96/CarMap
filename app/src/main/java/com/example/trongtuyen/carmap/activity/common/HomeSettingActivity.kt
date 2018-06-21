@@ -1,7 +1,6 @@
 package com.example.trongtuyen.carmap.activity.common
 
 import android.app.Activity
-import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,10 +8,12 @@ import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.controllers.AppController
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
 import com.google.android.gms.location.places.ui.PlaceSelectionListener
+import com.sdsmdg.tastytoast.TastyToast
 
 class HomeSettingActivity : AppCompatActivity() {
 
@@ -27,6 +28,10 @@ class HomeSettingActivity : AppCompatActivity() {
 
     // PlaceAutoCompleteFragment
     private var placeAutoComplete: PlaceAutocompleteFragment? = null
+
+    private var isNewChosen = false
+
+    private var chosenPlace: Place? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +52,8 @@ class HomeSettingActivity : AppCompatActivity() {
         placeAutoComplete!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 tvAddress.text = place.address
+                chosenPlace = place
+                isNewChosen = true
             }
 
             override fun onError(status: Status) {
@@ -63,9 +70,17 @@ class HomeSettingActivity : AppCompatActivity() {
         }
 
         btnChoose.setOnClickListener {
-            intent.putExtra("home_location_new", tvAddress.text.toString())
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+            if (isNewChosen) {
+                AppController.userProfile!!.latHomeLocation = chosenPlace!!.latLng.latitude
+                AppController.userProfile!!.longHomeLocation = chosenPlace!!.latLng.longitude
+//                Toast.makeText(this, "SET lat: " + chosenPlace!!.latLng.latitude + " long: " + chosenPlace!!.latLng.longitude, Toast.LENGTH_SHORT).show()
+//                Log.e("LAT LONG", "SET lat: " + chosenPlace!!.latLng.latitude + " long: " + chosenPlace!!.latLng.longitude)
+                intent.putExtra("home_location_new", tvAddress.text.toString())
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            } else {
+                TastyToast.makeText(this, "Vui lòng chọn địa chỉ mới", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+            }
         }
 
     }
