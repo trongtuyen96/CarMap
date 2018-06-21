@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.res.Configuration
 import android.graphics.Color
+import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
@@ -480,7 +481,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             }
             R.id.layoutQuickSettingSound -> {
-                when (AppController.soundMode){
+                when (AppController.soundMode) {
                     1 -> {
                         AppController.soundMode = 2
                         imQuickSettingSound.setImageResource(R.drawable.ic_sound_alerts)
@@ -1025,7 +1026,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             decimalFormat.roundingMode = RoundingMode.CEILING
 
             tvDistance.text = "Cách " + decimalFormat.format(dataReport.distance) + " m"
-            tvLocation.text = "Nguyen Kiem, Go Vap"
+
+            // Lấy địa chỉ sử dụng Geocoder
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val yourAddresses: List<Address>
+            yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
+
+            if (yourAddresses.isNotEmpty()) {
+//                val yourAddress = yourAddresses.get(0).getAddressLine(0)
+//                val yourCity = yourAddresses.get(0).getAddressLine(1)
+//                val yourCountry = yourAddresses.get(0).getAddressLine(2)
+                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
+                tvLocation.text = address
+            }
             tvDescription.text = dataReport.description.toString()
             when (dataReport.type) {
                 "traffic" -> {
