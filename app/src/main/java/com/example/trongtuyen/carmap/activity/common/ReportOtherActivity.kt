@@ -45,6 +45,8 @@ class ReportOtherActivity : AppCompatActivity() {
     lateinit var btnSend: Button
     @BindView(R.id.btnDismiss_report_other)
     lateinit var btnDismiss: Button
+    @BindView(R.id.btnClose_report_other)
+    lateinit var btnClose: ImageView
 
     @BindView(R.id.imVerified_report_other)
     lateinit var imVerified: ImageView
@@ -112,6 +114,16 @@ class ReportOtherActivity : AppCompatActivity() {
             onALPR()
         }
         btnDismiss.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
+            finish()
+        }
+        btnClose.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 
             // Xoá ảnh cũ

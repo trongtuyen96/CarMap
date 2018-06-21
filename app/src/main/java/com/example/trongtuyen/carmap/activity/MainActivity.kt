@@ -771,7 +771,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
         mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, 180, 320)
+        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
 
         val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
