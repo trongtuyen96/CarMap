@@ -21,6 +21,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -433,7 +434,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Cập nhật địa điểm hiện tại
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0)
                     onUpdateCurrentLocation(user)
 
                     // Cập nhật người dùng xung quanh
@@ -441,6 +442,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                     // Cập nhật biển báo xung quanh
                     onGetNearbyReports()
+
+//                    // Gán user hiện tại từ listUser vào AppController
+//                    var i = 0
+//                    if (::listUser.isInitialized) {
+//                        if (listUser.isNotEmpty()) {
+//                            Toast.makeText(this@MainActivity, i.toString(),Toast.LENGTH_SHORT).show()
+//                            while (AppController.userProfile?._id != listUser[i]._id) {
+//                                i += 1
+//                            }
+//                            AppController.userProfile = listUser[i]
+//                        }
+//                    }
                 }
                 handler.postDelayed(this, 15000)
             }
@@ -489,16 +502,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 startActivity(intent)
             }
             R.id.imvFilter -> {
-                if(mPopupWindowFilter!= null)
-                {
-                    if(mPopupWindowFilter!!.isShowing){
+                if (mPopupWindowFilter != null) {
+                    if (mPopupWindowFilter!!.isShowing) {
                         mPopupWindowFilter!!.dismiss()
-                    }
-                    else{
+                    } else {
                         onFilterButtonClicked()
                     }
-                }
-                else{
+                } else {
                     onFilterButtonClicked()
                 }
             }
@@ -556,6 +566,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             1 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     tvAddressHome_menu.text = data!!.getStringExtra("home_location_new")
+                    val listGeo: List<Double> = listOf(0.0, 0.0)
+                    val newGeo = Geometry("Point", listGeo)
+                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0)
+                    onUpdateHomeLocation(user)
                 }
             }
             2 -> {
@@ -1001,6 +1015,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val user = AppController.userProfile
         tvName.text = user?.name
         tvEmail.text = user?.email
+
+
+        if (user!!.latHomeLocation != null && user.longHomeLocation != null) {
+            // Lấy địa chỉ nhà sử dụng Geocoder
+            val geocoder = Geocoder(this, Locale.getDefault())
+            val yourAddresses: List<Address>
+            yourAddresses = geocoder.getFromLocation(user.latHomeLocation!!, user.longHomeLocation!!, 1)
+
+//            Toast.makeText(this, "MENU lat: " + user.latHomeLocation + " long: " + user.longHomeLocation, Toast.LENGTH_SHORT).show()
+//            Log.e("LAT LONG", "MENU lat: " + user.latHomeLocation + " long: " + user.longHomeLocation)
+//
+            if (yourAddresses.isNotEmpty()) {
+//            val yourAddress = yourAddresses.get(0).getAddressLine(0)
+//            val yourCity = yourAddresses.get(0).getAddressLine(1)
+//            val yourCountry = yourAddresses.get(0).getAddressLine(2)
+                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
+                tvAddressHome_menu.text = address
+            }
+        }
+
 //        Helper.loadAvatarWithoutPlaceHolder(getActivity(), avatar, user.getAvatar(), net.diadiemmuasam.user.R.drawable.default_avatar)
     }
 
@@ -1425,18 +1459,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
 //    }
 
-    private fun getUserFromMarker(marker: Marker): User {
-        val listGeo: List<Double> = listOf(0.0, 0.0)
-        val newGeo = Geometry("Point", listGeo)
-        var user = User("", "", "", "", "", "", "", newGeo)
-        for (i in 0 until (listUser.size)) {
-            // Except current user
-            if (listUser[i].email == marker.snippet) {
-                user = listUser[i]
-            }
-        }
-        return user
-    }
+//    private fun getUserFromMarker(marker: Marker): User {
+//        val listGeo: List<Double> = listOf(0.0, 0.0)
+//        val newGeo = Geometry("Point", listGeo)
+//        var user = User("", "", "", "", "", "", "", newGeo)
+//        for (i in 0 until (listUser.size)) {
+//            // Except current user
+//            if (listUser[i].email == marker.snippet) {
+//                user = listUser[i]
+//            }
+//        }
+//        return user
+//    }
 
 
     // ====================================================================================================================================================== //
@@ -1563,7 +1597,47 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         call.enqueue(object : Callback<UserProfileResponse> {
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
+                    // Đã update vào trong AppController
                     // Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
+    private fun onUpdateHomeLocation(user: User) {
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateHomeLocation(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful) {
+                    // Đã update vào AppController ở HomeSettingActivity
+//                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
+    private fun onUpdateWorkLocation(user: User) {
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateWorkLocation(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful) {
+//                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()

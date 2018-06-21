@@ -35,8 +35,21 @@ class User {
     @SerializedName("currentLocation")
     @Expose
     var currentLocation: Geometry? = null
+    @SerializedName("latHomeLocation")
+    @Expose
+    var latHomeLocation: Double? = null
+    @SerializedName("longHomeLocation")
+    @Expose
+    var longHomeLocation: Double? = null
+    @SerializedName("latWorkLocation")
+    @Expose
+    var latWorkLocation: Double? = null
+    @SerializedName("longWorkLocation")
+    @Expose
+    var longWorkLocation: Double? = null
 
-    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, socketID: String, currentLocation: Geometry){
+
+    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, socketID: String, currentLocation: Geometry, latHomeLocation: Double, longHomeLocation: Double, latWorkLocation: Double, longWorkLocation: Double) {
         this.email = email
         this.name = name
         this.avatar = avatar
@@ -45,5 +58,9 @@ class User {
         this.createdAt = createdAt
         this.socketID = socketID
         this.currentLocation = currentLocation
+        this.latHomeLocation = latHomeLocation
+        this.longHomeLocation = longHomeLocation
+        this.latWorkLocation = latWorkLocation
+        this.longWorkLocation = longWorkLocation
     }
 }

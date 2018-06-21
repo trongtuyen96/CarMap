@@ -30,4 +30,10 @@ interface UserService {
 
     @GET("user/nearby")
     fun getNearbyUsers(@Query("lat") lat: Double?, @Query("lng") lng: Double?, @Query("radius") radius: Float): Call<List<User>>
+
+    @PUT("user/updateHomeLocation")
+    fun updateHomeLocation(@Body user: User): Call<UserProfileResponse>
+
+    @PUT("user/updateWorkLocation")
+    fun updateWorkLocation(@Body user: User): Call<UserProfileResponse>
 }
