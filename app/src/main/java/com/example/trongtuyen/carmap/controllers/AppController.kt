@@ -18,6 +18,7 @@ object AppController {
     internal var USER_ACCESS_TOKEN = "user_access_token"
     internal var SETTINGS_FILTER_CAR = "setting_filter_car"
     internal var SETTINGS_FILTER_REPORT = "setting_filter_report"
+    internal var SETTINGS_SOUND_MODE = "setting_sound_mode"
 
     var accessToken: String?
         get() = SharePrefs.instance?.GetString(USER_ACCESS_TOKEN)
@@ -60,5 +61,12 @@ object AppController {
         get() = SharePrefs.instance?.GetString(SETTINGS_FILTER_REPORT)
         set(value) {
             SharePrefs.instance?.SetString(SETTINGS_FILTER_REPORT, value!!)
+        }
+
+    // Chế độ âm thanh
+    var soundMode: Int?
+        get() = SharePrefs.instance?.GetInt(SETTINGS_SOUND_MODE)
+        set(value) {
+            SharePrefs.instance?.SetInt(SETTINGS_SOUND_MODE, value!!)
         }
 }

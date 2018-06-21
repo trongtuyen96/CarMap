@@ -152,6 +152,7 @@ class SignUpActivity : AppCompatActivity() {
         // Tạo mới dữ liệu cài đặt
         AppController.settingFilterCar = "true"
         AppController.settingFilterReport = "true"
+        AppController.soundMode = 1
 
         //        Intent returnIntent = new Intent();
         //        setResult(Activity.RESULT_OK,returnIntent);
