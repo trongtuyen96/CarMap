@@ -82,7 +82,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Xe bồ câu"
+                android:text="Bồ câu"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
                 android:textSize="18sp"

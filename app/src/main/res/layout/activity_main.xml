@@ -32,7 +32,7 @@
             <LinearLayout
                 android:id="@+id/layoutHomeMenu"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -61,7 +61,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
-                        android:text="Chọn địa chỉ nhà" />
+                        android:text="Chọn địa chỉ nhà"
+                        android:singleLine="true"/>
                 </LinearLayout>
 
                 <View
@@ -97,7 +98,7 @@
             <LinearLayout
                 android:id="@+id/layoutWorkMenu"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -126,7 +127,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
-                        android:text="Chọn nơi làm việc " />
+                        android:text="Chọn nơi làm việc "
+                        android:singleLine="true"/>
                 </LinearLayout>
 
                 <View
@@ -161,7 +163,7 @@
             <LinearLayout
                 android:id="@+id/layoutHistoryMenu"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -204,7 +206,7 @@
             <LinearLayout
                 android:id="@+id/layoutSettingMenu"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -232,7 +234,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
-                        android:text="Cài đặt cho gì gì đó" />
+                        android:text="Thiết lập các tuỳ chỉnh" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -321,7 +323,7 @@
                 android:layout_width="130dp"
                 android:layout_height="44dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/bg_btn_dismiss"
                 android:orientation="horizontal">
 
