@@ -193,7 +193,7 @@ class ReportHazardActivity : AppCompatActivity() {
         }
 
         btnTakePhoto.setOnClickListener {
-//            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            //            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 //            if (mCurrentPhotoPath != "") {
 //                val oldFile = File(mCurrentPhotoPath)
 //                oldFile.delete()
@@ -643,8 +643,8 @@ class ReportHazardActivity : AppCompatActivity() {
         }
     }
 
-    val TARGET_IMAGE_WIDTH: Int = 872
-    val TARGET_IMAGE_HEIGHT: Int = 1164
+    val TARGET_IMAGE_WIDTH: Int = 614
+    val TARGET_IMAGE_HEIGHT: Int = 818
     // This method is used to calculate largest inSampleSize
     //which is used to decode bitmap in required bitmap.
     private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {

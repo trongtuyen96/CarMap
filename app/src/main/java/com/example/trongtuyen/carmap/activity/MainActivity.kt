@@ -106,6 +106,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private var mPopupWindowFilter: PopupWindow? = null
 
+    private var mPopupWindowDelete: PopupWindow? = null
+
     // List of user of other cars
     private lateinit var listUser: List<User>
 
@@ -1262,7 +1264,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
-                    onDeleteReport(dataReport._id.toString())
+
+                    val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
+                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                    val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+                    val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+
+                    btnYes.setOnClickListener {
+                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        mPopupWindowUser!!.dismiss()
+                        onDeleteReport(dataReport._id.toString())
+                    }
+
+                    btnNo.setOnClickListener {
+                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        mPopupWindowDelete!!.dismiss()
+                    }
+
                 } else {
                     Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
                     mPopupWindowReport!!.dismiss()

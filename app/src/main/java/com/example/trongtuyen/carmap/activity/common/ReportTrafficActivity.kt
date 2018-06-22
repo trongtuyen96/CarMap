@@ -180,9 +180,11 @@ class ReportTrafficActivity : AppCompatActivity() {
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
                 val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                 onAddNewReportTraffic(mReport, false)
+//                Toast.makeText(this, "Chạy 1", Toast.LENGTH_SHORT).show()
             } else {
                 val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
                 onAddNewReportTraffic(mReport, true)
+//                Toast.makeText(this, "Chạy 2", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -222,6 +224,7 @@ class ReportTrafficActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
                     TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportTrafficActivity, "Xong 2", Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportTrafficActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -325,8 +328,8 @@ class ReportTrafficActivity : AppCompatActivity() {
         }
     }
 
-    val TARGET_IMAGE_WIDTH: Int = 872
-    val TARGET_IMAGE_HEIGHT: Int = 1164
+    val TARGET_IMAGE_WIDTH: Int = 614
+    val TARGET_IMAGE_HEIGHT: Int = 818
     // This method is used to calculate largest inSampleSize
     //which is used to decode bitmap in required bitmap.
     private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {
