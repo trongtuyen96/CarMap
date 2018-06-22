@@ -1141,7 +1141,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         "standstill" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
-                            tvType.text = "Kẹt cứng"
+                            tvType.text = "Kẹt xe cứng"
                         }
                     }
                 }
@@ -1175,7 +1175,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         "broken_light" -> {
                             imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
-                            tvType.text = "Đèn giao thông hư"
+                            tvType.text = "Đèn báo hư"
                         }
                         "pothole" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
@@ -1196,7 +1196,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         "animal" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_animals)
-                            tvType.text = "Động vật qua đường"
+                            tvType.text = "Động vật nguy hiểm"
                         }
                         "missing_sign" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)

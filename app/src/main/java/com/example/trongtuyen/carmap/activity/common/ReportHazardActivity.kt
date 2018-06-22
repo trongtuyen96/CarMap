@@ -256,7 +256,7 @@ class ReportHazardActivity : AppCompatActivity() {
                 "on_road" -> {
                     if (subType2 == "object" || subType2 == "construction" || subType2 == "broken_light" || subType2 == "pothole" || subType2 == "vehicle_stop" || subType2 == "road_kill") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        if (sFileAudioPath != "" || sBase64Image != "") {
+                        if (sFileAudioPath == "" || sBase64Image == "") {
                             // Encode file ghi âm
                             val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
                             val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
@@ -272,7 +272,7 @@ class ReportHazardActivity : AppCompatActivity() {
                 "shoulder" -> {
                     if (subType2 == "vehicle_stop" || subType2 == "animal" || subType2 == "missing_sign") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        if (sFileAudioPath != "" || sBase64Image != "") {
+                        if (sFileAudioPath == "" || sBase64Image == "") {
                             // Encode file ghi âm
                             val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
                             val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
@@ -288,7 +288,7 @@ class ReportHazardActivity : AppCompatActivity() {
                 "weather" -> {
                     if (subType2 == "fog" || subType2 == "hail" || subType2 == "flood" || subType2 == "ice") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-                        if (sFileAudioPath != "" || sBase64Image != "") {
+                        if (sFileAudioPath == "" || sBase64Image == "") {
                             // Encode file ghi âm
                             val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
                             val mReport = Report("hazard", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
@@ -620,7 +620,7 @@ class ReportHazardActivity : AppCompatActivity() {
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
                     options.inSampleSize = calculateInSampleSize(options)
                     Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
-                    options.inDensity = 320
+//                    options.inDensity = 320
                     options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
 //                    imageStream = contentResolver.openInputStream(photoURI)
