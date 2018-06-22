@@ -190,7 +190,7 @@ class ReportCrashActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-            if (sFileAudioPath != "" || sBase64Image != "") {
+            if (sFileAudioPath == "" || sBase64Image == "") {
                 // Encode file ghi âm
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
                 val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)

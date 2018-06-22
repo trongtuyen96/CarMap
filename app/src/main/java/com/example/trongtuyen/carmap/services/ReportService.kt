@@ -3,6 +3,7 @@ package com.example.trongtuyen.carmap.services
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.services.models.SampleResponse
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -31,10 +32,14 @@ interface ReportService {
     @GET("report/nearby")
     fun getNearbyReports(@Query("lat") lat: Double?, @Query("lng") lng: Double?, @Query("radius") radius: Float): Call<NearbyReportsResponse>
 
+    @FormUrlEncoded
     @PUT("report/{id}/updateBase64Voice")
     fun updateBase64Voice(@Path("id") id: String, @Field("base64Voice") base64Voice: String): Call<ReportResponse>
 
     @DELETE("report/{id}/delete")
     fun deleteReport(@Path("id") id: String): Call<ReportResponse>
+
+//    @DELETE("report/{id}/delete")
+//    fun deleteReport(@Path("id") id: String): Call<SampleResponse>
 
 }

@@ -33,6 +33,7 @@ import com.example.trongtuyen.carmap.models.direction.Route
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.services.models.SampleResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
@@ -1259,9 +1260,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 if (isDelete) {
                     Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
-                    onDeleteReport(dataReport._id.toString())
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
+                    onDeleteReport(dataReport._id.toString())
                 } else {
                     Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
                     mPopupWindowReport!!.dismiss()
@@ -2350,7 +2351,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                     TastyToast.makeText(this@MainActivity, "Đã xoá báo cáo", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    TastyToast.makeText(this@MainActivity, "Xoá báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -2358,10 +2359,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
 
             override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
-                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                t.printStackTrace()
+                Log.e("Failure", "Error: " + t.message)
             }
         })
+
+//        val service = APIServiceGenerator.createService(ReportService::class.java)
+//        val call = service.deleteReport(reportID)
+//        call.enqueue(object : Callback<SampleResponse> {
+//            override fun onResponse(call: Call<SampleResponse>, response: Response<SampleResponse>) {
+//                if (response.isSuccessful) {
+//                    TastyToast.makeText(this@MainActivity, "Đã xoá báo cáo", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                } else {
+//                    val apiError = ErrorUtils.parseError(response)
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<SampleResponse>, t: Throwable) {
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//                t.printStackTrace()
+//            }
+//        })
     }
 
     // ====================================================================================================================================================== //
