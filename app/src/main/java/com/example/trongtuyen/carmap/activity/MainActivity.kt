@@ -523,7 +523,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             }
             R.id.layoutHistoryMenu -> {
-
+                val intent = Intent(this, HistorySettingActivity::class.java)
+                startActivity(intent)
             }
             R.id.layoutSettingMenu -> {
 
@@ -1261,7 +1262,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             imvDownVote.setOnClickListener {
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 if (isDelete) {
-                    Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
 

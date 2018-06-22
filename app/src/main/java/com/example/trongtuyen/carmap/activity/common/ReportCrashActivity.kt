@@ -5,14 +5,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.MediaPlayer
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
-import android.util.Base64
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.*
@@ -21,17 +19,15 @@ import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
-import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.ReportResponse
-import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.*
-import java.net.URI
+
 
 
 class ReportCrashActivity : AppCompatActivity() {
