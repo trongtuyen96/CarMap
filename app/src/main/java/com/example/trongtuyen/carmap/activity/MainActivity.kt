@@ -33,6 +33,7 @@ import com.example.trongtuyen.carmap.models.direction.Route
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.services.models.SampleResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
@@ -104,6 +105,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var mPopupWindowHello: PopupWindow? = null
 
     private var mPopupWindowFilter: PopupWindow? = null
+
+    private var mPopupWindowDelete: PopupWindow? = null
 
     // List of user of other cars
     private lateinit var listUser: List<User>
@@ -1140,7 +1143,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         "standstill" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
-                            tvType.text = "Kẹt cứng"
+                            tvType.text = "Kẹt xe cứng"
                         }
                     }
                 }
@@ -1174,7 +1177,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         "broken_light" -> {
                             imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
-                            tvType.text = "Đèn giao thông hư"
+                            tvType.text = "Đèn báo hư"
                         }
                         "pothole" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
@@ -1195,7 +1198,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         "animal" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_animals)
-                            tvType.text = "Động vật qua đường"
+                            tvType.text = "Động vật nguy hiểm"
                         }
                         "missing_sign" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
@@ -1259,9 +1262,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 if (isDelete) {
                     Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
-                    onDeleteReport(dataReport._id.toString())
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
+
+                    val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
+                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                    val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+                    val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+
+                    btnYes.setOnClickListener {
+                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        mPopupWindowUser!!.dismiss()
+                        onDeleteReport(dataReport._id.toString())
+                    }
+
+                    btnNo.setOnClickListener {
+                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        mPopupWindowDelete!!.dismiss()
+                    }
+
                 } else {
                     Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
                     mPopupWindowReport!!.dismiss()
@@ -2350,7 +2372,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                     TastyToast.makeText(this@MainActivity, "Đã xoá báo cáo", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    TastyToast.makeText(this@MainActivity, "Xoá báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -2358,10 +2380,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
 
             override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
-                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                t.printStackTrace()
+                Log.e("Failure", "Error: " + t.message)
             }
         })
+
+//        val service = APIServiceGenerator.createService(ReportService::class.java)
+//        val call = service.deleteReport(reportID)
+//        call.enqueue(object : Callback<SampleResponse> {
+//            override fun onResponse(call: Call<SampleResponse>, response: Response<SampleResponse>) {
+//                if (response.isSuccessful) {
+//                    TastyToast.makeText(this@MainActivity, "Đã xoá báo cáo", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                } else {
+//                    val apiError = ErrorUtils.parseError(response)
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<SampleResponse>, t: Throwable) {
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//                t.printStackTrace()
+//            }
+//        })
     }
 
     // ====================================================================================================================================================== //

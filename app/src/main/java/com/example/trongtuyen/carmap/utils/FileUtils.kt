@@ -65,7 +65,7 @@ object FileUtils {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
         }
         if (type == "large"){
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, baos)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         }
         val byte = baos.toByteArray()
         return Base64.encodeToString(byte, Base64.DEFAULT)

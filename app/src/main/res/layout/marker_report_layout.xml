@@ -24,10 +24,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Xe đậu"
-                android:textAppearance="@android:style/TextAppearance.Material.Large"
+                android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:textColor="@color/background_front"
-                android:textSize="30sp"
-                android:textStyle="italic" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/tvDistance_marker_report"
@@ -36,7 +35,7 @@
                 android:text="Cách 500m"
                 android:textColor="@color/background_front"
                 android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/tvLocation_marker_report"

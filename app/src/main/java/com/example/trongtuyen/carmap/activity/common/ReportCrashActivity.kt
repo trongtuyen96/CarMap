@@ -190,13 +190,15 @@ class ReportCrashActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-            if (sFileAudioPath != "" || sBase64Image != "") {
+            if (sFileAudioPath == "" || sBase64Image == "") {
+//                Toast.makeText(this, "Chạy 1", Toast.LENGTH_SHORT).show()
                 // Encode file ghi âm
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
                 val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                 onAddNewReportCrash(mReport, false)
             } else {
                 // Gửi cái có file ảnh trước
+//                Toast.makeText(this, "Chạy 2", Toast.LENGTH_SHORT).show()
                 val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
                 onAddNewReportCrash(mReport, true)
             }
@@ -238,6 +240,7 @@ class ReportCrashActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
                     TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportCrashActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -288,7 +291,7 @@ class ReportCrashActivity : AppCompatActivity() {
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
                     options.inSampleSize = calculateInSampleSize(options)
                     Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
-                    options.inDensity = 320
+//                    options.inDensity = 320
                     options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
 //                    imageStream = contentResolver.openInputStream(photoURI)
@@ -311,8 +314,8 @@ class ReportCrashActivity : AppCompatActivity() {
         }
     }
 
-    val TARGET_IMAGE_WIDTH: Int = 872
-    val TARGET_IMAGE_HEIGHT: Int = 1164
+    val TARGET_IMAGE_WIDTH: Int = 614
+    val TARGET_IMAGE_HEIGHT: Int = 818
     // This method is used to calculate largest inSampleSize
     //which is used to decode bitmap in required bitmap.
     private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {
