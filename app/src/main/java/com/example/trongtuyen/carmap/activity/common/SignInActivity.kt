@@ -70,6 +70,9 @@ class SignInActivity : AppCompatActivity() {
         AppController.settingFilterCar = "true"
         AppController.settingFilterReport = "true"
         AppController.soundMode = 1
+        AppController.settingInvisible = "false"
+        AppController.settingSocket = "true"
+        AppController.settingRadius = 2000
 
         // Notify sign in successfully
         TastyToast.makeText(this, "Đăng nhập thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()

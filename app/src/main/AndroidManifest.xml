@@ -78,7 +78,8 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".activity.common.HomeSettingActivity" />
         <activity android:name=".activity.common.WorkSettingActivity" />
-        <activity android:name=".activity.common.HistorySettingActivity"></activity>
+        <activity android:name=".activity.common.HistorySettingActivity" />
+        <activity android:name=".activity.common.SettingActivity"></activity>
     </application>
 
 </manifest>

@@ -285,6 +285,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(place.latLng))
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
                 showPlaceInfoPopup(place)
+
+                // Thêm place vào AppController
+                if (AppController.listHistoryPlace.size >= 3) {
+                    for (i in 0 until 2) {
+                        if (i == 2) {
+                            AppController.listHistoryPlace[i] = place
+                        } else {
+                            val temp = i + 1
+                            AppController.listHistoryPlace[i] = AppController.listHistoryPlace[temp]
+                        }
+                    }
+                } else {
+                    AppController.listHistoryPlace.add(place)
+                }
+
             }
 
             override fun onError(status: Status) {
@@ -335,19 +350,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // Set lần đầu cho setting âm thanh
         when (AppController.soundMode) {
             1 -> {
-                AppController.soundMode = 2
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
+                tvQuickSettingSound.text = "MỞ"
+            }
+            2 -> {
                 imQuickSettingSound.setImageResource(R.drawable.ic_sound_alerts)
                 tvQuickSettingSound.text = "CHỈ CÁC BÁO HIỆU"
             }
-            2 -> {
-                AppController.soundMode = 3
+            3 -> {
                 imQuickSettingSound.setImageResource(R.drawable.ic_sound_mute)
                 tvQuickSettingSound.text = "TẮT"
-            }
-            3 -> {
-                AppController.soundMode = 1
-                imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
-                tvQuickSettingSound.text = "MỞ"
             }
         }
 
@@ -527,7 +539,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 startActivity(intent)
             }
             R.id.layoutSettingMenu -> {
-
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
             }
             R.id.layoutQuickSettingSound -> {
                 when (AppController.soundMode) {
@@ -1098,10 +1111,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val tvLocation = viewReportPopup.findViewById<TextView>(R.id.tvLocation_marker_report)
             val tvDescription = viewReportPopup.findViewById<TextView>(R.id.tvDescription_marker_report)
             val imvType = viewReportPopup.findViewById<ImageView>(R.id.imvType_marker_report)
-            val imvUpVote = viewReportPopup.findViewById<ImageView>(R.id.imvUpVote_marker_report)
+            val imvUpVote = viewReportPopup.findViewById<LinearLayout>(R.id.imvUpVote_marker_report)
             val imvDownVote = viewReportPopup.findViewById<ImageView>(R.id.imvDownVote_marker_report)
             val imvRecord = viewReportPopup.findViewById<ImageView>(R.id.imRecord_marker_report)
             val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report)
+            val tvNumReport = viewReportPopup.findViewById<TextView>(R.id.tvNumReport_marker_report)
 
             val dataReport: Report = marker.tag as Report
 //            if (dataReport.subtype2 == "") {
@@ -1117,17 +1131,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             tvDistance.text = "Cách " + decimalFormat.format(dataReport.distance) + " m"
 
             // Lấy địa chỉ sử dụng Geocoder
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val yourAddresses: List<Address>
-            yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
+            try {
+                val geocoder = Geocoder(this, Locale.getDefault())
+                val yourAddresses: List<Address>
+                yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
 
-            if (yourAddresses.isNotEmpty()) {
+                if (yourAddresses.isNotEmpty()) {
 //                val yourAddress = yourAddresses.get(0).getAddressLine(0)
 //                val yourCity = yourAddresses.get(0).getAddressLine(1)
 //                val yourCountry = yourAddresses.get(0).getAddressLine(2)
-                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
-                tvLocation.text = address
+                    val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
+                    tvLocation.text = address
+                }
+
+            } catch (ex: Exception) {
             }
+
+
 
             tvDescription.text = dataReport.description.toString()
             when (dataReport.type) {
@@ -1245,12 +1265,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
                 }
             }
+
             curMarkerReport = marker
+
+            // Số report
+            tvNumReport.text = dataReport.numReport.toString()
+
             imvUpVote.setOnClickListener {
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
-                mPopupWindowReport!!.dismiss()
-                curMarkerReport = null
+//                Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
+
+//                mPopupWindowReport!!.dismiss()
+//                curMarkerReport = null
+                onUpdateNumReport(dataReport._id.toString())
+                tvNumReport.text = (dataReport.numReport!!.toInt() + 1).toString()
             }
 
             // Nếu là người sở hữu, sửa nút DownVote thành nút Xoá
@@ -1286,7 +1314,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
 
                 } else {
-                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+                    onUpdateNumDelete(dataReport._id.toString())
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
                 }
@@ -1560,7 +1589,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun onGetNearbyUsers() {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, 10000f)
+        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, AppController!!.settingRadius!!.toFloat())
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
@@ -2367,7 +2396,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         marker.tag = report
     }
 
-    private fun onDeleteReport(reportID : String){
+    private fun onDeleteReport(reportID: String) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.deleteReport(reportID)
         call.enqueue(object : Callback<ReportResponse> {
@@ -2402,6 +2431,48 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                t.printStackTrace()
 //            }
 //        })
+    }
+
+    private fun onUpdateNumReport(id: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateNumReport(id)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@MainActivity, "Bình chọn báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
+    private fun onUpdateNumDelete(id: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateNumDelete(id)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@MainActivity, "Yêu cầu bỏ báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
     }
 
     // ====================================================================================================================================================== //
