@@ -1589,7 +1589,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun onGetNearbyUsers() {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, AppController.settingRadius.toFloat())
+        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, AppController!!.settingRadius!!.toFloat())
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
