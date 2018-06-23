@@ -1133,17 +1133,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             tvDistance.text = "Cách " + decimalFormat.format(dataReport.distance) + " m"
 
             // Lấy địa chỉ sử dụng Geocoder
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val yourAddresses: List<Address>
-            yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
+            try {
+                val geocoder = Geocoder(this, Locale.getDefault())
+                val yourAddresses: List<Address>
+                yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
 
-            if (yourAddresses.isNotEmpty()) {
+                if (yourAddresses.isNotEmpty()) {
 //                val yourAddress = yourAddresses.get(0).getAddressLine(0)
 //                val yourCity = yourAddresses.get(0).getAddressLine(1)
 //                val yourCountry = yourAddresses.get(0).getAddressLine(2)
-                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
-                tvLocation.text = address
+                    val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
+                    tvLocation.text = address
+                }
+
+            } catch (ex: Exception) {
             }
+
+
 
             tvDescription.text = dataReport.description.toString()
             when (dataReport.type) {
@@ -2429,7 +2435,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        })
     }
 
-    private fun onUpdateNumReport(id: String)  {
+    private fun onUpdateNumReport(id: String) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.updateNumReport(id)
         call.enqueue(object : Callback<ReportResponse> {
@@ -2450,13 +2456,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun onUpdateNumDelete(id: String)  {
+    private fun onUpdateNumDelete(id: String) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.updateNumDelete(id)
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@MainActivity, "Bình chọn báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    TastyToast.makeText(this@MainActivity, "Yêu cầu bỏ báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
 //                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
 
                 } else {
