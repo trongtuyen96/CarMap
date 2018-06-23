@@ -287,9 +287,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 showPlaceInfoPopup(place)
 
                 // Thêm place vào AppController
-                if (AppController.listHistoryPlace.size >= 3){
-                    for(i in 0 until 2){
-                        if( i == 2){
+                if (AppController.listHistoryPlace.size >= 3) {
+                    for (i in 0 until 2) {
+                        if (i == 2) {
                             AppController.listHistoryPlace[i] = place
                         } else {
                             val temp = i + 1
@@ -1113,10 +1113,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val tvLocation = viewReportPopup.findViewById<TextView>(R.id.tvLocation_marker_report)
             val tvDescription = viewReportPopup.findViewById<TextView>(R.id.tvDescription_marker_report)
             val imvType = viewReportPopup.findViewById<ImageView>(R.id.imvType_marker_report)
-            val imvUpVote = viewReportPopup.findViewById<ImageView>(R.id.imvUpVote_marker_report)
+            val imvUpVote = viewReportPopup.findViewById<LinearLayout>(R.id.imvUpVote_marker_report)
             val imvDownVote = viewReportPopup.findViewById<ImageView>(R.id.imvDownVote_marker_report)
             val imvRecord = viewReportPopup.findViewById<ImageView>(R.id.imRecord_marker_report)
             val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report)
+            val tvNumReport = viewReportPopup.findViewById<TextView>(R.id.tvNumReport_marker_report)
 
             val dataReport: Report = marker.tag as Report
 //            if (dataReport.subtype2 == "") {
@@ -1260,12 +1261,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
                 }
             }
+
             curMarkerReport = marker
+
+            // Số report
+            tvNumReport.text = dataReport.numReport.toString()
+
             imvUpVote.setOnClickListener {
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
-                mPopupWindowReport!!.dismiss()
-                curMarkerReport = null
+//                Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
+
+//                mPopupWindowReport!!.dismiss()
+//                curMarkerReport = null
+                onUpdateNumReport(dataReport._id.toString())
+                tvNumReport.text = (dataReport.numReport!!.toInt() + 1).toString()
             }
 
             // Nếu là người sở hữu, sửa nút DownVote thành nút Xoá
@@ -2382,7 +2391,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         marker.tag = report
     }
 
-    private fun onDeleteReport(reportID : String){
+    private fun onDeleteReport(reportID: String) {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.deleteReport(reportID)
         call.enqueue(object : Callback<ReportResponse> {
@@ -2417,6 +2426,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                t.printStackTrace()
 //            }
 //        })
+    }
+
+    private fun onUpdateNumReport(id: String)  {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateNumReport(id)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@MainActivity, "Bình chọn báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
     }
 
     // ====================================================================================================================================================== //

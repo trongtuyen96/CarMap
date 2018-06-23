@@ -18,10 +18,10 @@ interface ReportService {
     // @FormUrlEncoded
     // Bỏ FormUrlEncoded vì gây lỗi với @Body
     @PUT("report/{id}/updateNumReport")
-    fun updateNumReport(@Path("id") reportID: String, @Body report: Report): Call<ReportResponse>
+    fun updateNumReport(@Path("id") reportID: String): Call<ReportResponse>
 
     @PUT("report/{id}/updateNumDelete")
-    fun updateNumDelete(@Path("id") reportID: String, @Body report: Report): Call<ReportResponse>
+    fun updateNumDelete(@Path("id") reportID: String): Call<ReportResponse>
 
     @POST("report")
     fun addNewReport(@Body report: Report): Call<Report>
