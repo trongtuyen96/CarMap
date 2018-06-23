@@ -90,7 +90,7 @@ class SettingActivity : AppCompatActivity() {
 
         btnRadius.setOnClickListener {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val viewPopup = inflater.inflate(R.layout.marker_user_layout, null)
+            val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
             val mPopupWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mPopupWindow.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
@@ -117,6 +117,36 @@ class SettingActivity : AppCompatActivity() {
             tv25km.setOnClickListener {
                 btnRadius.text = "25 Km"
                 AppController.settingRadius = 25
+                mPopupWindow.dismiss()
+            }
+        }
+
+        btnSound.setOnClickListener {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewPopup = inflater.inflate(R.layout.setting_sound_dialog_layout, null)
+            val mPopupWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindow.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+
+            val layoutSoundOn = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundOn_setting_sound_dialog_layout)
+            val layoutSoundAlert = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundAlert_setting_sound_dialog_layout)
+            val layoutSoundOff = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundOff_setting_sound_dialog_layout)
+
+            layoutSoundOn.setOnClickListener {
+                btnSound.text = "MỞ"
+                AppController.soundMode = 1
+                btnSound.background = getDrawable(R.drawable.bg_btn_send)
+                mPopupWindow.dismiss()
+            }
+            layoutSoundAlert.setOnClickListener {
+                btnSound.text = "BÁO CÁO"
+                AppController.soundMode = 2
+                btnSound.background = getDrawable(R.drawable.bg_btn_dismiss)
+                mPopupWindow.dismiss()
+            }
+            layoutSoundOff.setOnClickListener {
+                btnSound.text = "TẮT"
+                AppController.soundMode = 3
+                btnSound.background = getDrawable(R.drawable.bg_btn_gray_dark)
                 mPopupWindow.dismiss()
             }
         }
