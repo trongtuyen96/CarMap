@@ -1,12 +1,13 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.view.ViewGroup
+import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
@@ -77,14 +78,47 @@ class SettingActivity : AppCompatActivity() {
             }
         })
 
-        switchInvisible.setOnToggledListener(object : OnToggledListener {
+        switchSocket.setOnToggledListener(object : OnToggledListener {
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
                 if (isOn) {
-                    AppController.settingInvisible = "true"
+                    AppController.settingSocket = "true"
                 } else {
-                    AppController.settingInvisible = "false"
+                    AppController.settingSocket = "false"
                 }
             }
         })
+
+        btnRadius.setOnClickListener {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewPopup = inflater.inflate(R.layout.marker_user_layout, null)
+            val mPopupWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupWindow.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+
+            val tv2km = viewPopup.findViewById<TextView>(R.id.tv2km_seting_radius_dialog_layout)
+            val tv5km = viewPopup.findViewById<TextView>(R.id.tv5km_seting_radius_dialog_layout)
+            val tv10km = viewPopup.findViewById<TextView>(R.id.tv10km_seting_radius_dialog_layout)
+            val tv25km = viewPopup.findViewById<TextView>(R.id.tv25km_seting_radius_dialog_layout)
+
+            tv2km.setOnClickListener {
+                btnRadius.text = "2 Km"
+                AppController.settingRadius = 2
+                mPopupWindow.dismiss()
+            }
+            tv5km.setOnClickListener {
+                btnRadius.text = "5 Km"
+                AppController.settingRadius = 5
+                mPopupWindow.dismiss()
+            }
+            tv10km.setOnClickListener {
+                btnRadius.text = "10 Km"
+                AppController.settingRadius = 10
+                mPopupWindow.dismiss()
+            }
+            tv25km.setOnClickListener {
+                btnRadius.text = "25 Km"
+                AppController.settingRadius = 25
+                mPopupWindow.dismiss()
+            }
+        }
     }
 }
