@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.location.Location
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.utils.SharePrefs
+import com.google.android.gms.location.places.Place
 
 /**
  * Created by tuyen on 07/05/2018.
@@ -69,4 +70,8 @@ object AppController {
         set(value) {
             SharePrefs.instance?.SetInt(SETTINGS_SOUND_MODE, value!!)
         }
+
+
+    // Lịch sử tìm kiếm gần đây
+    var listHistoryPlace: MutableList<Place> = ArrayList()
 }

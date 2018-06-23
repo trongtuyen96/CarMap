@@ -285,6 +285,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(place.latLng))
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
                 showPlaceInfoPopup(place)
+
+                // Thêm place vào AppController
+                if (AppController.listHistoryPlace.size >= 3){
+                    for(i in 0 until 2){
+                        if( i == 2){
+                            AppController.listHistoryPlace[i] = place
+                        } else {
+                            val temp = i + 1
+                            AppController.listHistoryPlace[i] = AppController.listHistoryPlace[temp]
+                        }
+                    }
+                } else {
+                    AppController.listHistoryPlace.add(place)
+                }
+
             }
 
             override fun onError(status: Status) {

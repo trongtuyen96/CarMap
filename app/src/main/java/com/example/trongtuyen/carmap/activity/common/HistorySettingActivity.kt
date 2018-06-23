@@ -10,6 +10,8 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.controllers.AppController
+import com.google.android.gms.location.places.Place
 
 class HistorySettingActivity : AppCompatActivity() {
 
@@ -37,13 +39,20 @@ class HistorySettingActivity : AppCompatActivity() {
     lateinit var layoutNum2: LinearLayout
     @BindView(R.id.layoutNum3_history_setting)
     lateinit var layoutNum3: LinearLayout
+    @BindView(R.id.tvName1_history_setting)
+    lateinit var tvName1: TextView
+    @BindView(R.id.tvName2_history_setting)
+    lateinit var tvName2: TextView
+    @BindView(R.id.tvName3_history_setting)
+    lateinit var tvName3: TextView
     @BindView(R.id.tvAddress1_history_setting)
     lateinit var tvAddress1: TextView
     @BindView(R.id.tvAddress2_history_setting)
     lateinit var tvAddress2: TextView
     @BindView(R.id.tvAddress3_history_setting)
     lateinit var tvAddress3: TextView
-    
+
+    private var selectedPlace: Place? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_history_setting)
@@ -52,13 +61,69 @@ class HistorySettingActivity : AppCompatActivity() {
         initComponents()
     }
 
-    private fun initComponents(){
+    private fun initComponents() {
         btnBack.setOnClickListener {
             finish()
         }
 
-        btnDismiss.setOnClickListener{
+        btnDismiss.setOnClickListener {
             finish()
         }
+
+        when (AppController.listHistoryPlace.size) {
+            0 -> {
+                layoutAll.visibility = View.INVISIBLE
+            }
+            1 -> {
+                tvInfo.visibility = View.INVISIBLE
+                layoutNum2.visibility = View.INVISIBLE
+                layoutNum3.visibility = View.INVISIBLE
+                divider2.visibility = View.INVISIBLE
+                divider3.visibility = View.INVISIBLE
+                tvName1.text = AppController.listHistoryPlace[0].name
+                tvAddress1.text = AppController.listHistoryPlace[0].address
+            }
+            2 -> {
+                tvInfo.visibility = View.INVISIBLE
+                layoutNum3.visibility = View.INVISIBLE
+                divider3.visibility = View.INVISIBLE
+                tvName1.text = AppController.listHistoryPlace[0].name
+                tvAddress1.text = AppController.listHistoryPlace[0].address
+                tvName2.text = AppController.listHistoryPlace[1].name
+                tvAddress2.text = AppController.listHistoryPlace[1].address
+            }
+            3 -> {
+                tvInfo.visibility = View.INVISIBLE
+                tvName1.text = AppController.listHistoryPlace[0].name
+                tvAddress1.text = AppController.listHistoryPlace[0].address
+                tvName2.text = AppController.listHistoryPlace[1].name
+                tvAddress2.text = AppController.listHistoryPlace[1].address
+                tvName3.text = AppController.listHistoryPlace[2].name
+                tvAddress3.text = AppController.listHistoryPlace[2].address
+            }
+        }
+
+        layoutNum1.setOnClickListener {
+            layoutNum1.background = getDrawable(R.color.divider)
+            layoutNum2.background = getDrawable(R.color.background_front)
+            layoutNum3.background = getDrawable(R.color.background_front)
+            selectedPlace = AppController.listHistoryPlace[0]
+        }
+
+        layoutNum2.setOnClickListener {
+            layoutNum2.background = getDrawable(R.color.divider)
+            layoutNum1.background = getDrawable(R.color.background_front)
+            layoutNum3.background = getDrawable(R.color.background_front)
+            selectedPlace = AppController.listHistoryPlace[1]
+        }
+
+        layoutNum3.setOnClickListener {
+            layoutNum3.background = getDrawable(R.color.divider)
+            layoutNum1.background = getDrawable(R.color.background_front)
+            layoutNum2.background = getDrawable(R.color.background_front)
+            selectedPlace = AppController.listHistoryPlace[2]
+        }
+
+        btnChoose.setOnClickListener { }
     }
 }
