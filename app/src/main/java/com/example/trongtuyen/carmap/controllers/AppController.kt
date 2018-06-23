@@ -20,6 +20,9 @@ object AppController {
     internal var SETTINGS_FILTER_CAR = "setting_filter_car"
     internal var SETTINGS_FILTER_REPORT = "setting_filter_report"
     internal var SETTINGS_SOUND_MODE = "setting_sound_mode"
+    internal var SETTINGS_INVISIBLE = "setting_invisible"
+    internal var SETTINGS_SOCKET = "setting_socket"
+    internal var SETTINGS_RADIUS = "setting_radius"
 
     var accessToken: String?
         get() = SharePrefs.instance?.GetString(USER_ACCESS_TOKEN)
@@ -71,6 +74,23 @@ object AppController {
             SharePrefs.instance?.SetInt(SETTINGS_SOUND_MODE, value!!)
         }
 
+    var settingInvisible: String?
+        get() = SharePrefs.instance?.GetString(SETTINGS_INVISIBLE)
+        set(value) {
+            SharePrefs.instance?.SetString(SETTINGS_INVISIBLE, value!!)
+        }
+
+    var settingSocket: String?
+        get() = SharePrefs.instance?.GetString(SETTINGS_SOCKET)
+        set(value) {
+            SharePrefs.instance?.SetString(SETTINGS_SOCKET, value!!)
+        }
+
+    var settingRadius: Int?
+        get() = SharePrefs.instance?.GetInt(SETTINGS_RADIUS)
+        set(value) {
+            SharePrefs.instance?.SetInt(SETTINGS_RADIUS, value!!)
+        }
 
     // Lịch sử tìm kiếm gần đây
     var listHistoryPlace: MutableList<Place> = ArrayList()

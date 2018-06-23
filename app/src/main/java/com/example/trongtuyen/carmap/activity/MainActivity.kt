@@ -350,19 +350,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // Set lần đầu cho setting âm thanh
         when (AppController.soundMode) {
             1 -> {
-                AppController.soundMode = 2
+                imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
+                tvQuickSettingSound.text = "MỞ"
+            }
+            2 -> {
                 imQuickSettingSound.setImageResource(R.drawable.ic_sound_alerts)
                 tvQuickSettingSound.text = "CHỈ CÁC BÁO HIỆU"
             }
-            2 -> {
-                AppController.soundMode = 3
+            3 -> {
                 imQuickSettingSound.setImageResource(R.drawable.ic_sound_mute)
                 tvQuickSettingSound.text = "TẮT"
-            }
-            3 -> {
-                AppController.soundMode = 1
-                imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
-                tvQuickSettingSound.text = "MỞ"
             }
         }
 

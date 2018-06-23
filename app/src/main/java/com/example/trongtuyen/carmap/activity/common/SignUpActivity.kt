@@ -153,6 +153,9 @@ class SignUpActivity : AppCompatActivity() {
         AppController.settingFilterCar = "true"
         AppController.settingFilterReport = "true"
         AppController.soundMode = 1
+        AppController.settingInvisible = "false"
+        AppController.settingSocket = "true"
+        AppController.settingRadius = 2
 
         //        Intent returnIntent = new Intent();
         //        setResult(Activity.RESULT_OK,returnIntent);
