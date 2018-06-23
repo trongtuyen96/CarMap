@@ -18,7 +18,8 @@
         android:layout_above="@+id/tvName"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/nav_header_desc"
-        app:srcCompat="@drawable/ic_avatar" />
+        app:srcCompat="@drawable/ic_avatar"
+        android:layout_marginBottom="6dp"/>
 
     <TextView
         android:id="@+id/tvName"

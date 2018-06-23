@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.common.SettingActivity">
+    tools:context=".activity.common.SettingActivity"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,247 +43,14 @@
 
     </LinearLayout>
 
-    <!--<ImageView-->
-        <!--android:id="@+id/image"-->
-        <!--android:layout_width="140dp"-->
-        <!--android:layout_height="140dp"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginTop="77dp"-->
-        <!--android:src="@drawable/ic_share_history" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tvInfo_setting"-->
-        <!--android:layout_width="280dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/image"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:gravity="center"-->
-        <!--android:text="Chưa có lịch sử thông tin tìm kiếm địa điểm" />-->
-
-    <LinearLayout
-        android:id="@+id/layoutNumberAll_setting"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/layout"
-        android:orientation="vertical">
-
-
-        <View
-            android:id="@+id/divider0_setting"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
-
-        <LinearLayout
-            android:id="@+id/layoutNum1_setting"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/bg_btn_gray"
-                android:gravity="center"
-                android:text="1" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/divider" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="20dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvName1_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Tên"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvAddress1_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Địa chỉ"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider1_setting"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
-
-        <LinearLayout
-            android:id="@+id/layoutNum2_setting"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/bg_btn_gray"
-                android:gravity="center"
-                android:text="2" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/divider" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="20dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvName2_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Tên"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvAddress2_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Địa chỉ"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider2_setting"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
-
-        <LinearLayout
-            android:id="@+id/layoutNum3_setting"
-            android:layout_width="match_parent"
-            android:layout_height="78dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/bg_btn_gray"
-                android:gravity="center"
-                android:text="3" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/divider" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="20dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvName3_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Tên"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvAddress3_setting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Địa chỉ"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider3_setting"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
-
-    </LinearLayout>
-
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="@color/button_bg_inactive"
+        android:layout_height="80dp"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnDismiss_setting"
-            android:layout_width="120dp"
-            android:layout_height="70dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/bg_btn_dismiss"
-            android:text="HUỶ"
-            android:textColor="@color/background_front"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnChoose_setting"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/bg_btn_send"
-            android:paddingEnd="10dp"
-            android:paddingStart="10dp"
-            android:text="CHỈ DẪN"
-            android:textColor="@color/background_front"
-            android:textSize="24sp"
-            android:textStyle="bold" />
     </LinearLayout>
 
 
-</RelativeLayout>
+
+
+</LinearLayout>
