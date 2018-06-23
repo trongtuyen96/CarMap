@@ -539,7 +539,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 startActivity(intent)
             }
             R.id.layoutSettingMenu -> {
-
+                val intent = Intent(this, SettingActivity::class.java)
+                startActivity(intent)
             }
             R.id.layoutQuickSettingSound -> {
                 when (AppController.soundMode) {
@@ -1588,7 +1589,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun onGetNearbyUsers() {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, 10000f)
+        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, AppController.settingRadius.toFloat())
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {

@@ -155,7 +155,7 @@ class SignUpActivity : AppCompatActivity() {
         AppController.soundMode = 1
         AppController.settingInvisible = "false"
         AppController.settingSocket = "true"
-        AppController.settingRadius = 2
+        AppController.settingRadius = 2000
 
         //        Intent returnIntent = new Intent();
         //        setResult(Activity.RESULT_OK,returnIntent);

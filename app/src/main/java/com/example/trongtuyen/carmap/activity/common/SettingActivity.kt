@@ -51,6 +51,20 @@ class SettingActivity : AppCompatActivity() {
             switchSocket.isOn = false
         }
 
+        when(AppController.settingRadius){
+            2000 -> {
+                btnRadius.text = "2 Km"
+            }
+            5000 -> {
+                btnRadius.text = "5 Km"
+            }
+            10000 -> {
+                btnRadius.text = "10 Km"
+            }
+            25000 -> {
+                btnRadius.text = "25 Km"
+            }
+        }
         btnRadius.text = AppController.settingRadius.toString() + " km"
 
         when (AppController.soundMode) {
@@ -101,22 +115,22 @@ class SettingActivity : AppCompatActivity() {
 
             tv2km.setOnClickListener {
                 btnRadius.text = "2 Km"
-                AppController.settingRadius = 2
+                AppController.settingRadius = 2000
                 mPopupWindow.dismiss()
             }
             tv5km.setOnClickListener {
                 btnRadius.text = "5 Km"
-                AppController.settingRadius = 5
+                AppController.settingRadius = 5000
                 mPopupWindow.dismiss()
             }
             tv10km.setOnClickListener {
                 btnRadius.text = "10 Km"
-                AppController.settingRadius = 10
+                AppController.settingRadius = 10000
                 mPopupWindow.dismiss()
             }
             tv25km.setOnClickListener {
                 btnRadius.text = "25 Km"
-                AppController.settingRadius = 25
+                AppController.settingRadius = 25000
                 mPopupWindow.dismiss()
             }
         }
