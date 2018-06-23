@@ -1310,7 +1310,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
 
                 } else {
-                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+                    onUpdateNumDelete(dataReport._id.toString())
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
                 }
@@ -2431,6 +2432,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun onUpdateNumReport(id: String)  {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.updateNumReport(id)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    TastyToast.makeText(this@MainActivity, "Bình chọn báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
+    private fun onUpdateNumDelete(id: String)  {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.updateNumDelete(id)
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
