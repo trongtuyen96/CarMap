@@ -117,6 +117,41 @@
         android:layout_height="1dp"
         android:background="@color/divider" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_user_radius_44dp" />
+
+        <TextView
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:text="Bán kính hiển thị tài xế"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnUserRadius_setting"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/bg_btn_gray_dark"
+            android:text="2 km" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -131,23 +166,25 @@
             android:src="@drawable/ic_report_map_issue_44dp" />
 
         <TextView
-            android:layout_width="160dp"
+            android:layout_width="164dp"
             android:layout_height="wrap_content"
+
             android:layout_gravity="center"
             android:layout_marginStart="20dp"
-            android:text="Bán kính hiển thị báo cáo"
+            android:text="Bán kính hiển thị báo hiệu"
             android:textSize="14sp" />
 
         <Button
-            android:id="@+id/btnRadius_setting"
+            android:id="@+id/btnReportRadius_setting"
             android:layout_width="70dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:background="@drawable/bg_btn_gray_dark"
             android:text="2 km" />
 
     </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
@@ -181,7 +218,8 @@
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
             android:background="@drawable/bg_btn_gray_dark"
-            android:text="TẮT" />
+            android:text="TẮT"
+            android:textColor="@color/background_front" />
 
     </LinearLayout>
 

@@ -29,6 +29,7 @@ import android.view.HapticFeedbackConstants
 import android.view.View
 import android.widget.LinearLayout
 import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import java.io.File
@@ -91,6 +92,9 @@ class ReportHazardActivity : AppCompatActivity() {
 
     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
     private lateinit var photoURI: Uri
+
+    // Audio Player
+    private var mAudioPlayer = AudioPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -311,7 +315,7 @@ class ReportHazardActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                TastyToast.makeText(this@ReportHazardActivity, "Gửi báo hiệu thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
@@ -322,7 +326,11 @@ class ReportHazardActivity : AppCompatActivity() {
                         onUpdateBase64Voice(response.body()!!._id.toString(), encoded)
                         finish()
                     } else {
-                        TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this@ReportHazardActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        }
+                        TastyToast.makeText(this@ReportHazardActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
                     }
                 } else {
@@ -346,31 +354,55 @@ class ReportHazardActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnObject.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.vat_can)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "object"
             bottomSheetDialog.dismiss()
         }
         btnConstruction.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.cong_trinh)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "construction"
             bottomSheetDialog.dismiss()
         }
         btnBrokenLight.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.den_bao_hu)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "broken_light"
             bottomSheetDialog.dismiss()
         }
         btnPothole.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.ho_voi)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "pothole"
             bottomSheetDialog.dismiss()
         }
         btnVehicleStop.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.xe_dau)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "vehicle_stop"
             bottomSheetDialog.dismiss()
         }
         btnRoadkill.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "road_kill"
             bottomSheetDialog.dismiss()
@@ -437,16 +469,28 @@ class ReportHazardActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnVehicleStop.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.xe_dau_ben_le)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "vehicle_stop"
             bottomSheetDialog.dismiss()
         }
         btnAnimal.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "animal"
             bottomSheetDialog.dismiss()
         }
         btnMissingSign.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.thieu_bien_bao)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "missing_sign"
             bottomSheetDialog.dismiss()
@@ -519,21 +563,37 @@ class ReportHazardActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnFog.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.suong_mu)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "fog"
             bottomSheetDialog.dismiss()
         }
         btnHail.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.mua_da)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "hail"
             bottomSheetDialog.dismiss()
         }
         btnFlood.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.lu_lut)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "flood"
             bottomSheetDialog.dismiss()
         }
         btnIce.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.da_tron_tren_duong)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "ice"
             bottomSheetDialog.dismiss()
@@ -569,7 +629,11 @@ class ReportHazardActivity : AppCompatActivity() {
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportHazardActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@ReportHazardActivity, R.raw.gui_bao_hieu_thanh_cong)
+                    }
+                    TastyToast.makeText(this@ReportHazardActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportHazardActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
