@@ -2,6 +2,7 @@ package com.example.trongtuyen.carmap.activity.common
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Point
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -122,11 +123,17 @@ class SettingActivity : AppCompatActivity() {
             }
         })
 
+        val mdisp = windowManager.defaultDisplay
+        val mdispSize = Point()
+        mdisp.getSize(mdispSize)
+        val maxX = mdispSize.x
+        val maxY = mdispSize.y
+
         btnUserRadius.setOnClickListener {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
             mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupRadiusWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
+            mPopupRadiusWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnUserRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
 
             val tv2km = viewPopup.findViewById<TextView>(R.id.tv2km_seting_radius_dialog_layout)
             val tv5km = viewPopup.findViewById<TextView>(R.id.tv5km_seting_radius_dialog_layout)
@@ -162,7 +169,7 @@ class SettingActivity : AppCompatActivity() {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
             mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupRadiusWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
+            mPopupRadiusWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnReportRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
 
             val tv2km = viewPopup.findViewById<TextView>(R.id.tv2km_seting_radius_dialog_layout)
             val tv5km = viewPopup.findViewById<TextView>(R.id.tv5km_seting_radius_dialog_layout)
@@ -198,7 +205,7 @@ class SettingActivity : AppCompatActivity() {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_sound_dialog_layout, null)
             mPopupSoundWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupSoundWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
+            mPopupSoundWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnReportRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
 
             val layoutSoundOn = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundOn_setting_sound_dialog_layout)
             val layoutSoundAlert = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundAlert_setting_sound_dialog_layout)

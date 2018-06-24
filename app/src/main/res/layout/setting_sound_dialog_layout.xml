@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="210dp"
-    android:layout_height="220dp"
+    android:layout_height="230dp"
     android:background="@drawable/bg_btn_white_stroke"
     android:orientation="vertical">
 
@@ -52,7 +52,7 @@
     <LinearLayout
         android:id="@+id/layoutSoundAlert_setting_sound_dialog_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:orientation="horizontal">
         <ImageView
             android:layout_width="50dp"
@@ -81,7 +81,8 @@
         android:id="@+id/layoutSoundOff_setting_sound_dialog_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
