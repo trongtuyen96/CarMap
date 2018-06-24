@@ -151,6 +151,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var destinationMarkers: MutableList<Marker>? = ArrayList()
 
 
+    // setting hiện tại của socket
+    private var currentSocketSetting: String? = null
+
     // ==================================================================================================================================== //
     // ======== VỀ DIRECTION ============================================================================================================== //
     // ==================================================================================================================================== //
@@ -320,7 +323,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         loadUserProfile()
 
         // Khởi tạo socket
-        initSocket()
+        currentSocketSetting = AppController.settingSocket
+        if (currentSocketSetting == "true") {
+            initSocket()
+        }
 
         // onClickListener cho các nút
         imvMyLoc.setOnClickListener(this)
@@ -616,6 +622,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imQuickSettingSound.setImageResource(R.drawable.ic_sound_mute)
                             tvQuickSettingSound.text = "TẮT"
                         }
+                    }
+
+                    if (AppController.settingSocket == "true" && AppController.settingSocket != currentSocketSetting) {
+                        initSocket()
+                    }
+
+                    if (AppController.settingSocket == "false" && AppController.settingSocket != currentSocketSetting) {
+                        destroySocket()
                     }
                 }
             }
@@ -1077,7 +1091,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressHome_menu.text = address
                 }
             } catch (ex: Exception) {
-                TastyToast.makeText(this, "Kết nối mạng yếu", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                TastyToast.makeText(this, "Kết nối mạng yếu", TastyToast.LENGTH_SHORT, TastyToast.CONFUSING).show()
             }
         }
 
@@ -1092,8 +1106,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
                     tvAddressWork_menu.text = address
                 }
-            }catch(ex: Exception){
-                TastyToast.makeText(this, "Kết nối mạng yếu", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+            } catch (ex: Exception) {
+                TastyToast.makeText(this, "Kết nối mạng yếu", TastyToast.LENGTH_SHORT, TastyToast.CONFUSING).show()
             }
         }
 
@@ -1391,10 +1405,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             curMarkerUser = marker
             btnHello.setOnClickListener {
-                attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
-                mPopupWindowUser!!.dismiss()
-                curMarkerUser = null
-                viewUserPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                if (AppController.settingSocket == "true") {
+                    attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    mPopupWindowUser!!.dismiss()
+                    curMarkerUser = null
+                    viewUserPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                } else {
+                    TastyToast.makeText(this, "Bạn phải bật chết độ giao tiếp với tài xế để có thể thực hiện thao tác này!", TastyToast.LENGTH_LONG, TastyToast.INFO).show()
+                }
             }
 
             // Lấy view của viewTouch
@@ -1506,24 +1524,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             viewTouch.setOnTouchListener(sfg)
 
             btnConfirm.setOnClickListener {
-                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                when (mType) {
-                    1 -> {
-                        attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                if (AppController.settingSocket == "true") {
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    when (mType) {
+                        1 -> {
+                            attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                        }
+                        2 -> {
+                            attemptWarnSlowDown(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                        }
+                        3 -> {
+                            attemptWarnWatcher(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                        }
+                        4 -> {
+                            attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                        }
                     }
-                    2 -> {
-                        attemptWarnSlowDown(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
-                    }
-                    3 -> {
-                        attemptWarnWatcher(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
-                    }
-                    4 -> {
-                        attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
-                    }
+                    TastyToast.makeText(this, "Đã gửi cảnh báo cho tài xế", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
+                    btnConfirm.visibility = View.INVISIBLE
+                    mType = 0
+                } else {
+                    TastyToast.makeText(this, "Bạn phải bật chết độ giao tiếp với tài xế để có thể thực hiện thao tác này!", TastyToast.LENGTH_LONG, TastyToast.INFO).show()
                 }
-                TastyToast.makeText(this, "Đã gửi cảnh báo cho tài xế", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
-                btnConfirm.visibility = View.INVISIBLE
-                mType = 0
             }
 
 
