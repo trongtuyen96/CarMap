@@ -21,13 +21,13 @@ import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.*
-
 
 
 class ReportCrashActivity : AppCompatActivity() {
@@ -69,6 +69,10 @@ class ReportCrashActivity : AppCompatActivity() {
     private lateinit var photoURI: Uri
 
     private var subType1: String = ""
+
+    // Audio Player
+    private var mAudioPlayer = AudioPlayer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_crash)
@@ -81,6 +85,10 @@ class ReportCrashActivity : AppCompatActivity() {
 
         // Các nút báo cáo
         btnCrashMinor.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tai_nan_nho)
+            }
             subType1 = "minor"
             btnCrashMinor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
@@ -88,6 +96,10 @@ class ReportCrashActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnCrashMajor.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
+            }
             subType1 = "major"
             btnCrashMajor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMinor.background = null
@@ -95,6 +107,10 @@ class ReportCrashActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnCrashOtherSide.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
+            }
             subType1 = "other_side"
             btnCrashOtherSide.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
@@ -207,7 +223,7 @@ class ReportCrashActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
@@ -218,7 +234,11 @@ class ReportCrashActivity : AppCompatActivity() {
                         onUpdateBase64Voice(response.body()!!._id.toString(), encoded)
                         finish()
                     } else {
-                        TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        }
+                        TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
                     }
                 } else {
@@ -235,7 +255,11 @@ class ReportCrashActivity : AppCompatActivity() {
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                    }
+                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
 //                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)

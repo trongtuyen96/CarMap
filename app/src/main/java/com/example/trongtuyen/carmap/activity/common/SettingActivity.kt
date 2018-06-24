@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.*
@@ -13,6 +14,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.github.angads25.toggle.LabeledSwitch
 import com.github.angads25.toggle.interfaces.OnToggledListener
 
@@ -34,6 +36,8 @@ class SettingActivity : AppCompatActivity() {
     private var mPopupRadiusWindow: PopupWindow? = null
 
     private var mPopupSoundWindow: PopupWindow? = null
+
+    private var mAudioPlayer = AudioPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,8 +109,16 @@ class SettingActivity : AppCompatActivity() {
         switchInvisible.setOnToggledListener(object : OnToggledListener {
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
                 if (isOn) {
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@SettingActivity, R.raw.an_danh_voi_tai_xe_khac)
+                    }
                     AppController.settingInvisible = "true"
                 } else {
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@SettingActivity, R.raw.hien_thi_voi_tai_xe_khac)
+                    }
                     AppController.settingInvisible = "false"
                 }
             }
@@ -115,8 +127,16 @@ class SettingActivity : AppCompatActivity() {
         switchSocket.setOnToggledListener(object : OnToggledListener {
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
                 if (isOn) {
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@SettingActivity, R.raw.giao_tiep_voi_tai_xe_khac)
+                    }
                     AppController.settingSocket = "true"
                 } else {
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@SettingActivity, R.raw.khong_giao_tiep_voi_tai_xe_khac)
+                    }
                     AppController.settingSocket = "false"
                 }
             }
@@ -129,6 +149,12 @@ class SettingActivity : AppCompatActivity() {
         val maxY = mdispSize.y
 
         btnUserRadius.setOnClickListener {
+
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this@SettingActivity, R.raw.ban_kinh_hien_thi_tai_xe)
+            }
+
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
             mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -143,21 +169,25 @@ class SettingActivity : AppCompatActivity() {
             tvInfo.text = "Bán kính hiển thị tài xế"
 
             tv2km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnUserRadius.text = "2 Km"
                 AppController.settingUserRadius = 2000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv5km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnUserRadius.text = "5 Km"
                 AppController.settingUserRadius = 5000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv10km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnUserRadius.text = "10 Km"
                 AppController.settingUserRadius = 10000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv25km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnUserRadius.text = "25 Km"
                 AppController.settingUserRadius = 25000
                 mPopupRadiusWindow!!.dismiss()
@@ -165,6 +195,12 @@ class SettingActivity : AppCompatActivity() {
         }
 
         btnReportRadius.setOnClickListener {
+
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this@SettingActivity, R.raw.ban_kinh_hien_thi_bao_hieu)
+            }
+
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
             mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -179,21 +215,25 @@ class SettingActivity : AppCompatActivity() {
             tvInfo.text = "Bán kính hiển thị báo hiệu"
 
             tv2km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnReportRadius.text = "2 Km"
                 AppController.settingReportRadius = 2000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv5km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnReportRadius.text = "5 Km"
                 AppController.settingReportRadius = 5000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv10km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnReportRadius.text = "10 Km"
                 AppController.settingReportRadius = 10000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv25km.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnReportRadius.text = "25 Km"
                 AppController.settingReportRadius = 25000
                 mPopupRadiusWindow!!.dismiss()
@@ -211,18 +251,33 @@ class SettingActivity : AppCompatActivity() {
             val layoutSoundOff = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundOff_setting_sound_dialog_layout)
 
             layoutSoundOn.setOnClickListener {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this@SettingActivity, R.raw.am_thanh_mo)
+                }
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnSound.text = "MỞ"
                 AppController.soundMode = 1
                 btnSound.background = getDrawable(R.drawable.bg_btn_send)
                 mPopupSoundWindow!!.dismiss()
             }
             layoutSoundAlert.setOnClickListener {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this@SettingActivity, R.raw.am_thanh_chi_bao_hieu)
+                }
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnSound.text = "BÁO HIỆU"
                 AppController.soundMode = 2
                 btnSound.background = getDrawable(R.drawable.bg_btn_dismiss)
                 mPopupSoundWindow!!.dismiss()
             }
             layoutSoundOff.setOnClickListener {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this@SettingActivity, R.raw.am_thanh_tat)
+                }
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnSound.text = "TẮT"
                 AppController.soundMode = 3
                 btnSound.background = getDrawable(R.drawable.bg_btn_gray_dark)

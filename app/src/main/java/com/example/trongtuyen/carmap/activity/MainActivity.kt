@@ -578,16 +578,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             R.id.layoutQuickSettingSound -> {
                 when (AppController.soundMode) {
                     1 -> {
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this, R.raw.am_thanh_chi_bao_hieu)
+                        }
                         AppController.soundMode = 2
                         imQuickSettingSound.setImageResource(R.drawable.ic_sound_alerts)
                         tvQuickSettingSound.text = "CHỈ CÁC BÁO HIỆU"
                     }
                     2 -> {
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this, R.raw.am_thanh_tat)
+                        }
                         AppController.soundMode = 3
                         imQuickSettingSound.setImageResource(R.drawable.ic_sound_mute)
                         tvQuickSettingSound.text = "TẮT"
                     }
                     3 -> {
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this, R.raw.am_thanh_mo)
+                        }
                         AppController.soundMode = 1
                         imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
                         tvQuickSettingSound.text = "MỞ"
@@ -1472,6 +1484,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 if (isDelete) {
 //                    Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
+
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this, R.raw.xoa_bao_hieu)
+                    }
+
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
 
@@ -1544,7 +1562,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             curMarkerUser = marker
             btnHello.setOnClickListener {
-                if (AppController.settingSocket == "true") {
+                if (AppController.settingSocket == "true")
+                {
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this, R.raw.gui_loi_chao)
+                    }
+
                     attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     mPopupWindowUser!!.dismiss()
                     curMarkerUser = null
@@ -2021,6 +2045,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "hello") {
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.tai_xe_da_chao_ban_chuc_thuong_lo_binh_an)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewHelloPopup = inflater.inflate(R.layout.hello_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewHelloPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2049,6 +2079,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnHello.setOnClickListener {
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this, R.raw.gui_loi_chao)
+                    }
                     attemptHello(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -2106,6 +2140,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "strong light") {
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.canh_bao_ha_do_sang_den_pha)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnStrongLightPopup = inflater.inflate(R.layout.warn_strong_light_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2165,6 +2205,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "watcher") {
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.canh_bao_co_giam_sat_gan_do)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnWatcherPopup = inflater.inflate(R.layout.warn_watcher_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2224,6 +2270,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "slow down") {
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.canh_bao_nguy_hiem_nen_giam_toc_do)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnSlowDownPopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2283,6 +2335,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "turn around") {
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.canh_bao_nguy_hiem_nen_quay_dau_xe)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnTurnAroundPopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2342,6 +2400,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "thank") {
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.tai_xe_da_cam_on_ban)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnThankPopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2395,7 +2459,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (type == "careless_driver") {
-                Toast.makeText(this, "Đã vào", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Đã vào", Toast.LENGTH_SHORT).show()
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.canh_bao_co_tai_xe_chay_au)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewReportOtherPopup = inflater.inflate(R.layout.report_other_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2426,6 +2496,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
             if (type == "piggy") {
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.canh_bao_co_bo_cau)
+                }
+
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewReportOtherPopup = inflater.inflate(R.layout.report_other_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -2442,9 +2518,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 btnLicensePlate.text = licensePLate
 
-                tvMess.text = "... CÓ XE CHIM MỒI"
+                tvMess.text = "... CÓ BỒ CÂU"
 
-                imImage.setImageResource(R.drawable.ic_piggy_bank)
+                imImage.setImageResource(R.drawable.ic_bird)
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
