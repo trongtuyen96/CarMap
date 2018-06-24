@@ -1642,13 +1642,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
                         tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
                     }
-                    if (fingers == 4 && gestureDistance >= 120) {
-                        // Báo nên quay đầu
-                        btnConfirm.visibility = View.VISIBLE
-                        mType = 4
-                        imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
-                        tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
-                    }
+//                    if (fingers == 4 && gestureDistance >= 120) {
+//                        // Báo nên quay đầu
+//                        btnConfirm.visibility = View.VISIBLE
+//                        mType = 4
+//                        imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
+//                        tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
+//                    }
                     return false
                 }
 
@@ -1659,6 +1659,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                    }
                     btnConfirm.visibility = View.INVISIBLE
                     mType = 0
+                    if (fingers == 2 && gestureDistance >= 120) {
+                        // Báo nên quay đầu
+                        btnConfirm.visibility = View.VISIBLE
+                        mType = 4
+                        imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
+                        tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
+                    }
                     return false
                 }
 
