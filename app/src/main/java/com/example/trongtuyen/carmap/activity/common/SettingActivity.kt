@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import butterknife.BindView
@@ -94,7 +93,7 @@ class SettingActivity : AppCompatActivity() {
                 btnSound.text = "MỞ"
             }
             2 -> {
-                btnSound.background = getDrawable(R.drawable.bg_btn_orange)
+                btnSound.background = getDrawable(R.drawable.bg_btn_dismiss)
                 btnSound.text = "BÁO HIỆU"
             }
             3 -> {
@@ -218,7 +217,7 @@ class SettingActivity : AppCompatActivity() {
                 mPopupSoundWindow!!.dismiss()
             }
             layoutSoundAlert.setOnClickListener {
-                btnSound.text = "BÁO CÁO"
+                btnSound.text = "BÁO HIỆU"
                 AppController.soundMode = 2
                 btnSound.background = getDrawable(R.drawable.bg_btn_dismiss)
                 mPopupSoundWindow!!.dismiss()
@@ -235,5 +234,11 @@ class SettingActivity : AppCompatActivity() {
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }

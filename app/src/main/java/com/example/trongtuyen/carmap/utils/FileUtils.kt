@@ -61,10 +61,10 @@ object FileUtils {
         val baos = ByteArrayOutputStream()
         // Dùng với thumbnail khi lấy thẳng data từ result
 
-        if(type == "normal") {
+        if (type == "normal") {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos)
         }
-        if (type == "large"){
+        if (type == "large") {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos)
         }
         val byte = baos.toByteArray()
@@ -77,4 +77,14 @@ object FileUtils {
     }
 
 
+    fun playAudio(filePath: String) {
+        try {
+            val mp = MediaPlayer()
+            mp.setDataSource(filePath)
+            mp.prepare()
+            mp.start()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

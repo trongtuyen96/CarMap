@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
@@ -35,6 +36,7 @@ import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
 import com.example.trongtuyen.carmap.services.models.SampleResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
 import com.example.trongtuyen.carmap.utils.SharePrefs.Companion.mContext
@@ -153,6 +155,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     // setting hiện tại của socket
     private var currentSocketSetting: String? = null
+
+    // AudioPlayer
+    private var mAudioPlayer = AudioPlayer()
 
     // ==================================================================================================================================== //
     // ======== VỀ DIRECTION ============================================================================================================== //
@@ -340,6 +345,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         initMenuItemDrawer()
 
         mContext = this.applicationContext
+
+        // Chạy audio
+        if (AppController.soundMode == 1) {
+            mAudioPlayer.play(this, R.raw.chao_ban_den_voi_car_map)
+        }
     }
 
     private fun initMenuItemDrawer() {
@@ -422,6 +432,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     public override fun onResume() {
         super.onResume()
+
+//        // Chạy audio
+//        if (AppController.soundMode == 1) {
+////            try {
+////                val mp = MediaPlayer.create(this, R.raw.chao_ban_den_voi_car_map)
+////                mp.prepare()
+////                mp.start()
+////            } catch (e: Exception) {
+////                e.printStackTrace()
+////            }
+//            mAudioPlayer.play(this, R.raw.chao_ban_den_voi_car_map)
+//        }
+
 //         Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show()
         // resumeLocationUpdates ?
 
@@ -516,6 +539,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         when (v.id) {
             R.id.imvMyLoc -> {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.vi_tri_hien_tai)
+                }
                 onMyLocationButtonClicked()
             }
 
@@ -569,6 +596,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             }
             R.id.layoutSignOut -> {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.dang_xuat)
+                }
                 onSignOut()
             }
             R.id.layoutEditHome -> {
@@ -913,9 +944,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
                 if (isOn) {
 //                    Toast.makeText(this@MainActivity, "Car on", Toast.LENGTH_SHORT).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@MainActivity, R.raw.hien_tai_xe)
+                    }
                     AppController.settingFilterCar = "true"
                 } else {
 //                    Toast.makeText(this@MainActivity, "Car off", Toast.LENGTH_SHORT).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@MainActivity, R.raw.an_tai_xe)
+                    }
                     AppController.settingFilterCar = "false"
                 }
             }
@@ -925,9 +964,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
                 if (isOn) {
 //                    Toast.makeText(this@MainActivity, "Report on", Toast.LENGTH_SHORT).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@MainActivity, R.raw.hien_bao_hieu)
+                    }
                     AppController.settingFilterReport = "true"
                 } else {
 //                    Toast.makeText(this@MainActivity, "Report off", Toast.LENGTH_SHORT).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@MainActivity, R.raw.an_bao_hieu)
+                    }
                     AppController.settingFilterReport = "false"
                 }
             }
@@ -1199,14 +1246,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         "moderate" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_moderate)
                             tvType.text = "Kẹt xe vừa"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.ket_xe_vua)
+                            }
                         }
                         "heavy" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_heavy)
                             tvType.text = "Kẹt xe nặng"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.ket_xe_nang)
+                            }
                         }
                         "standstill" -> {
                             imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
                             tvType.text = "Kẹt xe cứng"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.ket_xe_cung)
+                            }
                         }
                     }
                 }
@@ -1216,14 +1275,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         "minor" -> {
                             imvType.setImageResource(R.drawable.ic_accident_minor)
                             tvType.text = "Tai nạn nhỏ"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.tai_nan_nho)
+                            }
                         }
                         "major" -> {
                             imvType.setImageResource(R.drawable.ic_accident_major)
                             tvType.text = "Tai nạn nghiêm trọng"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
+                            }
                         }
                         "other_side" -> {
                             imvType.setImageResource(R.drawable.ic_accident_other_side)
                             tvType.text = "Tai nạn bên đường"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
+                            }
                         }
                     }
                 }
@@ -1233,55 +1304,107 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         "object" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_object)
                             tvType.text = "Vật cản"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.vat_can)
+                            }
                         }
                         "construction" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_construction)
                             tvType.text = "Công trình"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.cong_trinh)
+                            }
                         }
                         "broken_light" -> {
                             imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
                             tvType.text = "Đèn báo hư"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.den_bao_hu)
+                            }
                         }
                         "pothole" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
                             tvType.text = "Hố voi"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.ho_voi)
+                            }
                         }
                         "vehicle_stop" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_stopped)
                             if (dataReport.subtype1 == "on_road") {
                                 tvType.text = "Xe đậu"
+                                // Chạy audio
+                                if (AppController.soundMode == 1) {
+                                    mAudioPlayer.play(this, R.raw.xe_dau)
+                                }
                             }
                             if (dataReport.subtype1 == "shoulder") {
                                 tvType.text = "Xe đậu bên lề"
+                                // Chạy audio
+                                if (AppController.soundMode == 1) {
+                                    mAudioPlayer.play(this, R.raw.xe_dau_ben_le)
+                                }
                             }
                         }
                         "road_kill" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
                             tvType.text = "Động vật chết"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong)
+                            }
                         }
                         "animal" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_animals)
                             tvType.text = "Động vật nguy hiểm"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem)
+                            }
                         }
                         "missing_sign" -> {
                             imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
                             tvType.text = "Thiếu biển báo"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.thieu_bien_bao)
+                            }
                         }
                         "fog" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_fog)
                             tvType.text = "Sương mù"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.suong_mu)
+                            }
                         }
                         "hail" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_hail)
                             tvType.text = "Mưa đá"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.mua_da)
+                            }
                         }
                         "flood" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_flood)
                             tvType.text = "Lũ lụt"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.lu_lut)
+                            }
                         }
                         "ice" -> {
                             imvType.setImageResource(R.drawable.ic_hazard_weather_ice)
                             tvType.text = "Đá trơn"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.da_tron_tren_duong)
+                            }
                         }
                     }
                 }
@@ -1291,18 +1414,34 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         "no_gas" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
                             tvType.text = "Hết xăng"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.het_xang)
+                            }
                         }
                         "flat_tire" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_flat_tire)
                             tvType.text = "Xẹp lốp xe"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.xep_lop_xe)
+                            }
                         }
                         "no_battery" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_no_battery)
                             tvType.text = "Hết bình"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.het_binh)
+                            }
                         }
                         "medical_care" -> {
                             imvType.setImageResource(R.drawable.ic_report_sos_medical_care)
                             tvType.text = "Chăm sóc y tế"
+                            // Chạy audio
+                            if (AppController.soundMode == 1) {
+                                mAudioPlayer.play(this, R.raw.cham_soc_y_te)
+                            }
                         }
                     }
                 }
@@ -1696,10 +1835,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // LatLag điền theo thứ tự latitude, longitude
         // Còn ở server Geo là theo thứ tự longitude, latitude
         // Random
-        val random = Random()
+//        val random = Random()
+//        markerOptions.position(LatLng(user.currentLocation!!.coordinates!![1], user.currentLocation!!.coordinates!![0]))
+//        markerOptions.title("user")
+//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
+//        val marker = mMap.addMarker(markerOptions)
+//        listUserMarker.add(marker)
+//        marker.tag = user
+
         markerOptions.position(LatLng(user.currentLocation!!.coordinates!![1], user.currentLocation!!.coordinates!![0]))
         markerOptions.title("user")
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(random.nextFloat() * 360))
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_other_car_44dp))
         val marker = mMap.addMarker(markerOptions)
         listUserMarker.add(marker)
         marker.tag = user
