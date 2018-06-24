@@ -1259,7 +1259,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_traffic_moderate)
                             tvType.text = "Kẹt xe vừa"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.ket_xe_vua)
                             }
                         }
@@ -1267,7 +1267,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_traffic_heavy)
                             tvType.text = "Kẹt xe nặng"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.ket_xe_nang)
                             }
                         }
@@ -1275,7 +1275,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
                             tvType.text = "Kẹt xe cứng"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.ket_xe_cung)
                             }
                         }
@@ -1288,7 +1288,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_accident_minor)
                             tvType.text = "Tai nạn nhỏ"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.tai_nan_nho)
                             }
                         }
@@ -1296,7 +1296,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_accident_major)
                             tvType.text = "Tai nạn nghiêm trọng"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
                             }
                         }
@@ -1304,7 +1304,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_accident_other_side)
                             tvType.text = "Tai nạn bên đường"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
                             }
                         }
@@ -1325,7 +1325,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_hazard_construction)
                             tvType.text = "Công trình"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.cong_trinh)
                             }
                         }
@@ -1333,7 +1333,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
                             tvType.text = "Đèn báo hư"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.den_bao_hu)
                             }
                         }
@@ -1341,7 +1341,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
                             tvType.text = "Hố voi"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.ho_voi)
                             }
                         }
@@ -1357,7 +1357,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             if (dataReport.subtype1 == "shoulder") {
                                 tvType.text = "Xe đậu bên lề"
                                 // Chạy audio
-                                if (AppController.soundMode == 1) {
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                     mAudioPlayer.play(this, R.raw.xe_dau_ben_le)
                                 }
                             }
@@ -1366,7 +1366,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
                             tvType.text = "Động vật chết"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong)
                             }
                         }
@@ -1374,7 +1374,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_hazard_animals)
                             tvType.text = "Động vật nguy hiểm"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem)
                             }
                         }
@@ -1382,7 +1382,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
                             tvType.text = "Thiếu biển báo"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.thieu_bien_bao)
                             }
                         }
@@ -1390,7 +1390,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_hazard_weather_fog)
                             tvType.text = "Sương mù"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.suong_mu)
                             }
                         }
@@ -1398,7 +1398,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_hazard_weather_hail)
                             tvType.text = "Mưa đá"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.mua_da)
                             }
                         }
@@ -1406,7 +1406,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_hazard_weather_flood)
                             tvType.text = "Lũ lụt"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.lu_lut)
                             }
                         }
@@ -1414,7 +1414,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_hazard_weather_ice)
                             tvType.text = "Đá trơn"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.da_tron_tren_duong)
                             }
                         }
@@ -1427,7 +1427,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
                             tvType.text = "Hết xăng"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.het_xang)
                             }
                         }
@@ -1435,7 +1435,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_sos_flat_tire)
                             tvType.text = "Xẹp lốp xe"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.xep_lop_xe)
                             }
                         }
@@ -1443,7 +1443,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_sos_no_battery)
                             tvType.text = "Hết bình"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.het_binh)
                             }
                         }
@@ -1451,7 +1451,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             imvType.setImageResource(R.drawable.ic_report_sos_medical_care)
                             tvType.text = "Chăm sóc y tế"
                             // Chạy audio
-                            if (AppController.soundMode == 1) {
+                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                                 mAudioPlayer.play(this, R.raw.cham_soc_y_te)
                             }
                         }
@@ -1562,8 +1562,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             curMarkerUser = marker
             btnHello.setOnClickListener {
-                if (AppController.settingSocket == "true")
-                {
+                if (AppController.settingSocket == "true") {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
                         mAudioPlayer.play(this, R.raw.gui_loi_chao)
@@ -2047,7 +2046,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (message == "hello") {
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.tai_xe_da_chao_ban_chuc_thuong_lo_binh_an)
                 }
 
@@ -2142,7 +2141,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (message == "strong light") {
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.canh_bao_ha_do_sang_den_pha)
                 }
 
@@ -2207,7 +2206,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (message == "watcher") {
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.canh_bao_co_giam_sat_gan_do)
                 }
 
@@ -2272,7 +2271,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (message == "slow down") {
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.canh_bao_nguy_hiem_nen_giam_toc_do)
                 }
 
@@ -2337,7 +2336,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (message == "turn around") {
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.canh_bao_nguy_hiem_nen_quay_dau_xe)
                 }
 
@@ -2402,7 +2401,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (message == "thank") {
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.tai_xe_da_cam_on_ban)
                 }
 
@@ -2462,7 +2461,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                Toast.makeText(this, "Đã vào", Toast.LENGTH_SHORT).show()
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.canh_bao_co_tai_xe_chay_au)
                 }
 
@@ -2498,7 +2497,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             if (type == "piggy") {
 
                 // Chạy audio
-                if (AppController.soundMode == 1) {
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     mAudioPlayer.play(this, R.raw.canh_bao_co_bo_cau)
                 }
 
