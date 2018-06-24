@@ -81,7 +81,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:text="Báo cáo" />
+            android:text="Báo hiệu" />
 
         <com.github.angads25.toggle.LabeledSwitch
             android:id="@+id/switchFilterReport_filter_dialog"
