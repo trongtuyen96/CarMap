@@ -540,7 +540,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             R.id.layoutSettingMenu -> {
                 val intent = Intent(this, SettingActivity::class.java)
-                startActivity(intent)
+                startActivityForResult(intent, 3)
             }
             R.id.layoutQuickSettingSound -> {
                 when (AppController.soundMode) {
@@ -597,6 +597,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     val newGeo = Geometry("Point", listGeo)
                     val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)
                     onUpdateWorkLocation(user)
+                }
+            }
+
+            3 -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    // Set lần đầu cho setting âm thanh
+                    when (AppController.soundMode) {
+                        1 -> {
+                            imQuickSettingSound.setImageResource(R.drawable.ic_sound_on)
+                            tvQuickSettingSound.text = "MỞ"
+                        }
+                        2 -> {
+                            imQuickSettingSound.setImageResource(R.drawable.ic_sound_alerts)
+                            tvQuickSettingSound.text = "CHỈ CÁC BÁO HIỆU"
+                        }
+                        3 -> {
+                            imQuickSettingSound.setImageResource(R.drawable.ic_sound_mute)
+                            tvQuickSettingSound.text = "TẮT"
+                        }
+                    }
                 }
             }
         }
@@ -1040,32 +1060,40 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 
         if (user!!.latHomeLocation != null && user.longHomeLocation != null) {
-            // Lấy địa chỉ nhà sử dụng Geocoder
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val yourAddresses: List<Address>
-            yourAddresses = geocoder.getFromLocation(user.latHomeLocation!!, user.longHomeLocation!!, 1)
+            try {
+                // Lấy địa chỉ nhà sử dụng Geocoder
+                val geocoder = Geocoder(this, Locale.getDefault())
+                val yourAddresses: List<Address>
+                yourAddresses = geocoder.getFromLocation(user.latHomeLocation!!, user.longHomeLocation!!, 1)
 
 //            Toast.makeText(this, "MENU lat: " + user.latHomeLocation + " long: " + user.longHomeLocation, Toast.LENGTH_SHORT).show()
 //            Log.e("LAT LONG", "MENU lat: " + user.latHomeLocation + " long: " + user.longHomeLocation)
 //
-            if (yourAddresses.isNotEmpty()) {
+                if (yourAddresses.isNotEmpty()) {
 //            val yourAddress = yourAddresses.get(0).getAddressLine(0)
 //            val yourCity = yourAddresses.get(0).getAddressLine(1)
 //            val yourCountry = yourAddresses.get(0).getAddressLine(2)
-                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
-                tvAddressHome_menu.text = address
+                    val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
+                    tvAddressHome_menu.text = address
+                }
+            } catch (ex: Exception) {
+                TastyToast.makeText(this, "Kết nối mạng yếu", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
             }
         }
 
         if (user!!.latWorkLocation != null && user.longWorkLocation != null) {
-            // Lấy địa chỉ nhà sử dụng Geocoder
-            val geocoder = Geocoder(this, Locale.getDefault())
-            val yourAddresses: List<Address>
-            yourAddresses = geocoder.getFromLocation(user.latWorkLocation!!, user.longWorkLocation!!, 1)
+            try {
+                // Lấy địa chỉ nhà sử dụng Geocoder
+                val geocoder = Geocoder(this, Locale.getDefault())
+                val yourAddresses: List<Address>
+                yourAddresses = geocoder.getFromLocation(user.latWorkLocation!!, user.longWorkLocation!!, 1)
 
-            if (yourAddresses.isNotEmpty()) {
-                val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
-                tvAddressWork_menu.text = address
+                if (yourAddresses.isNotEmpty()) {
+                    val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
+                    tvAddressWork_menu.text = address
+                }
+            }catch(ex: Exception){
+                TastyToast.makeText(this, "Kết nối mạng yếu", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
             }
         }
 
@@ -1589,7 +1617,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun onGetNearbyUsers() {
         val service = APIServiceGenerator.createService(UserService::class.java)
-        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, AppController!!.settingRadius!!.toFloat())
+        val call = service.getNearbyUsers(lastLocation.latitude, lastLocation.longitude, AppController.settingUserRadius!!.toFloat())
         call.enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 if (response.isSuccessful) {
@@ -2300,7 +2328,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun onGetNearbyReports() {
         val service = APIServiceGenerator.createService(ReportService::class.java)
-        val call = service.getNearbyReports(lastLocation.latitude, lastLocation.longitude, 10000f)
+        val call = service.getNearbyReports(lastLocation.latitude, lastLocation.longitude, AppController.settingReportRadius!!.toFloat())
         call.enqueue(object : Callback<NearbyReportsResponse> {
             override fun onResponse(call: Call<NearbyReportsResponse>, response: Response<NearbyReportsResponse>) {
                 if (response.isSuccessful) {

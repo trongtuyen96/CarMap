@@ -1,5 +1,6 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.app.Activity
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -23,8 +24,10 @@ class SettingActivity : AppCompatActivity() {
     lateinit var switchSocket: LabeledSwitch
     @BindView(R.id.imBack_setting)
     lateinit var btnBack: ImageView
-    @BindView(R.id.btnRadius_setting)
-    lateinit var btnRadius: Button
+    @BindView(R.id.btnUserRadius_setting)
+    lateinit var btnUserRadius: Button
+    @BindView(R.id.btnReportRadius_setting)
+    lateinit var btnReportRadius: Button
     @BindView(R.id.btnSound_setting)
     lateinit var btnSound: Button
 
@@ -40,7 +43,7 @@ class SettingActivity : AppCompatActivity() {
         initComponents()
     }
 
-    private fun initComponents(){
+    private fun initComponents() {
 
         if (AppController.settingInvisible == "true") {
             switchInvisible.isOn = true
@@ -54,18 +57,33 @@ class SettingActivity : AppCompatActivity() {
             switchSocket.isOn = false
         }
 
-        when(AppController.settingRadius){
+        when (AppController.settingUserRadius) {
             2000 -> {
-                btnRadius.text = "2 Km"
+                btnUserRadius.text = "2 Km"
             }
             5000 -> {
-                btnRadius.text = "5 Km"
+                btnUserRadius.text = "5 Km"
             }
             10000 -> {
-                btnRadius.text = "10 Km"
+                btnUserRadius.text = "10 Km"
             }
             25000 -> {
-                btnRadius.text = "25 Km"
+                btnUserRadius.text = "25 Km"
+            }
+        }
+
+        when (AppController.settingReportRadius) {
+            2000 -> {
+                btnReportRadius.text = "2 Km"
+            }
+            5000 -> {
+                btnReportRadius.text = "5 Km"
+            }
+            10000 -> {
+                btnReportRadius.text = "10 Km"
+            }
+            25000 -> {
+                btnReportRadius.text = "25 Km"
             }
         }
 
@@ -104,7 +122,7 @@ class SettingActivity : AppCompatActivity() {
             }
         })
 
-        btnRadius.setOnClickListener {
+        btnUserRadius.setOnClickListener {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
             mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -114,25 +132,64 @@ class SettingActivity : AppCompatActivity() {
             val tv5km = viewPopup.findViewById<TextView>(R.id.tv5km_seting_radius_dialog_layout)
             val tv10km = viewPopup.findViewById<TextView>(R.id.tv10km_seting_radius_dialog_layout)
             val tv25km = viewPopup.findViewById<TextView>(R.id.tv25km_seting_radius_dialog_layout)
+            val tvInfo = viewPopup.findViewById<TextView>(R.id.tvInfo_setting_radius_dialog_layout)
+
+            tvInfo.text = "Bán kính hiển thị tài xế"
 
             tv2km.setOnClickListener {
-                btnRadius.text = "2 Km"
-                AppController.settingRadius = 2000
+                btnUserRadius.text = "2 Km"
+                AppController.settingUserRadius = 2000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv5km.setOnClickListener {
-                btnRadius.text = "5 Km"
-                AppController.settingRadius = 5000
+                btnUserRadius.text = "5 Km"
+                AppController.settingUserRadius = 5000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv10km.setOnClickListener {
-                btnRadius.text = "10 Km"
-                AppController.settingRadius = 10000
+                btnUserRadius.text = "10 Km"
+                AppController.settingUserRadius = 10000
                 mPopupRadiusWindow!!.dismiss()
             }
             tv25km.setOnClickListener {
-                btnRadius.text = "25 Km"
-                AppController.settingRadius = 25000
+                btnUserRadius.text = "25 Km"
+                AppController.settingUserRadius = 25000
+                mPopupRadiusWindow!!.dismiss()
+            }
+        }
+
+        btnReportRadius.setOnClickListener {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
+            mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            mPopupRadiusWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
+
+            val tv2km = viewPopup.findViewById<TextView>(R.id.tv2km_seting_radius_dialog_layout)
+            val tv5km = viewPopup.findViewById<TextView>(R.id.tv5km_seting_radius_dialog_layout)
+            val tv10km = viewPopup.findViewById<TextView>(R.id.tv10km_seting_radius_dialog_layout)
+            val tv25km = viewPopup.findViewById<TextView>(R.id.tv25km_seting_radius_dialog_layout)
+            val tvInfo = viewPopup.findViewById<TextView>(R.id.tvInfo_setting_radius_dialog_layout)
+
+            tvInfo.text = "Bán kính hiển thị báo hiệu"
+
+            tv2km.setOnClickListener {
+                btnReportRadius.text = "2 Km"
+                AppController.settingReportRadius = 2000
+                mPopupRadiusWindow!!.dismiss()
+            }
+            tv5km.setOnClickListener {
+                btnReportRadius.text = "5 Km"
+                AppController.settingReportRadius = 5000
+                mPopupRadiusWindow!!.dismiss()
+            }
+            tv10km.setOnClickListener {
+                btnReportRadius.text = "10 Km"
+                AppController.settingReportRadius = 10000
+                mPopupRadiusWindow!!.dismiss()
+            }
+            tv25km.setOnClickListener {
+                btnReportRadius.text = "25 Km"
+                AppController.settingReportRadius = 25000
                 mPopupRadiusWindow!!.dismiss()
             }
         }
@@ -168,6 +225,7 @@ class SettingActivity : AppCompatActivity() {
         }
 
         btnBack.setOnClickListener {
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }
