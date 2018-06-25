@@ -22,12 +22,18 @@ interface UserService {
 
     // @FormUrlEncoded
     // Bỏ FormUrlEncoded vì gây lỗi với @Body
-    @PUT("user/updateHomeLocation")
-    fun updateHomeLocation(@Body user: User): Call<UserProfileResponse>
+    @PUT("user/updateCurrentLocation")
+    fun updateCurrentLocation(@Body user: User): Call<UserProfileResponse>
 
     @PUT("user/updateSocketID")
     fun updateSocketID(@Body user: User): Call<UserProfileResponse>
 
     @GET("user/nearby")
     fun getNearbyUsers(@Query("lat") lat: Double?, @Query("lng") lng: Double?, @Query("radius") radius: Float): Call<List<User>>
+
+    @PUT("user/updateHomeLocation")
+    fun updateHomeLocation(@Body user: User): Call<UserProfileResponse>
+
+    @PUT("user/updateWorkLocation")
+    fun updateWorkLocation(@Body user: User): Call<UserProfileResponse>
 }

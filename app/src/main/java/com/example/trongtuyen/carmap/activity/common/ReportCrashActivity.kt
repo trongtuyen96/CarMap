@@ -5,14 +5,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.MediaPlayer
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
-import android.util.Base64
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.widget.*
@@ -21,17 +19,15 @@ import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Report
-import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.ReportResponse
-import com.example.trongtuyen.carmap.services.models.UserProfileResponse
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.*
-import java.net.URI
 
 
 class ReportCrashActivity : AppCompatActivity() {
@@ -73,6 +69,10 @@ class ReportCrashActivity : AppCompatActivity() {
     private lateinit var photoURI: Uri
 
     private var subType1: String = ""
+
+    // Audio Player
+    private var mAudioPlayer = AudioPlayer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_crash)
@@ -85,6 +85,10 @@ class ReportCrashActivity : AppCompatActivity() {
 
         // Các nút báo cáo
         btnCrashMinor.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tai_nan_nho)
+            }
             subType1 = "minor"
             btnCrashMinor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
@@ -92,6 +96,10 @@ class ReportCrashActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnCrashMajor.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
+            }
             subType1 = "major"
             btnCrashMajor.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMinor.background = null
@@ -99,6 +107,10 @@ class ReportCrashActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnCrashOtherSide.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
+            }
             subType1 = "other_side"
             btnCrashOtherSide.background = getDrawable(R.color.button_bg_inactive)
             btnCrashMajor.background = null
@@ -190,14 +202,16 @@ class ReportCrashActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn loại tai nạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT, TastyToast.).show()
-            if (sFileAudioPath != "" || sBase64Image != "") {
+            if (sFileAudioPath == "" || sBase64Image == "") {
+//                Toast.makeText(this, "Chạy 1", Toast.LENGTH_SHORT).show()
                 // Encode file ghi âm
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                 onAddNewReportCrash(mReport, false)
             } else {
                 // Gửi cái có file ảnh trước
-                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+//                Toast.makeText(this, "Chạy 2", Toast.LENGTH_SHORT).show()
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
                 onAddNewReportCrash(mReport, true)
             }
         }
@@ -209,7 +223,7 @@ class ReportCrashActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
@@ -217,10 +231,14 @@ class ReportCrashActivity : AppCompatActivity() {
                     if (bothAudioAndImage == true) {
                         // Encode file ghi âm
                         val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                        onUpdateBase64Voice(response.body()._id.toString(), encoded)
+                        onUpdateBase64Voice(response.body()!!._id.toString(), encoded)
                         finish()
                     } else {
-                        TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        }
+                        TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
                     }
                 } else {
@@ -237,7 +255,12 @@ class ReportCrashActivity : AppCompatActivity() {
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                    }
+                    TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportCrashActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -288,7 +311,7 @@ class ReportCrashActivity : AppCompatActivity() {
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
                     options.inSampleSize = calculateInSampleSize(options)
                     Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
-                    options.inDensity = 320
+//                    options.inDensity = 320
                     options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
 //                    imageStream = contentResolver.openInputStream(photoURI)
@@ -311,8 +334,8 @@ class ReportCrashActivity : AppCompatActivity() {
         }
     }
 
-    val TARGET_IMAGE_WIDTH: Int = 872
-    val TARGET_IMAGE_HEIGHT: Int = 1164
+    val TARGET_IMAGE_WIDTH: Int = 614
+    val TARGET_IMAGE_HEIGHT: Int = 818
     // This method is used to calculate largest inSampleSize
     //which is used to decode bitmap in required bitmap.
     private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {

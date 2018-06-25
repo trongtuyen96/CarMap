@@ -132,7 +132,7 @@ class SignUpActivity : AppCompatActivity() {
         call.enqueue(object : Callback<AuthenticationResponse> {
             override fun onResponse(call: Call<AuthenticationResponse>, response: Response<AuthenticationResponse>) {
                 if (response.isSuccessful) {
-                    onAuthenticationSuccess(response.body())
+                    onAuthenticationSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@SignUpActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -152,6 +152,11 @@ class SignUpActivity : AppCompatActivity() {
         // Tạo mới dữ liệu cài đặt
         AppController.settingFilterCar = "true"
         AppController.settingFilterReport = "true"
+        AppController.soundMode = 1
+        AppController.settingInvisible = "false"
+        AppController.settingSocket = "true"
+        AppController.settingUserRadius = 5000
+        AppController.settingReportRadius = 5000
 
         //        Intent returnIntent = new Intent();
         //        setResult(Activity.RESULT_OK,returnIntent);

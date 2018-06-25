@@ -14,6 +14,7 @@ import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.ReportService
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,6 +47,9 @@ class ReportHelpActivity : AppCompatActivity() {
 
     private var subType1: String = ""
     private var subType2: String = ""
+
+    // Audio Player
+    private var mAudioPlayer = AudioPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +107,7 @@ class ReportHelpActivity : AppCompatActivity() {
                 "others" -> {
                     if (subType2 == "no_gas" || subType2 == "flat_tire" || subType2 == "no_battery" || subType2 == "medical_care") {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
-                        val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", "")
+                        val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", "")
                         onAddNewReportHazard(mReport)
                     } else {
                         TastyToast.makeText(this, "Vui lòng chọn loại giúp đỡ", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
@@ -119,12 +123,16 @@ class ReportHelpActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                TastyToast.makeText(this@ReportHelpActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                TastyToast.makeText(this@ReportHelpActivity, "Gửi báo hiệu thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportHelpActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@ReportHelpActivity, R.raw.gui_bao_hieu_thanh_cong)
+                    }
+                    TastyToast.makeText(this@ReportHelpActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
@@ -181,21 +189,37 @@ class ReportHelpActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnNoGas.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.het_xang)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "no_gas"
             bottomSheetDialog.dismiss()
         }
         btnFlatTire.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.xep_lop_xe)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "flat_tire"
             bottomSheetDialog.dismiss()
         }
         btnBattery.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.het_binh)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "no_battery"
             bottomSheetDialog.dismiss()
         }
         btnMedical.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.cham_soc_y_te)
+            }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "medical_care"
             bottomSheetDialog.dismiss()

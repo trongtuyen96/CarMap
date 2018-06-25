@@ -19,11 +19,10 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@drawable/ic_logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.FullScreen"
-        android:largeHeap="true"
-   >
+        android:theme="@style/AppTheme.FullScreen">
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -44,8 +43,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity
@@ -75,9 +73,13 @@
         <activity android:name=".activity.common.ReportHelpActivity" />
         <activity android:name=".activity.common.AudioRecordActivity" />
         <activity android:name=".activity.common.CustomCameraActivity" />
-        <activity android:name=".activity.common.ReportOtherActivity"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
+        <activity
+            android:name=".activity.common.ReportOtherActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.common.HomeSettingActivity" />
+        <activity android:name=".activity.common.WorkSettingActivity" />
+        <activity android:name=".activity.common.HistorySettingActivity" />
+        <activity android:name=".activity.common.SettingActivity"></activity>
     </application>
 
 </manifest>

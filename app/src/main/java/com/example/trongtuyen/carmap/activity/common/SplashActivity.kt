@@ -53,7 +53,7 @@ class SplashActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener
                     swipeRefresh.isRefreshing = false
 
                     if (response.isSuccessful) {
-                        val accessToken = response.body().token
+                        val accessToken = response.body()!!.token
                         AppController.accessToken = accessToken
 
                         startMainActivity()

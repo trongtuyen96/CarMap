@@ -16,6 +16,7 @@ import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.sdsmdg.tastytoast.TastyToast
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -68,6 +69,9 @@ class AudioRecordActivity : AppCompatActivity() {
 
     // Kiểm tra đã record
     private var bRecorded: Boolean = false
+
+    // Audio Player
+    private var mAudioPlayer = AudioPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,6 +137,11 @@ class AudioRecordActivity : AppCompatActivity() {
                 TastyToast.makeText(this, "Đã ghi âm thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 tvPath.text = mFileName
                 bRecorded = true
+
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this, R.raw.ghi_am_thanh_cong)
+                }
             }
             mStartRecording = !mStartRecording
         }

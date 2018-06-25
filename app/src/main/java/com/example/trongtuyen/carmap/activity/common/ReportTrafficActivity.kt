@@ -23,6 +23,7 @@ import com.example.trongtuyen.carmap.services.APIServiceGenerator
 import com.example.trongtuyen.carmap.services.ErrorUtils
 import com.example.trongtuyen.carmap.services.ReportService
 import com.example.trongtuyen.carmap.services.models.ReportResponse
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.sdsmdg.tastytoast.TastyToast
 import retrofit2.Call
@@ -71,6 +72,9 @@ class ReportTrafficActivity : AppCompatActivity() {
     // ==== Dùng cho lấy chất lượng ảnh JPEG gốc, bằng cách chụp xong lưu file ảnh lại
     private lateinit var photoURI: Uri
 
+    // Audio Player
+    private var mAudioPlayer = AudioPlayer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_report_traffic)
@@ -83,6 +87,10 @@ class ReportTrafficActivity : AppCompatActivity() {
 
         // Các nút báo cáo
         btnTrafficModerate.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.ket_xe_vua)
+            }
             subType1 = "moderate"
             btnTrafficModerate.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficHeavy.background = null
@@ -90,6 +98,10 @@ class ReportTrafficActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnTrafficHeavy.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.ket_xe_nang)
+            }
             subType1 = "heavy"
             btnTrafficHeavy.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficModerate.background = null
@@ -97,6 +109,10 @@ class ReportTrafficActivity : AppCompatActivity() {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         }
         btnTrafficStandstill.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.ket_xe_cung)
+            }
             subType1 = "standstill"
             btnTrafficStandstill.background = getDrawable(R.color.button_bg_inactive)
             btnTrafficHeavy.background = null
@@ -175,14 +191,16 @@ class ReportTrafficActivity : AppCompatActivity() {
             TastyToast.makeText(this, "Vui lòng chọn mức độ kẹt xe", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         } else {
 //            TastyToast.makeText(this, "Loại: " + subType1 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
-            if (sFileAudioPath != "" || sBase64Image != "") {
+            if (sFileAudioPath == "" || sBase64Image == "") {
                 // Encode file ghi âm
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
                 onAddNewReportTraffic(mReport, false)
+//                Toast.makeText(this, "Chạy 1", Toast.LENGTH_SHORT).show()
             } else {
-                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.homeLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
                 onAddNewReportTraffic(mReport, true)
+//                Toast.makeText(this, "Chạy 2", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -193,7 +211,7 @@ class ReportTrafficActivity : AppCompatActivity() {
         val call = service.addNewReport(report)
         call.enqueue(object : Callback<Report> {
             override fun onFailure(call: Call<Report>?, t: Throwable?) {
-                TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo hiệu thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
             }
 
             override fun onResponse(call: Call<Report>, response: Response<Report>) {
@@ -201,10 +219,14 @@ class ReportTrafficActivity : AppCompatActivity() {
                     if (bothAudioAndImage == true) {
                         // Encode file ghi âm
                         val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                        onUpdateBase64Voice(response.body()._id.toString(), encoded)
+                        onUpdateBase64Voice(response.body()!!._id.toString(), encoded)
                         finish()
                     } else {
-                        TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        }
+                        TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
                     }
                 } else {
@@ -221,7 +243,12 @@ class ReportTrafficActivity : AppCompatActivity() {
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong)
+                    }
+                    TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+//                    Toast.makeText(this@ReportTrafficActivity, "Xong 2", Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@ReportTrafficActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -302,7 +329,7 @@ class ReportTrafficActivity : AppCompatActivity() {
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
                     options.inSampleSize = calculateInSampleSize(options)
                     Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
-                    options.inDensity = 320
+//                    options.inDensity = 320
                     options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
 //                    imageStream = contentResolver.openInputStream(photoURI)
@@ -325,8 +352,8 @@ class ReportTrafficActivity : AppCompatActivity() {
         }
     }
 
-    val TARGET_IMAGE_WIDTH: Int = 872
-    val TARGET_IMAGE_HEIGHT: Int = 1164
+    val TARGET_IMAGE_WIDTH: Int = 614
+    val TARGET_IMAGE_HEIGHT: Int = 818
     // This method is used to calculate largest inSampleSize
     //which is used to decode bitmap in required bitmap.
     private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {
