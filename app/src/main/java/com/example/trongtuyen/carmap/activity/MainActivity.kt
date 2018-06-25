@@ -69,7 +69,7 @@ import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener{
 
     // Static variables
     companion object {
@@ -143,6 +143,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     // Place Info
     private var mPopupWindowPlaceInfo: PopupWindow? = null
 
+    private var mPopupWindowRouteInfo: PopupWindow? = null
+
     private var isPlaceInfoWindowUp = false
 
     private var currentSelectedPlace: Place? = null
@@ -151,7 +153,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var polylinePaths: MutableList<Polyline>
     private var originMarkers: MutableList<Marker>? = ArrayList()
     private var destinationMarkers: MutableList<Marker>? = ArrayList()
-
+    private lateinit var currentPolyline: Polyline
+    private var isRouteInfoWindowUp:Boolean = false
 
     // setting hiện tại của socket
     private var currentSocketSetting: String? = null
@@ -224,21 +227,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         removeCurrentDirectionPolyline()
     }
 
-    private lateinit var currentPolyline: Polyline
-
-    override fun onPolylineClick(p0: Polyline) {
-        if (p0 == currentPolyline)
-            return
-        p0.color = Color.BLUE
-        currentPolyline.color = Color.GRAY
-        p0.zIndex = 1F
-        currentPolyline.zIndex = 0F
-        currentPolyline = p0
-        val currentRoute = currentPolyline.tag as Route
-        Toast.makeText(this, currentRoute.duration!!.text + " | " + currentRoute.distance!!.text, Toast.LENGTH_SHORT).show()
-    }
-
     override fun onDirectionFinderSuccess(routes: List<Route>) {
+        dismissPopupWindowPlaceInfo()
         polylinePaths = ArrayList()
         originMarkers = ArrayList<Marker>()
         destinationMarkers = ArrayList<Marker>()
@@ -256,6 +246,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 currentPolyline = polyline
                 currentPolyline.zIndex = 1F
                 currentPolyline.color = Color.BLUE
+                showRouteInfoPopup(route)
             }
         }
     }
@@ -269,6 +260,54 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         polyline.tag = route
         polylinePaths.add(polyline)
         return polyline
+    }
+
+    override fun onPolylineClick(p0: Polyline) {
+        if (p0 == currentPolyline)
+            return
+        p0.color = Color.BLUE
+        currentPolyline.color = Color.GRAY
+        p0.zIndex = 1F
+        currentPolyline.zIndex = 0F
+        currentPolyline = p0
+        val currentRoute = currentPolyline.tag as Route
+        dismissPopupWindowRouteInfo()
+        showRouteInfoPopup(currentRoute)
+    }
+
+    private fun showRouteInfoPopup(route: Route) {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewPlacePopup = inflater.inflate(R.layout.steps_layout, null)
+        mPopupWindowRouteInfo = PopupWindow(viewPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        imvReport.visibility = View.GONE
+        mPopupWindowRouteInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+
+        isRouteInfoWindowUp = true
+
+        val tvRouteDuration = viewPlacePopup.findViewById<TextView>(R.id.tvDuration_route_info)
+        val tvRouteDistance = viewPlacePopup.findViewById<TextView>(R.id.tvDistance_route_info)
+        val btnStartNavigation = viewPlacePopup.findViewById<LinearLayout>(R.id.btnStartNavigation_route_info)
+        val btnSteps = viewPlacePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
+
+        tvRouteDuration.text = route.duration!!.text
+        tvRouteDistance.text = route.distance!!.text
+
+        btnStartNavigation.setOnClickListener {
+            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
+        }
+
+        btnSteps.setOnClickListener {
+            Toast.makeText(this,"onBtnStepsClick",Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun dismissPopupWindowRouteInfo() {
+        mPopupWindowRouteInfo?.dismiss()
+        isRouteInfoWindowUp = false
+        if (mPopupWindowPlaceInfo!=null&&!polylinePaths.isNotEmpty()){
+            mPopupWindowPlaceInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+            isPlaceInfoWindowUp = true
+        }
     }
 
 
@@ -1004,8 +1043,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 drawer_layout.closeDrawer(GravityCompat.START)
                 return
             }
-            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty() -> {
+            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty()&&isRouteInfoWindowUp-> {
                 removeCurrentDirectionPolyline()
+                dismissPopupWindowRouteInfo()
                 return
             }
             isPlaceInfoWindowUp -> {
