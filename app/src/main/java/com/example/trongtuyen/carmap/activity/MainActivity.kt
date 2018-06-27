@@ -18,6 +18,8 @@ import android.provider.Settings
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -31,6 +33,8 @@ import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
 import com.example.trongtuyen.carmap.models.direction.DirectionFinder
 import com.example.trongtuyen.carmap.models.direction.Route
+import com.example.trongtuyen.carmap.models.direction.Step
+import com.example.trongtuyen.carmap.models.navigation.StepAdapter
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
@@ -277,17 +281,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun showRouteInfoPopup(route: Route) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewPlacePopup = inflater.inflate(R.layout.steps_layout, null)
-        mPopupWindowRouteInfo = PopupWindow(viewPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val viewRoutePopup = inflater.inflate(R.layout.steps_layout, null)
+        mPopupWindowRouteInfo = PopupWindow(viewRoutePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         imvReport.visibility = View.GONE
         mPopupWindowRouteInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
         isRouteInfoWindowUp = true
 
-        val tvRouteDuration = viewPlacePopup.findViewById<TextView>(R.id.tvDuration_route_info)
-        val tvRouteDistance = viewPlacePopup.findViewById<TextView>(R.id.tvDistance_route_info)
-        val btnStartNavigation = viewPlacePopup.findViewById<LinearLayout>(R.id.btnStartNavigation_route_info)
-        val btnSteps = viewPlacePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
+        val tvRouteDuration = viewRoutePopup.findViewById<TextView>(R.id.tvDuration_route_info)
+        val tvRouteDistance = viewRoutePopup.findViewById<TextView>(R.id.tvDistance_route_info)
+        val btnStartNavigation = viewRoutePopup.findViewById<LinearLayout>(R.id.btnStartNavigation_route_info)
+        val btnSteps = viewRoutePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
 
         tvRouteDuration.text = route.duration!!.text
         tvRouteDistance.text = route.distance!!.text
@@ -297,7 +301,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         btnSteps.setOnClickListener {
-            Toast.makeText(this,"onBtnStepsClick",Toast.LENGTH_SHORT).show()
+            // Khởi tạo RecyclerView hiển thị step info
+            Toast.makeText(this,"onBtnStepClick",Toast.LENGTH_SHORT).show()
+            val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
+            recyclerView.visibility= View.VISIBLE
+
+            initRecylerView(route, viewRoutePopup)
         }
     }
 
@@ -2857,5 +2866,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         override fun onLongPress(e: MotionEvent?) {
             Toast.makeText(mContext, "Custom: onLongPress", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    // RecylerView for Step Info
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewManager: RecyclerView.LayoutManager
+
+    private fun initRecylerView(myDataset: Route, view: View){
+        viewManager = LinearLayoutManager(this)
+        viewAdapter = StepAdapter(getStepSet(myDataset))
+
+        recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_steps_layout).apply {
+            // use this setting to improve performance if you know that changes
+            // in content do not change the layout size of the RecyclerView
+            setHasFixedSize(true)
+
+            // use a linear layout manager
+            layoutManager = viewManager
+
+            // specify an viewAdapter (see also next example)
+            adapter = viewAdapter
+
+        }
+    }
+
+    private fun getStepSet(route: Route): ArrayList<Step>{
+        val stepSet : ArrayList<Step> = ArrayList()
+        for (iL in 0 until route.legs!!.size) {
+            for (iS in 0 until route.legs!![iL].steps!!.size) {
+                stepSet.add(route.legs!![iL].steps!![iS])
+            }
+        }
+        return stepSet
     }
 }
