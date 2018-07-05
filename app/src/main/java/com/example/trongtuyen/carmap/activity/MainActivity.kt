@@ -11,7 +11,6 @@ import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
@@ -38,14 +37,12 @@ import com.example.trongtuyen.carmap.models.navigation.StepAdapter
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
-import com.example.trongtuyen.carmap.services.models.SampleResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.example.trongtuyen.carmap.utils.Permission
 import com.example.trongtuyen.carmap.utils.SharePrefs.Companion.mContext
 import com.github.angads25.toggle.LabeledSwitch
-import com.github.angads25.toggle.interfaces.OnToggledListener
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -57,6 +54,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.maps.android.PolyUtil
 import com.sdsmdg.tastytoast.TastyToast
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -148,6 +146,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var mPopupWindowPlaceInfo: PopupWindow? = null
 
     private var mPopupWindowRouteInfo: PopupWindow? = null
+
+    private var mPopupWindowNavigationInfo: PopupWindow? = null
 
     private var isPlaceInfoWindowUp = false
 
@@ -256,8 +256,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun drawPolyline(route: Route, options: PolylineOptions): Polyline {
-        for (i in 0 until route.points!!.size)
+        for (i in 0 until route.points!!.size){
             options.add(route.points!![i])
+        }
 
         val polyline = mMap.addPolyline(options)
         polyline.isClickable = true
@@ -297,18 +298,63 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         tvRouteDistance.text = route.distance!!.text
 
         btnStartNavigation.setOnClickListener {
-            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
+            onBtnStartNavigationClick(route)
         }
 
         btnSteps.setOnClickListener {
             // Khởi tạo RecyclerView hiển thị step info
-            Toast.makeText(this,"onBtnStepClick",Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this,"onBtnStepClick",Toast.LENGTH_SHORT).show()
             val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
             recyclerView.visibility= View.VISIBLE
-
-            initRecylerView(route, viewRoutePopup)
+            currentStepsLayout = recyclerView
+            initRecyclerView(route, viewRoutePopup)
         }
     }
+
+    private var isNavigationInfoWindowUp = false
+
+    private fun onBtnStartNavigationClick(route: Route){
+//            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewNavigationPopup = inflater.inflate(R.layout.navigation_layout, null)
+        mPopupWindowNavigationInfo = PopupWindow(viewNavigationPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowNavigationInfo!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+        isNavigationInfoWindowUp = true
+
+        val imInstruction = viewNavigationPopup.findViewById<ImageView>(R.id.imInstruction_navigation_layout)
+        val tvInstruction = viewNavigationPopup.findViewById<TextView>(R.id.tvInstruction_navigation_layout)
+
+        // imInstruction set source
+
+        val currentStep = getNavigationInstruction(route)
+        tvInstruction.text = currentStep.instruction
+    }
+
+    private fun getNavigationInstruction(route:Route):Step{
+        for (iL in 0 until route.legs!!.size) {
+            for (iS in 0 until route.legs!![iL].steps!!.size) {
+                val line = ArrayList<LatLng>()
+                line.add(route.legs!![iL].steps!![iS].startLocation!!)
+                line.add(route.legs!![iL].steps!![iS].endLocation!!)
+                val options = PolylineOptions()
+                options.color(Color.RED)
+                options.width(5f)
+                options.add(route.legs!![iL].steps!![iS].startLocation!!)
+                options.add(route.legs!![iL].steps!![iS].endLocation!!)
+                val tmpLine = mMap.addPolyline(options)
+
+                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude,lastLocation.longitude),line,true,1.0)){
+                    Log.v("Navigation","OnPathOK")
+                    return route.legs!![iL].steps!![iS+1]
+                }
+                tmpLine.remove()
+            }
+        }
+        Log.v("Navigation","OnPathFALSE")
+        return route.legs!![0].steps!![0]
+    }
+
+    private var currentStepsLayout:RecyclerView?=null
 
     private fun dismissPopupWindowRouteInfo() {
         mPopupWindowRouteInfo?.dismiss()
@@ -319,6 +365,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
+    private fun dismissPopupWindowNavigationInfo(){
+        mPopupWindowNavigationInfo?.dismiss()
+        isNavigationInfoWindowUp = false
+    }
 
     // ========================================================================================================================================= //
     // ======== VỀ MAIN ======================================================================================================================== //
@@ -480,7 +530,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     public override fun onResume() {
         super.onResume()
-
+        if (::fusedLocationClient.isInitialized) {
+            startLocationUpdates()
+        }
 //        // Chạy audio
 //        if (AppController.soundMode == 1) {
 ////            try {
@@ -561,8 +613,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         } else {
             // Migrate to Setting write permission screen
             val intent: Intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-            intent.setData(Uri.parse("package:" + this.getPackageName()))
-            startActivity(intent);
+            intent.data = Uri.parse("package:" + this.packageName)
+            startActivity(intent)
             TastyToast.makeText(this, "Cho phép chỉnh sửa cài đặt hệ thống", TastyToast.LENGTH_LONG, TastyToast.DEFAULT)
         }
     }
@@ -883,7 +935,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         val newGeo = Geometry("Point", listGeo)
                         AppController.userProfile?.currentLocation = newGeo
                     }
-
+                }
+                // Update Navigation UI
+                Log.v("Navigation","Success Location")
+                if (isNavigationInfoWindowUp){
+                    Log.v("Navigation","Update Navigation UI")
+                    mPopupWindowNavigationInfo?.dismiss()
+                    val currentRoute = currentPolyline.tag as Route
+                    onBtnStartNavigationClick(currentRoute)
                 }
             }
         }
@@ -943,6 +1002,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
         if (::mMap.isInitialized) {
+            fusedLocationClient.getLastLocation()
             if (::lastLocation.isInitialized) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
             }
@@ -951,6 +1011,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun onFilterButtonClicked() {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
@@ -961,17 +1022,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
         val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
 
-        if (AppController.settingFilterCar == "true") {
-            switchCar.isOn = true
-        } else {
-            switchCar.isOn = false
-        }
+        switchCar.isOn = AppController.settingFilterCar == "true"
 
-        if (AppController.settingFilterReport == "true") {
-            switchReport.isOn = true
-        } else {
-            switchReport.isOn = false
-        }
+        switchReport.isOn = AppController.settingFilterReport == "true"
 
 
         btnClose.setOnClickListener {
@@ -1000,45 +1053,41 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
 
-        switchCar.setOnToggledListener(object : OnToggledListener {
-            override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
-                if (isOn) {
+        switchCar.setOnToggledListener { _, isOn ->
+            if (isOn) {
 //                    Toast.makeText(this@MainActivity, "Car on", Toast.LENGTH_SHORT).show()
-                    // Chạy audio
-                    if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@MainActivity, R.raw.hien_tai_xe)
-                    }
-                    AppController.settingFilterCar = "true"
-                } else {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this@MainActivity, R.raw.hien_tai_xe)
+                }
+                AppController.settingFilterCar = "true"
+            } else {
 //                    Toast.makeText(this@MainActivity, "Car off", Toast.LENGTH_SHORT).show()
-                    // Chạy audio
-                    if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@MainActivity, R.raw.an_tai_xe)
-                    }
-                    AppController.settingFilterCar = "false"
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this@MainActivity, R.raw.an_tai_xe)
                 }
+                AppController.settingFilterCar = "false"
             }
-        })
+        }
 
-        switchReport.setOnToggledListener(object : OnToggledListener {
-            override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
-                if (isOn) {
+        switchReport.setOnToggledListener { _, isOn ->
+            if (isOn) {
 //                    Toast.makeText(this@MainActivity, "Report on", Toast.LENGTH_SHORT).show()
-                    // Chạy audio
-                    if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@MainActivity, R.raw.hien_bao_hieu)
-                    }
-                    AppController.settingFilterReport = "true"
-                } else {
-//                    Toast.makeText(this@MainActivity, "Report off", Toast.LENGTH_SHORT).show()
-                    // Chạy audio
-                    if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@MainActivity, R.raw.an_bao_hieu)
-                    }
-                    AppController.settingFilterReport = "false"
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this@MainActivity, R.raw.hien_bao_hieu)
                 }
+                AppController.settingFilterReport = "true"
+            } else {
+//                    Toast.makeText(this@MainActivity, "Report off", Toast.LENGTH_SHORT).show()
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    mAudioPlayer.play(this@MainActivity, R.raw.an_bao_hieu)
+                }
+                AppController.settingFilterReport = "false"
             }
-        })
+        }
     }
 
     override fun onBackPressed() {
@@ -1050,6 +1099,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         when {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
+                return
+            }
+            currentStepsLayout!=null -> {
+                currentStepsLayout!!.visibility= View.GONE
+                currentStepsLayout = null
+                return
+            }
+            isNavigationInfoWindowUp->{
+                dismissPopupWindowNavigationInfo()
                 return
             }
             ::polylinePaths.isInitialized && polylinePaths.isNotEmpty()&&isRouteInfoWindowUp-> {
@@ -1203,7 +1261,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
 
-        if (user!!.latWorkLocation != null && user.longWorkLocation != null) {
+        if (user.latWorkLocation != null && user.longWorkLocation != null) {
             try {
                 // Lấy địa chỉ nhà sử dụng Geocoder
                 val geocoder = Geocoder(this, Locale.getDefault())
@@ -2839,20 +2897,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
             Toast.makeText(mContext, "Custom: onFling", Toast.LENGTH_SHORT).show()
-            if (e1!!.getX() < e2!!.getX()) {
-                Log.d(TAG, "Left to Right swipe performed");
+            if (e1!!.x < e2!!.x) {
+                Log.d(TAG, "Left to Right swipe performed")
             }
 
-            if (e1.getX() > e2.getX()) {
-                Log.d(TAG, "Right to Left swipe performed");
+            if (e1.x > e2.x) {
+                Log.d(TAG, "Right to Left swipe performed")
             }
 
-            if (e1.getY() < e2.getY()) {
-                Log.d(TAG, "Up to Down swipe performed");
+            if (e1.y < e2.y) {
+                Log.d(TAG, "Up to Down swipe performed")
             }
 
-            if (e1.getY() > e2.getY()) {
-                Log.d(TAG, "Down to Up swipe performed");
+            if (e1.y > e2.y) {
+                Log.d(TAG, "Down to Up swipe performed")
             }
 
             return true
@@ -2868,14 +2926,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    // RecylerView for Step Info
+    // RecyclerView for Step Info
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
-    private fun initRecylerView(myDataset: Route, view: View){
+    private fun initRecyclerView(myDataSet: Route, view: View){
         viewManager = LinearLayoutManager(this)
-        viewAdapter = StepAdapter(getStepSet(myDataset))
+        viewAdapter = StepAdapter(getStepSet(myDataSet))
 
         recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_steps_layout).apply {
             // use this setting to improve performance if you know that changes
