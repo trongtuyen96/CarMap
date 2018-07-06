@@ -12,10 +12,13 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.provider.Settings
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -23,7 +26,6 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -169,6 +171,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     // ==================================================================================================================================== //
     // ======== VỀ DIRECTION ============================================================================================================== //
     // ==================================================================================================================================== //
+    @SuppressLint("InflateParams")
     private fun showPlaceInfoPopup(place: Place) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewPlacePopup = inflater.inflate(R.layout.place_info_layout, null)
@@ -268,7 +271,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onPolylineClick(p0: Polyline) {
-        if (p0 == currentPolyline)
+        if (p0 == currentPolyline||isNavigationInfoWindowUp)
             return
         p0.color = Color.BLUE
         currentPolyline.color = Color.GRAY
@@ -280,6 +283,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         showRouteInfoPopup(currentRoute)
     }
 
+    @SuppressLint("InflateParams")
     private fun showRouteInfoPopup(route: Route) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewRoutePopup = inflater.inflate(R.layout.steps_layout, null)
@@ -313,7 +317,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private var isNavigationInfoWindowUp = false
 
+    @SuppressLint("InflateParams")
     private fun onBtnStartNavigationClick(route: Route){
+        if (::lastLocation.isInitialized) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
+        }
 //            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewNavigationPopup = inflater.inflate(R.layout.navigation_layout, null)
@@ -334,20 +342,34 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         for (iL in 0 until route.legs!!.size) {
             for (iS in 0 until route.legs!![iL].steps!!.size) {
                 val line = ArrayList<LatLng>()
-                line.add(route.legs!![iL].steps!![iS].startLocation!!)
-                line.add(route.legs!![iL].steps!![iS].endLocation!!)
+
                 val options = PolylineOptions()
                 options.color(Color.RED)
                 options.width(5f)
-                options.add(route.legs!![iL].steps!![iS].startLocation!!)
-                options.add(route.legs!![iL].steps!![iS].endLocation!!)
-                val tmpLine = mMap.addPolyline(options)
+                options.zIndex(2F)
 
-                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude,lastLocation.longitude),line,true,1.0)){
-                    Log.v("Navigation","OnPathOK")
-                    return route.legs!![iL].steps!![iS+1]
+                for (iP in 0 until route.legs!![iL].steps!![iS].points!!.size){
+                    line.add(route.legs!![iL].steps!![iS].points!![iP])
+
+                    options.add(route.legs!![iL].steps!![iS].points!![iP])
                 }
-                tmpLine.remove()
+
+//                val tmpLine = mMap.addPolyline(options)
+
+                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude,lastLocation.longitude),line,true,1.0/*meter(s)*/)){
+                    // The polyline is composed of great circle segments if geodesic is true, and of Rhumb segments otherwise
+                    Log.v("Navigation","OnPathOK")
+                    return if (iS+1<route.legs!![iL].steps!!.size){
+                            route.legs!![iL].steps!![iS+1]
+                    } else {
+                        if (iL + 1 < route.legs!!.size) {
+                            route.legs!![iL + 1].steps!![0]
+                        } else {
+                            route.legs!![iL].steps!![iS]
+                        }
+                    }
+                }
+//                tmpLine.remove()
             }
         }
         Log.v("Navigation","OnPathFALSE")
@@ -498,10 +520,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun destroySoundVibrate() {
-        if (isTouchSoundsEnabled == true) {
+        if (isTouchSoundsEnabled) {
             Settings.System.putInt(contentResolver, Settings.System.SOUND_EFFECTS_ENABLED, 0)
         }
-        if (isTouchVibrateEnabled == true) {
+        if (isTouchVibrateEnabled) {
             Settings.System.putInt(contentResolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 0)
         }
     }
@@ -1212,7 +1234,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     // ======== VỀ THÔNG TIN NGƯỜI DÙNG USER =========================================================================================================== //
     // ================================================================================================================================================= //
     private fun loadUserProfile() {
-        if (AppController.accessToken != null && AppController.accessToken.toString().length > 0) {
+        if (AppController.accessToken != null && AppController.accessToken.toString().isNotEmpty()) {
             val service = APIServiceGenerator.createService(UserService::class.java)
             val call = service.userProfile
             call.enqueue(object : Callback<UserProfileResponse> {
@@ -1269,7 +1291,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 yourAddresses = geocoder.getFromLocation(user.latWorkLocation!!, user.longWorkLocation!!, 1)
 
                 if (yourAddresses.isNotEmpty()) {
-                    val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
+                    val address = yourAddresses[0].thoroughfare + ", " + yourAddresses[0].locality + ", " + yourAddresses[0].subAdminArea + ", " + yourAddresses.get(0).adminArea + ", " + yourAddresses.get(0).countryName
                     tvAddressWork_menu.text = address
                 }
             } catch (ex: Exception) {
@@ -1306,6 +1328,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         return false
     }
 
+    @SuppressLint("InflateParams", "SetTextI18n")
     private fun onOpenReportMarker(marker: Marker) {
         if (marker.title == "report") {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -2302,6 +2325,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_warn_strong_light_server", email, socket.id(), receiveSocketID, "strong light")
     }
 
+    @SuppressLint("InflateParams")
     private val onWarnWatcher = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
@@ -2367,6 +2391,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_warn_watcher_server", email, socket.id(), receiveSocketID, "watcher")
     }
 
+    @SuppressLint("InflateParams")
     private val onWarnSlowDown = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
@@ -2432,6 +2457,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_warn_slow_down_server", email, socket.id(), receiveSocketID, "slow down")
     }
 
+    @SuppressLint("InflateParams")
     private val onWarnTurnAround = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
@@ -2497,6 +2523,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_warn_turn_around_server", email, socket.id(), receiveSocketID, "turn around")
     }
 
+    @SuppressLint("InflateParams")
     private val onWarnThank = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
@@ -2551,6 +2578,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_warn_thank_server", email, socket.id(), receiveSocketID, "thank")
     }
 
+    @SuppressLint("InflateParams")
     private val onReportOther = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
