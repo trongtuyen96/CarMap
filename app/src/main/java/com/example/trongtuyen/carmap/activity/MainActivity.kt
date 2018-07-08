@@ -15,14 +15,17 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
 import android.provider.Settings
+import android.support.v4.app.ActivityCompat.requestPermissions
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
+import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -34,7 +37,6 @@ import com.example.trongtuyen.carmap.models.direction.Route
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
-import com.example.trongtuyen.carmap.services.models.SampleResponse
 import com.example.trongtuyen.carmap.services.models.UserProfileResponse
 import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
@@ -54,6 +56,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.sdsmdg.tastytoast.TastyToast
+import com.takusemba.spotlight.OnSpotlightStateChangedListener
+import com.takusemba.spotlight.OnTargetStateChangedListener
+import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.shape.Circle
+import com.takusemba.spotlight.target.CustomTarget
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -544,6 +551,37 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     mAudioPlayer.play(this, R.raw.vi_tri_hien_tai)
                 }
                 onMyLocationButtonClicked()
+
+//                val customTarget = CustomTarget.Builder(this)
+//                        .setPoint(100f, 340f)
+//                        .setShape(Circle(200f))
+//                        .setOverlay(v)
+//                        .setOnSpotlightStartedListener(object : OnTargetStateChangedListener<CustomTarget> {
+//                            override fun onStarted(target: CustomTarget) {
+//
+//                            }
+//
+//                            override fun onEnded(target: CustomTarget?) {
+//
+//                            }
+//                        })
+//                        .build()
+//                Spotlight.with(this)
+//                        .setOverlayColor(R.color.background_front)
+//                        .setDuration(1000L)
+//                        .setAnimation(DecelerateInterpolator(2f))
+//                        .setTargets(customTarget)
+//                        .setClosedOnTouchedOutside(false)
+//                        .setOnSpotlightStateListener(object : OnSpotlightStateChangedListener {
+//                            override fun onStarted() {
+//                                Toast.makeText(this@MainActivity, "spotlight is started", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            override fun onEnded() {
+//                                Toast.makeText(this@MainActivity, "spotlight is ended", Toast.LENGTH_SHORT).show();
+//                            }
+//                        })
+//                        .start()
             }
 
             R.id.imvReport -> {
@@ -1503,7 +1541,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                     btnYes.setOnClickListener {
                         viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                        mPopupWindowUser!!.dismiss()
+                        mPopupWindowDelete!!.dismiss()
                         onDeleteReport(dataReport._id.toString())
                     }
 

@@ -87,4 +87,7 @@ dependencies {
     // Custom Switch
     implementation 'com.github.angads25:toggle:1.0.0'
 
+    // Spotlight
+    implementation 'com.github.takusemba:spotlight:1.6.0'
+
 }
