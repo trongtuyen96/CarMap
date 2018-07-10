@@ -29,4 +29,5 @@
     <color name="bg_messenger">#0084ff</color>
     <color name="bg_trans_green">#b065c630</color>
     <color name="bg_report_menu">#efeded</color>
+    <color name="bg_remove_transparent">#60000000</color>
 </resources>

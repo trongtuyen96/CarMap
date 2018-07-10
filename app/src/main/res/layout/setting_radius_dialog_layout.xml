@@ -1,76 +1,87 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="200dp"
-    android:layout_height="290dp"
-    android:background="@drawable/bg_btn_white_stroke"
+    android:id="@+id/bg_to_remove_setting_radius_dialog_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_remove_transparent"
+    android:clickable="true"
+    android:gravity="right|center_vertical"
+    android:paddingEnd="20dp"
+    android:paddingTop="60dp"
     android:orientation="vertical">
 
-
-    <TextView
-        android:id="@+id/tvInfo_setting_radius_dialog_layout"
+    <LinearLayout
         android:layout_width="200dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="10dp"
-        android:text="Bán kính hiển thị báo cáo"
-        android:textAlignment="center" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp"
-        android:background="@color/divider" />
-
-    <TextView
-        android:id="@+id/tv2km_seting_radius_dialog_layout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:text="2 Km"
-        android:textSize="18sp"
-        android:textStyle="bold|italic" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
-
-    <TextView
-        android:id="@+id/tv5km_seting_radius_dialog_layout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:text="5 Km"
-        android:textSize="18sp"
-        android:textStyle="bold|italic" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
-
-    <TextView
-        android:id="@+id/tv10km_seting_radius_dialog_layout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:text="10 Km"
-        android:textSize="18sp"
-        android:textStyle="bold|italic" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
-
-    <TextView
-        android:id="@+id/tv25km_seting_radius_dialog_layout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:text="25 Km"
-        android:textSize="18sp"
-        android:textStyle="bold|italic" />
+        android:layout_height="290dp"
+        android:background="@drawable/bg_btn_white_stroke"
+        android:orientation="vertical">
 
 
+        <TextView
+            android:id="@+id/tvInfo_setting_radius_dialog_layout"
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Bán kính hiển thị báo cáo"
+            android:textAlignment="center" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/divider" />
+
+        <TextView
+            android:id="@+id/tv2km_seting_radius_dialog_layout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="2 Km"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <TextView
+            android:id="@+id/tv5km_seting_radius_dialog_layout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="5 Km"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <TextView
+            android:id="@+id/tv10km_seting_radius_dialog_layout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="10 Km"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <TextView
+            android:id="@+id/tv25km_seting_radius_dialog_layout"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:text="25 Km"
+            android:textSize="18sp"
+            android:textStyle="bold|italic" />
+
+    </LinearLayout>
 </LinearLayout>

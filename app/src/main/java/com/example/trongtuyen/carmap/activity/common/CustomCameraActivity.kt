@@ -7,7 +7,9 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -15,6 +17,10 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.utils.FileUtils
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class CustomCameraActivity : AppCompatActivity() {
 
@@ -39,6 +45,9 @@ class CustomCameraActivity : AppCompatActivity() {
             val base64Image = intent.getStringExtra("base64Image")
             val newBitmap = FileUtils.decodeImageFile(base64Image)
             imCamera.setImageBitmap(newBitmap)
+
+            var decodedFile : File = savebitmap(newBitmap)
+
         }
         if (intent.getParcelableExtra<Uri>("imageUri") != null){
             val imageStream = contentResolver.openInputStream(intent.getParcelableExtra<Uri>("imageUri"))
@@ -53,6 +62,18 @@ class CustomCameraActivity : AppCompatActivity() {
 
     }
 
+    @Throws(IOException::class)
+    fun savebitmap(bmp: Bitmap): File {
+        val bytes = ByteArrayOutputStream()
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val f = File(Environment.getExternalStorageDirectory().toString()
+                + File.separator + "testimage.jpg")
+        f.createNewFile()
+        val fo = FileOutputStream(f)
+        fo.write(bytes.toByteArray())
+        fo.close()
+        return f
+    }
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 //        super.onActivityResult(requestCode, resultCode, data)
 //        val bitmap: Bitmap = data!!.extras.get("data") as Bitmap

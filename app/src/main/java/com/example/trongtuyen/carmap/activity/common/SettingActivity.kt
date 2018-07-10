@@ -142,11 +142,12 @@ class SettingActivity : AppCompatActivity() {
             }
         })
 
-        val mdisp = windowManager.defaultDisplay
-        val mdispSize = Point()
-        mdisp.getSize(mdispSize)
-        val maxX = mdispSize.x
-        val maxY = mdispSize.y
+        // Dùng với layout cũ
+//        val mdisp = windowManager.defaultDisplay
+//        val mdispSize = Point()
+//        mdisp.getSize(mdispSize)
+//        val maxX = mdispSize.x
+//        val maxY = mdispSize.y
 
         btnUserRadius.setOnClickListener {
 
@@ -157,14 +158,19 @@ class SettingActivity : AppCompatActivity() {
 
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
-            mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupRadiusWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnUserRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
+            // Dùng với layout cũ
+//            mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//            mPopupRadiusWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnUserRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
 
+            // Layout mới
+            mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            mPopupRadiusWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
             val tv2km = viewPopup.findViewById<TextView>(R.id.tv2km_seting_radius_dialog_layout)
             val tv5km = viewPopup.findViewById<TextView>(R.id.tv5km_seting_radius_dialog_layout)
             val tv10km = viewPopup.findViewById<TextView>(R.id.tv10km_seting_radius_dialog_layout)
             val tv25km = viewPopup.findViewById<TextView>(R.id.tv25km_seting_radius_dialog_layout)
             val tvInfo = viewPopup.findViewById<TextView>(R.id.tvInfo_setting_radius_dialog_layout)
+            val layoutOutside = viewPopup.findViewById<LinearLayout>(R.id.bg_to_remove_setting_radius_dialog_layout)
 
             tvInfo.text = "Bán kính hiển thị tài xế"
 
@@ -192,6 +198,10 @@ class SettingActivity : AppCompatActivity() {
                 AppController.settingUserRadius = 25000
                 mPopupRadiusWindow!!.dismiss()
             }
+            layoutOutside.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                mPopupRadiusWindow!!.dismiss()
+            }
         }
 
         btnReportRadius.setOnClickListener {
@@ -203,14 +213,20 @@ class SettingActivity : AppCompatActivity() {
 
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_radius_dialog_layout, null)
-            mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupRadiusWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnReportRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
 
+            // Dùng với layout cũ
+//            mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//            mPopupRadiusWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnReportRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
+
+            // Layout mới
+            mPopupRadiusWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            mPopupRadiusWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
             val tv2km = viewPopup.findViewById<TextView>(R.id.tv2km_seting_radius_dialog_layout)
             val tv5km = viewPopup.findViewById<TextView>(R.id.tv5km_seting_radius_dialog_layout)
             val tv10km = viewPopup.findViewById<TextView>(R.id.tv10km_seting_radius_dialog_layout)
             val tv25km = viewPopup.findViewById<TextView>(R.id.tv25km_seting_radius_dialog_layout)
             val tvInfo = viewPopup.findViewById<TextView>(R.id.tvInfo_setting_radius_dialog_layout)
+            val layoutOutside = viewPopup.findViewById<LinearLayout>(R.id.bg_to_remove_setting_radius_dialog_layout)
 
             tvInfo.text = "Bán kính hiển thị báo hiệu"
 
@@ -238,17 +254,26 @@ class SettingActivity : AppCompatActivity() {
                 AppController.settingReportRadius = 25000
                 mPopupRadiusWindow!!.dismiss()
             }
+            layoutOutside.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                mPopupRadiusWindow!!.dismiss()
+            }
         }
 
         btnSound.setOnClickListener {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_sound_dialog_layout, null)
-            mPopupSoundWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupSoundWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnReportRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
+            // Dùng với layout cũ
+//            mPopupSoundWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//            mPopupSoundWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnReportRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
 
+            // Layout mới
+            mPopupSoundWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            mPopupSoundWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
             val layoutSoundOn = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundOn_setting_sound_dialog_layout)
             val layoutSoundAlert = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundAlert_setting_sound_dialog_layout)
             val layoutSoundOff = viewPopup.findViewById<LinearLayout>(R.id.layoutSoundOff_setting_sound_dialog_layout)
+            val layoutOutside = viewPopup.findViewById<LinearLayout>(R.id.bg_to_remove_setting_sound_dialog_layout)
 
             layoutSoundOn.setOnClickListener {
                 // Chạy audio
@@ -281,6 +306,10 @@ class SettingActivity : AppCompatActivity() {
                 btnSound.text = "TẮT"
                 AppController.soundMode = 3
                 btnSound.background = getDrawable(R.drawable.bg_btn_gray_dark)
+                mPopupSoundWindow!!.dismiss()
+            }
+            layoutOutside.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 mPopupSoundWindow!!.dismiss()
             }
         }
