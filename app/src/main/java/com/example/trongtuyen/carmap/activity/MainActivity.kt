@@ -3,6 +3,7 @@ package com.example.trongtuyen.carmap.activity
 import `in`.championswimmer.sfg.lib.SimpleFingerGestures
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -944,12 +945,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun onFilterButtonClicked() {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
-        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
+        // Dùng với layout cũ
+//        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
 
+        // Layout mới
+        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
         val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
         val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
+        val layoutOutside = viewFilterPopup.findViewById<LinearLayout>(R.id.bg_to_remove_filter_dialog)
 
         if (AppController.settingFilterCar == "true") {
             switchCar.isOn = true
@@ -1029,6 +1035,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
         })
+
+        layoutOutside.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            mPopupWindowFilter!!.dismiss()
+        }
     }
 
     override fun onBackPressed() {
@@ -1531,14 +1542,51 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
 
+//                    val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//                    val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
+//                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                    mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+//                    val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+//                    val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+//
+//                    btnYes.setOnClickListener {
+//                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        mPopupWindowDelete!!.dismiss()
+//                        onDeleteReport(dataReport._id.toString())
+//                    }
+//
+//                    btnNo.setOnClickListener {
+//                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        mPopupWindowDelete!!.dismiss()
+//                    }
+
+                    // Hiện nhưng còn viền trắng
+//                    val deleteDialog : Dialog = Dialog(this)
+//                    deleteDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//                    deleteDialog.setCancelable(true)
+//                    deleteDialog.setContentView(R.layout.confirm_delete_report_dialog_layout)
+//                    val btnYes = deleteDialog.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+//                    val btnNo = deleteDialog.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+//
+//                    btnYes.setOnClickListener {
+//                        it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        deleteDialog.dismiss()
+//                        onDeleteReport(dataReport._id.toString())
+//                    }
+//
+//                    btnNo.setOnClickListener {
+//                        it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        deleteDialog.dismiss()
+//                    }
+//                    deleteDialog.show()
+
                     val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
-                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
-
                     val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
                     val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
-
+                    val layoutOutside = viewDeletePopup.findViewById<LinearLayout>(R.id.bg_to_remove_confirm_delete_report)
                     btnYes.setOnClickListener {
                         viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                         mPopupWindowDelete!!.dismiss()
@@ -1550,6 +1598,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         mPopupWindowDelete!!.dismiss()
                     }
 
+                    layoutOutside.setOnClickListener {
+                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        mPopupWindowDelete!!.dismiss()
+                    }
                 } else {
 //                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
                     onUpdateNumDelete(dataReport._id.toString())
