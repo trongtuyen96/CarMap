@@ -72,6 +72,7 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener{
 
@@ -128,6 +129,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     // List of report markers
     private var listReportMarker: MutableList<Marker> = ArrayList()
+
+    private var listReportMarkerCurrentRoute: MutableList<Marker> = ArrayList()
 
     // Handler của thread
     private lateinit var handler: Handler
@@ -313,6 +316,29 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             currentStepsLayout = recyclerView
             initRecyclerView(route, viewRoutePopup)
         }
+
+        // Count report on route
+        val currentRoute = currentPolyline.tag as Route
+        listReportMarkerCurrentRoute = ArrayList()
+        for (i in 0 until listReportMarker.size) {
+            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude,listReportMarker[i].position.longitude),currentRoute.points,true,5.0/*meter(s)*/)){
+                listReportMarkerCurrentRoute.add(listReportMarker[i])
+            }
+        }
+        Log.v("ReportCount","NumReport = " + listReportMarkerCurrentRoute.size.toString())
+        if (listReportMarkerCurrentRoute.size>0){
+            val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+            layoutReport.visibility = View.VISIBLE
+            val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
+            val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
+
+            btnPreviousReport.setOnClickListener{
+                Toast.makeText(this,"onBtnPreviousReportClick",Toast.LENGTH_SHORT).show()
+            }
+            btnNextReport.setOnClickListener{
+                Toast.makeText(this,"onBtnNextReportClick",Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private var isNavigationInfoWindowUp = false
@@ -341,7 +367,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun getNavigationInstruction(route:Route):Step{
         for (iL in 0 until route.legs!!.size) {
             for (iS in 0 until route.legs!![iL].steps!!.size) {
-                val line = ArrayList<LatLng>()
+//                val line = ArrayList<LatLng>()
 
                 val options = PolylineOptions()
                 options.color(Color.RED)
@@ -349,14 +375,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 options.zIndex(2F)
 
                 for (iP in 0 until route.legs!![iL].steps!![iS].points!!.size){
-                    line.add(route.legs!![iL].steps!![iS].points!![iP])
+//                    line.add(route.legs!![iL].steps!![iS].points!![iP])
 
                     options.add(route.legs!![iL].steps!![iS].points!![iP])
                 }
 
 //                val tmpLine = mMap.addPolyline(options)
 
-                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude,lastLocation.longitude),line,true,1.0/*meter(s)*/)){
+                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude,lastLocation.longitude),route.legs!![iL].steps!![iS].points,true,1.0/*meter(s)*/)){
                     // The polyline is composed of great circle segments if geodesic is true, and of Rhumb segments otherwise
                     Log.v("Navigation","OnPathOK")
                     return if (iS+1<route.legs!![iL].steps!!.size){
