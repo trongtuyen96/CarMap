@@ -1,61 +1,71 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="200dp"
-    android:layout_height="190dp"
-    android:background="@drawable/bg_btn_white_stroke"
+    android:id="@+id/bg_to_remove_confirm_delete_report"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_remove_transparent"
+    android:clickable="true"
+    android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:background="@drawable/bg_btn_report_watcher"
-        android:src="@drawable/ic_delete_white_48dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:padding="10dp" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="200dp"
-        android:layout_height="20dp"
-        android:text="Bạn muốn xoá báo hiệu này?"
-        android:textAlignment="center" />
+        android:layout_height="190dp"
+        android:background="@drawable/bg_btn_white_stroke"
+        android:orientation="vertical">
 
-    <View
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp"
-        android:background="@color/divider" />
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_btn_report_watcher"
+            android:padding="10dp"
+            android:src="@drawable/ic_delete_white_48dp" />
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="60dp"
-      android:orientation="horizontal"
-      android:layout_marginBottom="10dp">
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="20dp"
+            android:text="Bạn muốn xoá báo hiệu này?"
+            android:textAlignment="center" />
 
-      <Button
-          android:id="@+id/btnYes_confirm_delete_report"
-          android:layout_width="70dp"
-          android:layout_height="50dp"
-          android:background="@drawable/bg_btn_dismiss"
-          android:text="CÓ"
-          android:textColor="@color/background_front"
-          android:textSize="18sp"
-          android:layout_gravity="center_vertical"
-          android:layout_marginStart="10dp"/>
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/divider" />
 
-      <Button
-          android:id="@+id/btnNo_confirm_delete_report"
-          android:layout_width="100dp"
-          android:layout_height="50dp"
-          android:background="@drawable/bg_btn_gray_dark"
-          android:text="KHÔNG"
-          android:textColor="@color/background_front"
-          android:textSize="18sp"
-          android:layout_gravity="center_vertical"
-          android:layout_marginStart="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
-  </LinearLayout>
+            <Button
+                android:id="@+id/btnYes_confirm_delete_report"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_btn_dismiss"
+                android:text="CÓ"
+                android:textColor="@color/background_front"
+                android:textSize="18sp" />
 
+            <Button
+                android:id="@+id/btnNo_confirm_delete_report"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_btn_gray_dark"
+                android:text="KHÔNG"
+                android:textColor="@color/background_front"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>

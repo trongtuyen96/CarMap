@@ -3,6 +3,7 @@ package com.example.trongtuyen.carmap.activity
 import `in`.championswimmer.sfg.lib.SimpleFingerGestures
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -17,6 +18,9 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.provider.Settings
+import android.support.v4.app.ActivityCompat.requestPermissions
+import android.support.v4.content.ContextCompat
+import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -24,6 +28,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
+import android.view.animation.DecelerateInterpolator
 import android.widget.*
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.activity.common.*
@@ -58,6 +63,11 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
 import com.sdsmdg.tastytoast.TastyToast
+import com.takusemba.spotlight.OnSpotlightStateChangedListener
+import com.takusemba.spotlight.OnTargetStateChangedListener
+import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.shape.Circle
+import com.takusemba.spotlight.target.CustomTarget
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -692,6 +702,37 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     mAudioPlayer.play(this, R.raw.vi_tri_hien_tai)
                 }
                 onMyLocationButtonClicked()
+
+//                val customTarget = CustomTarget.Builder(this)
+//                        .setPoint(100f, 340f)
+//                        .setShape(Circle(200f))
+//                        .setOverlay(v)
+//                        .setOnSpotlightStartedListener(object : OnTargetStateChangedListener<CustomTarget> {
+//                            override fun onStarted(target: CustomTarget) {
+//
+//                            }
+//
+//                            override fun onEnded(target: CustomTarget?) {
+//
+//                            }
+//                        })
+//                        .build()
+//                Spotlight.with(this)
+//                        .setOverlayColor(R.color.background_front)
+//                        .setDuration(1000L)
+//                        .setAnimation(DecelerateInterpolator(2f))
+//                        .setTargets(customTarget)
+//                        .setClosedOnTouchedOutside(false)
+//                        .setOnSpotlightStateListener(object : OnSpotlightStateChangedListener {
+//                            override fun onStarted() {
+//                                Toast.makeText(this@MainActivity, "spotlight is started", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            override fun onEnded() {
+//                                Toast.makeText(this@MainActivity, "spotlight is ended", Toast.LENGTH_SHORT).show();
+//                            }
+//                        })
+//                        .start()
             }
 
             R.id.imvReport -> {
@@ -1063,12 +1104,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun onFilterButtonClicked() {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewFilterPopup = inflater.inflate(R.layout.filter_dialog_layout, null)
-        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
+        // Dùng với layout cũ
+//        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
 
+        // Layout mới
+        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
         val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
         val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
+        val layoutOutside = viewFilterPopup.findViewById<LinearLayout>(R.id.bg_to_remove_filter_dialog)
 
         switchCar.isOn = AppController.settingFilterCar == "true"
 
@@ -1135,6 +1181,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
                 AppController.settingFilterReport = "false"
             }
+        }
+
+        layoutOutside.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            mPopupWindowFilter!!.dismiss()
         }
     }
 
@@ -1649,17 +1700,54 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     mPopupWindowReport!!.dismiss()
                     curMarkerReport = null
 
+//                    val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//                    val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
+//                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                    mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+//                    val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+//                    val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+//
+//                    btnYes.setOnClickListener {
+//                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        mPopupWindowDelete!!.dismiss()
+//                        onDeleteReport(dataReport._id.toString())
+//                    }
+//
+//                    btnNo.setOnClickListener {
+//                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        mPopupWindowDelete!!.dismiss()
+//                    }
+
+                    // Hiện nhưng còn viền trắng
+//                    val deleteDialog : Dialog = Dialog(this)
+//                    deleteDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//                    deleteDialog.setCancelable(true)
+//                    deleteDialog.setContentView(R.layout.confirm_delete_report_dialog_layout)
+//                    val btnYes = deleteDialog.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+//                    val btnNo = deleteDialog.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+//
+//                    btnYes.setOnClickListener {
+//                        it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        deleteDialog.dismiss()
+//                        onDeleteReport(dataReport._id.toString())
+//                    }
+//
+//                    btnNo.setOnClickListener {
+//                        it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                        deleteDialog.dismiss()
+//                    }
+//                    deleteDialog.show()
+
                     val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                     val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
-                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
-
                     val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
                     val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
-
+                    val layoutOutside = viewDeletePopup.findViewById<LinearLayout>(R.id.bg_to_remove_confirm_delete_report)
                     btnYes.setOnClickListener {
                         viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                        mPopupWindowUser!!.dismiss()
+                        mPopupWindowDelete!!.dismiss()
                         onDeleteReport(dataReport._id.toString())
                     }
 
@@ -1668,6 +1756,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         mPopupWindowDelete!!.dismiss()
                     }
 
+                    layoutOutside.setOnClickListener {
+                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                        mPopupWindowDelete!!.dismiss()
+                    }
                 } else {
 //                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
                     onUpdateNumDelete(dataReport._id.toString())
@@ -2215,7 +2307,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewHelloPopup = inflater.inflate(R.layout.hello_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewHelloPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                // Dùng layout cũ
+//                mPopupWindowHello = PopupWindow(viewHelloPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                // Layout mới
+                mPopupWindowHello = PopupWindow(viewHelloPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewHelloPopup.findViewById<TextView>(R.id.tvEmail_hello_dialog)
@@ -2310,7 +2406,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnStrongLightPopup = inflater.inflate(R.layout.warn_strong_light_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                // Dùng với layout cũ
+//                mPopupWindowHello = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                // Layout mới
+                mPopupWindowHello = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnStrongLightPopup.findViewById<TextView>(R.id.tvEmail_warn_strong_light_dialog)
@@ -2376,7 +2476,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnWatcherPopup = inflater.inflate(R.layout.warn_watcher_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                // Dùng với layout cũ
+//                mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                // Layout mới
+                mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnWatcherPopup.findViewById<TextView>(R.id.tvEmail_warn_watcher_dialog)
@@ -2442,7 +2546,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnSlowDownPopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                // Dùng với layout cũ
+//                mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                // Layout mới
+                mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnSlowDownPopup.findViewById<TextView>(R.id.tvEmail_warn_slow_down_dialog)
@@ -2508,7 +2616,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnTurnAroundPopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                // Dùng với layout cũ
+//                mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                // Layout mới
+                mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnTurnAroundPopup.findViewById<TextView>(R.id.tvEmail_warn_turn_around_dialog)
@@ -2574,7 +2686,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnThankPopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                // Dùng với layout cũ
+//                mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                // Layout mới
+                mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnThankPopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
@@ -2635,7 +2751,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewReportOtherPopup = inflater.inflate(R.layout.report_other_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                // Dùng với layout cũ
+//                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                // Layout mới
+                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewReportOtherPopup.findViewById<TextView>(R.id.tvEmail_report_other_dialog)
