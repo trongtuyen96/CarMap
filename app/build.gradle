@@ -22,6 +22,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a'
+            universalApk true
+        }
+    }
 }
 
 dependencies {
@@ -87,7 +95,10 @@ dependencies {
     // Custom Switch
     implementation 'com.github.angads25:toggle:1.0.0'
 
+    // Google Maps Android API Utility Library
+    //noinspection GradleDynamicVersion
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
+
     // Spotlight
     implementation 'com.github.takusemba:spotlight:1.6.0'
-
 }
