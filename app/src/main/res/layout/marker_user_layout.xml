@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="260dp"
+    android:layout_height="266dp"
     android:background="@color/divider"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="56dp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imvAvatar_marker_user"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
@@ -30,10 +30,10 @@
             <TextView
                 android:id="@+id/tvName_marker_user"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="bottom"
                 android:paddingStart="6dp"
                 android:text="Tên"
-                android:textAlignment="viewStart"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textColor="@color/background_front"
                 android:textSize="18sp" />
@@ -49,17 +49,17 @@
             <TextView
                 android:id="@+id/tvEmail_marker_user"
                 android:layout_width="match_parent"
-                android:layout_height="29dp"
+                android:layout_height="match_parent"
+                android:gravity="top"
                 android:paddingStart="6dp"
                 android:text="Email"
-                android:textAlignment="viewStart"
                 android:textColor="@color/background_front" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btnHello_marker_user"
-            android:layout_width="120dp"
-            android:layout_height="38dp"
+            android:layout_width="110dp"
+            android:layout_height="44dp"
             android:layout_gravity="center"
             android:layout_marginStart="12dp"
             android:background="@drawable/bg_btn_yes_stroke"
@@ -82,6 +82,16 @@
             android:layout_gravity="center_horizontal"
             android:clickable="false"
             android:src="@drawable/pic_hand_touch" />
+
+        <ImageView
+            android:id="@+id/imInstruction_marker_user"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_info" />
 
         <!--<Button-->
         <!--android:id="@+id/btnConfirm_marker_user"-->
