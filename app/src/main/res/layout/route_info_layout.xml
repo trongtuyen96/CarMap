@@ -46,9 +46,21 @@
                     android:id="@+id/tvDistance_route_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="(0 km)"
+                    android:text="0 km"
                     android:textColor="@color/textColorSecondary"
-                    android:textStyle="italic" />
+                    android:textStyle="italic"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvReportCount_route_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@android:style/TextAppearance.Material.Large"
+                    android:textSize="18sp"
+                    android:text="0 report"
+                    android:textColor="#ff0000"
+                    android:visibility="gone"
+                    />
             </LinearLayout>
 
             <LinearLayout

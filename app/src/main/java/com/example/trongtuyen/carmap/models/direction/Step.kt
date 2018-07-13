@@ -10,4 +10,6 @@ class Step {
 
     var points: List<LatLng>? = null
     var instruction: String ?= null
+    var subInstruction: String ?= null
+    var maneuver: String ?= null
 }
