@@ -663,7 +663,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         // Lần đầu chạy sau 5s
-        handler.postDelayed(runnable, 5000)  //the time is in miliseconds
+        handler.postDelayed(runnable, 3000)  //the time is in miliseconds
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
             // Khởi tạo sound và vibrate
@@ -1801,6 +1801,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val btnConfirm = viewUserPopup.findViewById<LinearLayout>(R.id.layoutConfirm_marker_user)
             val imvType = viewUserPopup.findViewById<ImageView>(R.id.imvType_marker_user)
             val tvType = viewUserPopup.findViewById<TextView>(R.id.tvType_marker_user)
+            val imvInstruction = viewUserPopup.findViewById<ImageView>(R.id.imInstruction_marker_user)
 
             val dataUser: User = marker.tag as User
             tvName.text = dataUser.name.toString()
@@ -1962,6 +1963,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     mType = 0
                 } else {
                     TastyToast.makeText(this, "Bạn phải bật chết độ giao tiếp với tài xế để có thể thực hiện thao tác này!", TastyToast.LENGTH_LONG, TastyToast.INFO).show()
+                }
+            }
+
+            imvInstruction.setOnClickListener {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewPopup = inflater.inflate(R.layout.marker_user_instruction_dialog_layout, null)
+
+                val mPopupWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                mPopupWindow.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+                val btnClose = viewPopup.findViewById<ImageView>(R.id.btnClose_marker_user_instruction_dialog_layout)
+
+                btnClose.setOnClickListener {
+                    mPopupWindow.dismiss()
                 }
             }
 
