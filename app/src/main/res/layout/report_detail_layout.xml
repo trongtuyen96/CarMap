@@ -15,9 +15,10 @@
         android:src="@drawable/ic_keyboard_arrow_left_white_48dp" />
 
     <LinearLayout
-        android:layout_width="260dp"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_weight="7">
 
         <LinearLayout
             android:id="@+id/btnCurrent_report_detail"

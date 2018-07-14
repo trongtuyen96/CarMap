@@ -5,32 +5,33 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/report_detail_layout"/>
+    <include layout="@layout/report_detail_layout" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:background="@color/divider"
         android:orientation="horizontal"
-        android:weightSum="10"
-        android:background="@color/divider">
+        android:weightSum="10">
+
         <LinearLayout
             android:id="@+id/btnSelectedRoute_route_info"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginTop="1dp"
             android:layout_weight="7"
+            android:background="@color/background_front"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical"
-            android:background="@color/background_front">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:orientation="horizontal"
-                android:paddingStart="20dp"
                 android:paddingBottom="2dp"
+                android:paddingStart="20dp"
                 android:paddingTop="4dp">
 
                 <TextView
@@ -68,8 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:orientation="horizontal"
-                android:paddingStart="20dp"
                 android:paddingBottom="2dp"
+                android:paddingStart="20dp"
                 android:paddingTop="4dp">
 
                 <TextView
@@ -86,17 +87,18 @@
                 android:id="@+id/btnSteps_route_info"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
+                android:background="@color/background_back"
                 android:clickable="true"
                 android:focusable="true"
-                android:background="@color/background_back"
                 android:paddingBottom="2dp"
-                android:paddingTop="2dp"
-                android:paddingStart="20dp">
+                android:paddingStart="20dp"
+                android:paddingTop="2dp">
+
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="4dp"
+                    android:layout_marginTop="10dp"
                     app:srcCompat="@drawable/ic_menu_grey_800_48dp" />
 
                 <TextView
@@ -116,28 +118,36 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:background="@color/colorPrimary"
             android:clickable="true"
             android:focusable="true"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="1dp">
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <Button
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|end"
-                android:paddingStart="10dp"
-                android:paddingEnd="8dp"
+                android:background="@drawable/bg_btn_yes_stroke"
+                android:layout_margin="6dp"
                 android:text="ĐI"
                 android:textColor="#ffffff"
                 android:textSize="28sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
-            <ImageView
-                android:layout_width="36dp"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/ic_directions_white_48dp" />
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:gravity="center_vertical|end"-->
+                <!--android:paddingEnd="8dp"-->
+                <!--android:paddingStart="10dp"-->
+                <!--android:text="ĐI"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="28sp"-->
+                <!--android:textStyle="bold" />-->
+
+            <!--<ImageView-->
+            <!--android:layout_width="36dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:srcCompat="@drawable/ic_directions_white_48dp" />-->
         </LinearLayout>
     </LinearLayout>
 

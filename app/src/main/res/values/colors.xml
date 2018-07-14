@@ -30,4 +30,10 @@
     <color name="bg_trans_green">#b065c630</color>
     <color name="bg_report_menu">#efeded</color>
     <color name="bg_remove_transparent">#60000000</color>
+    <color name="bg_strong_light">#000000</color>
+    <color name="bg_slow_down">#e99d4f</color>
+    <color name="bg_turn_around">#f27e7e</color>
+    <color name="bg_watcher">#f44336</color>
+    <color name="bg_hello">#1976d2</color>
+
 </resources>
