@@ -344,7 +344,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         if (listReportMarkerCurrentRoute.size>0){
             tvReportCount.visibility=View.VISIBLE
-            tvReportCount.text=listReportMarkerCurrentRoute.size.toString()+" chướng ngại"
+            tvReportCount.text=listReportMarkerCurrentRoute.size.toString()+" báo hiệu"
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
             val btnCurrentReport = viewRoutePopup.findViewById<LinearLayout>(R.id.btnCurrent_report_detail)
@@ -1314,6 +1314,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     mPopupWindowNavigationInfo?.dismiss()
                     val currentRoute = currentPolyline.tag as Route
                     onBtnStartNavigationClick(currentRoute)
+
+                    // onReachReportMarker
+                    listReportMarker.sortedWith(compareBy{(it.tag as Report).distance})
+                    mPopupWindowReport?.dismiss()
+                    for (i in 0 until listReportMarker.size) {
+                        val location = Location("tempLocation")
+                        location.latitude = listReportMarker[i].position.latitude
+                        location.longitude = listReportMarker[i].position.longitude
+                        if (lastLocation.distanceTo(location)<5){
+                            onOpenReportMarker(listReportMarker[i])
+                        }
+                        break
+                    }
                 }
             }
         }

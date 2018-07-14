@@ -1,95 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="72dp"
-    android:orientation="horizontal"
-    android:weightSum="10"
     android:id="@+id/layoutReport_detail"
-    android:background="@color/background_front">
-    <!--<TextView-->
-        <!--android:layout_weight="1.5"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:text="1/10"-->
-        <!--android:id="@+id/tvReport_order_report_detail"-->
-        <!--android:gravity="center"-->
-        <!--android:paddingStart="8dp"-->
-        <!--android:paddingEnd="8dp"-->
-        <!--android:textColor="@color/textColorPrimary"-->
-        <!--android:textSize="6pt"/>-->
+
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@color/background_front"
+    android:orientation="horizontal">
+
     <ImageView
-        android:layout_weight="1.5"
         android:id="@+id/btnPrevious_report_detail"
-        android:layout_width="0dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_keyboard_arrow_left_white_48dp"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorPrimary"
+        android:src="@drawable/ic_keyboard_arrow_left_white_48dp" />
+
     <LinearLayout
-        android:layout_weight="7"
-        android:layout_width="0dp"
+        android:layout_width="260dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/btnCurrent_report_detail"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
+
+            android:layout_height="76dp"
             android:orientation="horizontal"
             android:clickable="true"
             android:focusable="true">
+
+
             <ImageView
                 android:id="@+id/imIcon_report_detail"
-                android:layout_width="72dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_report_accident"
-                android:paddingStart="8dp"
-                android:paddingEnd="0dp"/>
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_report_accident" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:weightSum="3"
                 android:gravity="center_vertical"
-                android:paddingStart="8dp"
-                android:paddingEnd="0dp">
+                android:orientation="vertical"
+                android:paddingStart="8dp">
+
                 <TextView
                     android:id="@+id/tvType_report_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Loại report"
                     android:gravity="center_vertical"
-                    android:textColor="@color/textColorPrimary"/>
+                    android:text="LOẠI REPORT"
+                    android:textColor="@color/textColorPrimary"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tvDistance_report_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cách 10 m"
                     android:gravity="center_vertical"
-                    android:textColor="@color/textColorSecondary"/>
+                    android:text="Cách 10 m"
+                    android:textColor="@color/textColorSecondary" />
+
                 <TextView
                     android:id="@+id/tvAddress_report_detail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Địa chỉ"
                     android:gravity="center_vertical"
-                    android:textColor="@color/textColorSecondary"/>
+                    android:text="Địa chỉ"
+                    android:textColor="@color/colorPrimaryLight" />
             </LinearLayout>
         </LinearLayout>
+
         <ProgressBar
+            android:id="@+id/progressBar_report_detail"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="1"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:progress="1"
-            android:id="@+id/progressBar_report_detail"/>
+            android:progress="1"/>
+
     </LinearLayout>
 
     <ImageView
-        android:layout_weight="1.5"
         android:id="@+id/btnNext_report_detail"
-        android:layout_width="0dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:src="@drawable/ic_keyboard_arrow_right_white_48dp"
+        android:layout_gravity="end"
         android:background="@color/colorPrimary"
-        android:layout_gravity="end"/>
+        android:src="@drawable/ic_keyboard_arrow_right_white_48dp" />
 
 </LinearLayout>
