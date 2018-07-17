@@ -2,58 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
-    android:background="@color/textColorSecondary"
-    android:orientation="horizontal">
+    android:layout_height="266dp"
+    android:background="@color/divider"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="140dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imvAvatar_marker_user"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             android:background="@drawable/bg_btn_report_hazard"
             android:padding="6dp"
             app:srcCompat="@drawable/ic_report_hazard_stopped" />
 
-        <TextView
-            android:id="@+id/tvName_marker_user"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tên"
-            android:textAlignment="center"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            android:textColor="@color/background_front" />
+        <LinearLayout
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <!--<TextView-->
-        <!--android:id="@+id/tvDOB_marker_user"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="13/12/1996"-->
-        <!--android:textAlignment="center"-->
-        <!--android:textColor="@color/background_front"-->
-        <!--android:textSize="14sp" />-->
+            <TextView
+                android:id="@+id/tvName_marker_user"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="bottom"
+                android:paddingStart="6dp"
+                android:text="Tên"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:textColor="@color/background_front"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tvEmail_marker_user"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Email"
-            android:textAlignment="center"
-            android:textColor="@color/background_front" />
+            <!--<TextView-->
+            <!--android:id="@+id/tvDOB_marker_user"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="13/12/1996"-->
+            <!--android:textAlignment="center"-->
+            <!--android:textColor="@color/background_front"-->
+            <!--android:textSize="14sp" />-->
+            <TextView
+                android:id="@+id/tvEmail_marker_user"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top"
+                android:paddingStart="6dp"
+                android:text="Email"
+                android:textColor="@color/background_front" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnHello_marker_user"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
+            android:layout_width="110dp"
+            android:layout_height="44dp"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginStart="12dp"
             android:background="@drawable/bg_btn_yes_stroke"
             android:padding="6dp"
             android:text="Chào hỏi"
@@ -61,19 +69,82 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/viewTouch_maker_user"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/divider"
-        android:id="@+id/viewTouch_maker_user">
+        android:layout_height="210dp"
+        android:background="@color/background_front">
 
         <ImageView
             android:layout_width="60dp"
             android:layout_height="100dp"
-            android:src="@drawable/pic_hand_touch"
+            android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
             android:clickable="false"
-            android:layout_marginTop="40dp"/>
-    </LinearLayout>
+            android:src="@drawable/pic_hand_touch" />
+
+        <ImageView
+            android:id="@+id/imInstruction_marker_user"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_info" />
+
+        <!--<Button-->
+        <!--android:id="@+id/btnConfirm_marker_user"-->
+        <!--android:layout_width="70dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:background="@color/bg_trans_green"-->
+        <!--android:drawableTop="@drawable/ic_headlights_on_44dp"-->
+        <!--android:drawablePadding="20dp"-->
+        <!--android:padding="8dp"-->
+        <!--android:text="HẠ ĐỘ SÁNG ĐÈN PHA"-->
+        <!--android:textColor="@color/background_front" />-->
+        <LinearLayout
+            android:id="@+id/layoutConfirm_marker_user"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:background="@color/bg_trans_green"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imvType_marker_user"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/ic_headlights_on_44dp" />
+
+            <TextView
+                android:id="@+id/tvType_marker_user"
+                android:layout_width="60dp"
+                android:layout_height="110dp"
+                android:layout_gravity="center"
+                android:padding="2dp"
+                android:text="HẠ ĐỘ SÁNG ĐÈN PHA"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+                android:textColor="@color/background_front"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_navigate_next_white_48dp" />
+
+            <!--<ImageView-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:src="@drawable/btn_send_44dp"/>-->
+        </LinearLayout>
+
+    </RelativeLayout>
 </LinearLayout>

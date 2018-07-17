@@ -43,7 +43,7 @@
                     android:src="@drawable/ic_share_home" />
 
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:layout_width="170dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:orientation="vertical">
@@ -61,8 +61,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
-                        android:text="Chọn địa chỉ nhà"
-                        android:singleLine="true"/>
+                        android:singleLine="true"
+                        android:text="Chọn địa chỉ nhà" />
                 </LinearLayout>
 
                 <View
@@ -74,15 +74,16 @@
 
                 <LinearLayout
                     android:id="@+id/layoutEditHome"
-                    android:layout_width="34dp"
+                    android:layout_width="44dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
                         android:src="@drawable/ic_edit_location_44dp" />
                 </LinearLayout>
 
@@ -109,7 +110,7 @@
                     android:src="@drawable/ic_share_work" />
 
                 <LinearLayout
-                    android:layout_width="180dp"
+                    android:layout_width="170dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center_vertical"
                     android:orientation="vertical">
@@ -127,8 +128,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:layout_marginStart="10dp"
-                        android:text="Chọn nơi làm việc "
-                        android:singleLine="true"/>
+                        android:singleLine="true"
+                        android:text="Chọn nơi làm việc " />
                 </LinearLayout>
 
                 <View
@@ -140,15 +141,16 @@
 
                 <LinearLayout
                     android:id="@+id/layoutEditWork"
-                    android:layout_width="34dp"
+                    android:layout_width="44dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
                         android:src="@drawable/ic_edit_location_44dp" />
                 </LinearLayout>
             </LinearLayout>

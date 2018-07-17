@@ -105,4 +105,7 @@ dependencies {
     // Google Maps Android API Utility Library
     //noinspection GradleDynamicVersion
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
+
+    // Simple Color Picker
+    implementation 'petrov.kristiyan:colorpicker-library:1.1.8'
 }
