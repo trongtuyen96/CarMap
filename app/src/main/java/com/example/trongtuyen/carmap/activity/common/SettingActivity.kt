@@ -2,7 +2,9 @@ package com.example.trongtuyen.carmap.activity.common
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
+import android.media.Image
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -17,6 +19,7 @@ import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.github.angads25.toggle.LabeledSwitch
 import com.github.angads25.toggle.interfaces.OnToggledListener
+import petrov.kristiyan.colorpicker.ColorPicker
 
 class SettingActivity : AppCompatActivity() {
 
@@ -32,10 +35,14 @@ class SettingActivity : AppCompatActivity() {
     lateinit var btnReportRadius: Button
     @BindView(R.id.btnSound_setting)
     lateinit var btnSound: Button
+    @BindView(R.id.layoutMyCar_setting)
+    lateinit var layoutMyCar: LinearLayout
 
     private var mPopupRadiusWindow: PopupWindow? = null
 
     private var mPopupSoundWindow: PopupWindow? = null
+
+    private var mPopupMyCarWindow: PopupWindow? = null
 
     private var mAudioPlayer = AudioPlayer()
 
@@ -314,6 +321,110 @@ class SettingActivity : AppCompatActivity() {
             }
         }
 
+        layoutMyCar.setOnClickListener {
+
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this@SettingActivity, R.raw.ban_kinh_hien_thi_tai_xe)
+            }
+
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewPopup = inflater.inflate(R.layout.setting_my_car_dialog_layout, null)
+
+            // Layout mới
+            mPopupMyCarWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            mPopupMyCarWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
+            val btn4 = viewPopup.findViewById<LinearLayout>(R.id.layout4_setting_my_car_dialog_layout)
+            val btn6 = viewPopup.findViewById<LinearLayout>(R.id.layout6_setting_my_car_dialog_layout)
+            val btnTai = viewPopup.findViewById<LinearLayout>(R.id.layoutTai_setting_my_car_dialog_layout)
+            val editTextModel = viewPopup.findViewById<EditText>(R.id.editTextModel_setting_my_car_dialog_layout)
+            val imColor = viewPopup.findViewById<ImageView>(R.id.imColor_setting_my_car_dialog_layout)
+            val btnChooseColor = viewPopup.findViewById<Button>(R.id.btnChooseColor_setting_my_car_dialog_layout)
+            val btnDismiss = viewPopup.findViewById<Button>(R.id.btnDismiss_setting_my_car_dialog_layout)
+            val btnConfirm = viewPopup.findViewById<Button>(R.id.btnConfirm_setting_my_car_dialog_layout)
+            val layoutOutside = viewPopup.findViewById<LinearLayout>(R.id.bg_to_remove_setting_my_car_dialog_layout)
+
+//            editTextModel.clearFocus()
+            // Load dữ liệu có sẵn
+            if (AppController.userProfile!!.typeCar != "") {
+                when (AppController.userProfile!!.typeCar) {
+                    "4 cho" -> {
+                        btn4.background = getDrawable(R.color.divider)
+                    }
+                    "68 cho" -> {
+                        btn6.background = getDrawable(R.color.divider)
+                    }
+                    "xe tai" -> {
+                        btnTai.background = getDrawable(R.color.divider)
+                    }
+                }
+            }
+            if (AppController.userProfile!!.modelCar != "") {
+                editTextModel.setText(AppController.userProfile!!.modelCar, TextView.BufferType.EDITABLE)
+            }
+            if (AppController.userProfile!!.colorCar != "") {
+                imColor.setBackgroundColor(Color.parseColor(AppController.userProfile!!.colorCar))
+            }
+
+            var typeCar = AppController.userProfile!!.typeCar
+            btn4.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                btn4.background = getDrawable(R.color.divider)
+                btn6.background = getDrawable(R.color.background_front)
+                btnTai.background = getDrawable(R.color.background_front)
+                typeCar = "4 cho"
+            }
+            btn6.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                btn6.background = getDrawable(R.color.divider)
+                btn4.background = getDrawable(R.color.background_front)
+                btnTai.background = getDrawable(R.color.background_front)
+                typeCar = "68 cho"
+            }
+            btnTai.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                btnTai.background = getDrawable(R.color.divider)
+                btn6.background = getDrawable(R.color.background_front)
+                btn4.background = getDrawable(R.color.background_front)
+                typeCar = "xe tai"
+            }
+
+            btnChooseColor.setOnClickListener {
+                val colorsHexList = arrayListOf<String>("#000000", "#7a7172", "#c6c2c3", "#ff071c", "#ff0766", "#ff07ac", "#c507ff", "#6a07ff", "#2807ff", "#077bff", "#07bdff", "#07ffea", "#204734", "#39ff07", "#faff07", "#ffcd07", "#ff8b07", "#ffffff")
+                val colorPicker: ColorPicker = ColorPicker(this)
+                colorPicker.setOnChooseColorListener(object : ColorPicker.OnChooseColorListener {
+                    override fun onChooseColor(position: Int, color: Int) {
+                        if (position == -1) {
+                            AppController.userProfile!!.colorCar = "#000000"
+                        } else {
+                            AppController.userProfile!!.colorCar = colorsHexList[position]
+                        }
+                        imColor.setBackgroundColor(Color.parseColor(AppController.userProfile!!.colorCar))
+                    }
+
+                    override fun onCancel() {
+                        colorPicker.dismissDialog()
+                    }
+
+                }).setColumns(6).setColors(colorsHexList).show()
+            }
+
+
+            layoutOutside.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                mPopupMyCarWindow!!.dismiss()
+            }
+
+            btnDismiss.setOnClickListener {
+                mPopupMyCarWindow!!.dismiss()
+            }
+
+            btnConfirm.setOnClickListener {
+                AppController.userProfile!!.typeCar = typeCar
+                AppController.userProfile!!.modelCar = editTextModel.text.toString()
+                mPopupMyCarWindow!!.dismiss()
+            }
+        }
         btnBack.setOnClickListener {
             setResult(Activity.RESULT_OK, intent)
             finish()

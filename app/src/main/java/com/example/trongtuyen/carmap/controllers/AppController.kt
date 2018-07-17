@@ -101,4 +101,5 @@ object AppController {
 
     // Lịch sử tìm kiếm gần đây
     var listHistoryPlace: MutableList<Place> = ArrayList()
+
 }

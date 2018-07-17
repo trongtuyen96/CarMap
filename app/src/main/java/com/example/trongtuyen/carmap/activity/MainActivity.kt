@@ -84,7 +84,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener{
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
 
     // Static variables
     companion object {
@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var originMarkers: MutableList<Marker>? = ArrayList()
     private var destinationMarkers: MutableList<Marker>? = ArrayList()
     private lateinit var currentPolyline: Polyline
-    private var isRouteInfoWindowUp:Boolean = false
+    private var isRouteInfoWindowUp: Boolean = false
 
     // setting hiện tại của socket
     private var currentSocketSetting: String? = null
@@ -272,7 +272,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun drawPolyline(route: Route, options: PolylineOptions): Polyline {
-        for (i in 0 until route.points!!.size){
+        for (i in 0 until route.points!!.size) {
             options.add(route.points!![i])
         }
 
@@ -284,7 +284,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onPolylineClick(p0: Polyline) {
-        if (p0 == currentPolyline||isNavigationInfoWindowUp)
+        if (p0 == currentPolyline || isNavigationInfoWindowUp)
             return
         p0.color = Color.BLUE
         currentPolyline.color = Color.GRAY
@@ -322,7 +322,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             // Khởi tạo RecyclerView hiển thị step info
 //            Toast.makeText(this,"onBtnStepClick",Toast.LENGTH_SHORT).show()
             val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
-            recyclerView.visibility= View.VISIBLE
+            recyclerView.visibility = View.VISIBLE
             currentStepsLayout = recyclerView
             initRecyclerView(route, viewRoutePopup)
         }
@@ -331,22 +331,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val currentRoute = currentPolyline.tag as Route
         listReportMarkerCurrentRoute = ArrayList()
         for (i in 0 until listReportMarker.size) {
-            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude,listReportMarker[i].position.longitude),currentRoute.points,true,5.0/*meter(s)*/)){
+            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, 5.0/*meter(s)*/)) {
                 listReportMarkerCurrentRoute.add(listReportMarker[i])
             }
         }
-        Log.v("ReportCount","NumReport = " + listReportMarkerCurrentRoute.size.toString())
-        if (listReportMarkerCurrentRoute.size>0){
+        Log.v("ReportCount", "NumReport = " + listReportMarkerCurrentRoute.size.toString())
+        if (listReportMarkerCurrentRoute.size > 0) {
             val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
             layoutReport.visibility = View.VISIBLE
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
 
-            btnPreviousReport.setOnClickListener{
-                Toast.makeText(this,"onBtnPreviousReportClick",Toast.LENGTH_SHORT).show()
+            btnPreviousReport.setOnClickListener {
+                Toast.makeText(this, "onBtnPreviousReportClick", Toast.LENGTH_SHORT).show()
             }
-            btnNextReport.setOnClickListener{
-                Toast.makeText(this,"onBtnNextReportClick",Toast.LENGTH_SHORT).show()
+            btnNextReport.setOnClickListener {
+                Toast.makeText(this, "onBtnNextReportClick", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -354,7 +354,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var isNavigationInfoWindowUp = false
 
     @SuppressLint("InflateParams")
-    private fun onBtnStartNavigationClick(route: Route){
+    private fun onBtnStartNavigationClick(route: Route) {
         if (::lastLocation.isInitialized) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         }
@@ -374,7 +374,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         tvInstruction.text = currentStep.instruction
     }
 
-    private fun getNavigationInstruction(route:Route):Step{
+    private fun getNavigationInstruction(route: Route): Step {
         for (iL in 0 until route.legs!!.size) {
             for (iS in 0 until route.legs!![iL].steps!!.size) {
 //                val line = ArrayList<LatLng>()
@@ -384,7 +384,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 options.width(5f)
                 options.zIndex(2F)
 
-                for (iP in 0 until route.legs!![iL].steps!![iS].points!!.size){
+                for (iP in 0 until route.legs!![iL].steps!![iS].points!!.size) {
 //                    line.add(route.legs!![iL].steps!![iS].points!![iP])
 
                     options.add(route.legs!![iL].steps!![iS].points!![iP])
@@ -392,11 +392,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 //                val tmpLine = mMap.addPolyline(options)
 
-                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude,lastLocation.longitude),route.legs!![iL].steps!![iS].points,true,1.0/*meter(s)*/)){
+                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude, lastLocation.longitude), route.legs!![iL].steps!![iS].points, true, 1.0/*meter(s)*/)) {
                     // The polyline is composed of great circle segments if geodesic is true, and of Rhumb segments otherwise
-                    Log.v("Navigation","OnPathOK")
-                    return if (iS+1<route.legs!![iL].steps!!.size){
-                            route.legs!![iL].steps!![iS+1]
+                    Log.v("Navigation", "OnPathOK")
+                    return if (iS + 1 < route.legs!![iL].steps!!.size) {
+                        route.legs!![iL].steps!![iS + 1]
                     } else {
                         if (iL + 1 < route.legs!!.size) {
                             route.legs!![iL + 1].steps!![0]
@@ -408,22 +408,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                tmpLine.remove()
             }
         }
-        Log.v("Navigation","OnPathFALSE")
+        Log.v("Navigation", "OnPathFALSE")
         return route.legs!![0].steps!![0]
     }
 
-    private var currentStepsLayout:RecyclerView?=null
+    private var currentStepsLayout: RecyclerView? = null
 
     private fun dismissPopupWindowRouteInfo() {
         mPopupWindowRouteInfo?.dismiss()
         isRouteInfoWindowUp = false
-        if (mPopupWindowPlaceInfo!=null&&!polylinePaths.isNotEmpty()){
+        if (mPopupWindowPlaceInfo != null && !polylinePaths.isNotEmpty()) {
             mPopupWindowPlaceInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
             isPlaceInfoWindowUp = true
         }
     }
 
-    private fun dismissPopupWindowNavigationInfo(){
+    private fun dismissPopupWindowNavigationInfo() {
         mPopupWindowNavigationInfo?.dismiss()
         isNavigationInfoWindowUp = false
     }
@@ -637,7 +637,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Cập nhật địa điểm hiện tại
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0)
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "")
                     onUpdateCurrentLocation(user)
 
                     // Cập nhật người dùng xung quanh
@@ -824,7 +824,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressHome_menu.text = data!!.getStringExtra("home_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0)
+                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0, "", "", "")
                     onUpdateHomeLocation(user)
                 }
             }
@@ -833,7 +833,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!, "", "", "")
                     onUpdateWorkLocation(user)
                 }
             }
@@ -862,6 +862,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                     if (AppController.settingSocket == "false" && AppController.settingSocket != currentSocketSetting) {
                         destroySocket()
+                    }
+
+                    if (AppController.userProfile!!.typeCar != "" || AppController.userProfile!!.modelCar != "" || AppController.userProfile!!.colorCar != "") {
+                        val listGeo: List<Double> = listOf(0.0, 0.0)
+                        val newGeo = Geometry("Point", listGeo)
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString())
+                        onUpdateMyCar(user)
                     }
                 }
             }
@@ -1026,9 +1033,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
                 }
                 // Update Navigation UI
-                Log.v("Navigation","Success Location")
-                if (isNavigationInfoWindowUp){
-                    Log.v("Navigation","Update Navigation UI")
+                Log.v("Navigation", "Success Location")
+                if (isNavigationInfoWindowUp) {
+                    Log.v("Navigation", "Update Navigation UI")
                     mPopupWindowNavigationInfo?.dismiss()
                     val currentRoute = currentPolyline.tag as Route
                     onBtnStartNavigationClick(currentRoute)
@@ -1111,7 +1118,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // Layout mới
         mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
-        val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imCLose_filter_dialog)
+        val btnClose = viewFilterPopup.findViewById<ImageView>(R.id.imClose_filter_dialog)
         val switchCar = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterCar_filter_dialog)
         val switchReport = viewFilterPopup.findViewById<LabeledSwitch>(R.id.switchFilterReport_filter_dialog)
         val layoutOutside = viewFilterPopup.findViewById<LinearLayout>(R.id.bg_to_remove_filter_dialog)
@@ -1200,16 +1207,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 drawer_layout.closeDrawer(GravityCompat.START)
                 return
             }
-            currentStepsLayout!=null -> {
-                currentStepsLayout!!.visibility= View.GONE
+            currentStepsLayout != null -> {
+                currentStepsLayout!!.visibility = View.GONE
                 currentStepsLayout = null
                 return
             }
-            isNavigationInfoWindowUp->{
+            isNavigationInfoWindowUp -> {
                 dismissPopupWindowNavigationInfo()
                 return
             }
-            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty()&&isRouteInfoWindowUp-> {
+            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty() && isRouteInfoWindowUp -> {
                 removeCurrentDirectionPolyline()
                 dismissPopupWindowRouteInfo()
                 return
@@ -1787,15 +1794,36 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
         if (marker.title == "user") {
+//            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//            val viewUserPopup = inflater.inflate(R.layout.marker_user_layout, null)
+//            mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//            mPopupWindowUser!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+//
+//            val imvAvatar = viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
+//            val tvName = viewUserPopup.findViewById<TextView>(R.id.tvName_marker_user)
+////            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
+//            val tvEmail = viewUserPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
+//            val btnHello = viewUserPopup.findViewById<Button>(R.id.btnHello_marker_user)
+//
+//            val btnConfirm = viewUserPopup.findViewById<LinearLayout>(R.id.layoutConfirm_marker_user)
+//            val imvType = viewUserPopup.findViewById<ImageView>(R.id.imvType_marker_user)
+//            val tvType = viewUserPopup.findViewById<TextView>(R.id.tvType_marker_user)
+//            val imvInstruction = viewUserPopup.findViewById<ImageView>(R.id.imInstruction_marker_user)
+//
+//            val dataUser: User = marker.tag as User
+//            tvName.text = dataUser.name.toString()
+////            tvDOB.text = dataUser.birthDate.toString()
+//            tvEmail.text = dataUser.email.toString()
+//            btnConfirm.visibility = View.INVISIBLE
+
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewUserPopup = inflater.inflate(R.layout.marker_user_layout, null)
             mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             mPopupWindowUser!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
-            val imvAvatar = viewUserPopup.findViewById<ImageView>(R.id.imvAvatar_marker_user)
+            val imvColor = viewUserPopup.findViewById<ImageView>(R.id.imColor_marker_user)
             val tvName = viewUserPopup.findViewById<TextView>(R.id.tvName_marker_user)
-//            val tvDOB = viewReportPopup.findViewById<TextView>(R.id.tvDOB_marker_user)
-            val tvEmail = viewUserPopup.findViewById<TextView>(R.id.tvEmail_marker_user)
+            val tvTypeCar = viewUserPopup.findViewById<TextView>(R.id.tvTypeCar_marker_user)
             val btnHello = viewUserPopup.findViewById<Button>(R.id.btnHello_marker_user)
 
             val btnConfirm = viewUserPopup.findViewById<LinearLayout>(R.id.layoutConfirm_marker_user)
@@ -1805,9 +1833,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             val dataUser: User = marker.tag as User
             tvName.text = dataUser.name.toString()
-//            tvDOB.text = dataUser.birthDate.toString()
-            tvEmail.text = dataUser.email.toString()
+
+            if (dataUser.typeCar != "") {
+                when (dataUser.typeCar) {
+                    "4 cho" -> {
+                        tvTypeCar.text = "4 chỗ " + dataUser.modelCar.toString()
+                    }
+                    "68 cho" -> {
+                        tvTypeCar.text = "6-8 chỗ " + dataUser.modelCar.toString()
+                    }
+                    "xe tai" -> {
+                        tvTypeCar.text = "xe tải " + dataUser.modelCar.toString()
+                    }
+                }
+            }
+            if (dataUser.colorCar != "") {
+                imvColor.setBackgroundColor(Color.parseColor(dataUser.colorCar))
+            }
+
             btnConfirm.visibility = View.INVISIBLE
+
 
             curMarkerUser = marker
             btnHello.setOnClickListener {
@@ -2210,6 +2255,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
                 if (response.isSuccessful) {
 //                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
+    private fun onUpdateMyCar(user: User) {
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateMyCar(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful) {
+
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
@@ -3120,7 +3184,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
-    private fun initRecyclerView(myDataSet: Route, view: View){
+    private fun initRecyclerView(myDataSet: Route, view: View) {
         viewManager = LinearLayoutManager(this)
         viewAdapter = StepAdapter(getStepSet(myDataSet))
 
@@ -3138,8 +3202,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    private fun getStepSet(route: Route): ArrayList<Step>{
-        val stepSet : ArrayList<Step> = ArrayList()
+    private fun getStepSet(route: Route): ArrayList<Step> {
+        val stepSet: ArrayList<Step> = ArrayList()
         for (iL in 0 until route.legs!!.size) {
             for (iS in 0 until route.legs!![iL].steps!!.size) {
                 stepSet.add(route.legs!![iL].steps!![iS])

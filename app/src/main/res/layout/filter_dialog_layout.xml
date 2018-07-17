@@ -32,7 +32,7 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/imCLose_filter_dialog"
+                android:id="@+id/imClose_filter_dialog"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical"

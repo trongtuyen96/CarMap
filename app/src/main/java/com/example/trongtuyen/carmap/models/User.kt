@@ -47,9 +47,18 @@ class User {
     @SerializedName("longWorkLocation")
     @Expose
     var longWorkLocation: Double? = null
+    @SerializedName("typeCar")
+    @Expose
+    var typeCar: String? = null
+    @SerializedName("modelCar")
+    @Expose
+    var modelCar: String? = null
+    @SerializedName("colorCar")
+    @Expose
+    var colorCar: String? = null
 
 
-    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, socketID: String, currentLocation: Geometry, latHomeLocation: Double, longHomeLocation: Double, latWorkLocation: Double, longWorkLocation: Double) {
+    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, socketID: String, currentLocation: Geometry, latHomeLocation: Double, longHomeLocation: Double, latWorkLocation: Double, longWorkLocation: Double, typeCar: String, modelCar: String, colorCar: String) {
         this.email = email
         this.name = name
         this.avatar = avatar
@@ -62,5 +71,8 @@ class User {
         this.longHomeLocation = longHomeLocation
         this.latWorkLocation = latWorkLocation
         this.longWorkLocation = longWorkLocation
+        this.typeCar = typeCar
+        this.modelCar = modelCar
+        this.colorCar = colorCar
     }
 }

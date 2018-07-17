@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="266dp"
+    android:layout_height="286dp"
     android:background="@color/divider"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="76dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -30,7 +30,7 @@
             <TextView
                 android:id="@+id/tvName_marker_user"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="26dp"
                 android:gravity="bottom"
                 android:paddingStart="6dp"
                 android:text="Tên"
@@ -46,14 +46,47 @@
             <!--android:textAlignment="center"-->
             <!--android:textColor="@color/background_front"-->
             <!--android:textSize="14sp" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/tvEmail_marker_user"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="top"-->
+            <!--android:paddingStart="6dp"-->
+            <!--android:text="Email"-->
+            <!--android:textColor="@color/background_front" />-->
+
             <TextView
-                android:id="@+id/tvEmail_marker_user"
+                android:id="@+id/tvTypeCar_marker_user"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="top"
                 android:paddingStart="6dp"
-                android:text="Email"
+                android:text="Loại xe"
                 android:textColor="@color/background_front" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="top"
+                    android:paddingStart="6dp"
+                    android:text="Màu xe: "
+                    android:textColor="@color/background_front" />
+                <ImageView
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:id="@+id/imColor_marker_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                   />
+            </LinearLayout>
+
+
         </LinearLayout>
 
         <Button
