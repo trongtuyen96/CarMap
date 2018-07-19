@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val tvRouteDuration = viewRoutePopup.findViewById<TextView>(R.id.tvDuration_route_info)
         val tvRouteDistance = viewRoutePopup.findViewById<TextView>(R.id.tvDistance_route_info)
-        val btnStartNavigation = viewRoutePopup.findViewById<LinearLayout>(R.id.btnStartNavigation_route_info)
+        val btnStartNavigation = viewRoutePopup.findViewById<Button>(R.id.btnStartNavigation_route_info)
         val btnSteps = viewRoutePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
 
         tvRouteDuration.text = route.duration!!.text
