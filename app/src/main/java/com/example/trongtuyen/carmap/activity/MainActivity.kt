@@ -1386,9 +1386,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
         if (::mMap.isInitialized) {
-            fusedLocationClient.getLastLocation()
-            if (::lastLocation.isInitialized) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
+            fusedLocationClient.lastLocation.addOnSuccessListener {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 17f))
             }
         } else {
             TastyToast.makeText(this, "Vị trí hiện không khả dụng!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
