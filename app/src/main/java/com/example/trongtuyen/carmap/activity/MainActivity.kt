@@ -27,6 +27,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -332,7 +333,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
 
-        listReportMarkerCurrentRoute.sortedWith(compareBy {(it.tag as Report).distance})
+        listReportMarkerCurrentRoute.sortedWith(compareBy { (it.tag as Report).distance })
 
         for (i in 0 until listReportMarkerCurrentRoute.size) {
             listReportCurrentRoute.add(listReportMarkerCurrentRoute[i].tag as Report)
@@ -340,19 +341,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
 
-        Log.v("ReportCount","NumReport = " + listReportMarkerCurrentRoute.size.toString())
+        Log.v("ReportCount", "NumReport = " + listReportMarkerCurrentRoute.size.toString())
 
-        if (listReportMarkerCurrentRoute.size>0){
-            tvReportCount.visibility=View.VISIBLE
-            tvReportCount.text=listReportMarkerCurrentRoute.size.toString()+" báo hiệu"
+        if (listReportMarkerCurrentRoute.size > 0) {
+            tvReportCount.visibility = View.VISIBLE
+            tvReportCount.text = listReportMarkerCurrentRoute.size.toString() + " báo hiệu"
 
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
             val btnCurrentReport = viewRoutePopup.findViewById<LinearLayout>(R.id.btnCurrent_report_detail)
             val progressBar = viewRoutePopup.findViewById<ProgressBar>(R.id.progressBar_report_detail)
             progressBar.max = listReportMarkerCurrentRoute.size
-            if (listReportMarkerCurrentRoute.size==1){
-                progressBar.visibility=View.GONE
+            if (listReportMarkerCurrentRoute.size == 1) {
+                progressBar.visibility = View.GONE
             }
             progressBar.progress = 1
 
@@ -360,44 +361,44 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
 
-            btnCurrentReport.setOnClickListener{
+            btnCurrentReport.setOnClickListener {
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
             }
 
-            btnPreviousReport.setOnClickListener{
-//                Toast.makeText(this,"onBtnPreviousReportClick",Toast.LENGTH_SHORT).show()
-                if (currentReportIndex>0){
+            btnPreviousReport.setOnClickListener {
+                //                Toast.makeText(this,"onBtnPreviousReportClick",Toast.LENGTH_SHORT).show()
+                if (currentReportIndex > 0) {
                     currentReportIndex--
                     progressBar.progress--
-                    Log.v("ReportCount","currentReportIndex = "+currentReportIndex.toString())
+                    Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
 
                     updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
                 }
             }
-            btnNextReport.setOnClickListener{
-//                Toast.makeText(this,"onBtnNextReportClick",Toast.LENGTH_SHORT).show()
-                if (currentReportIndex+1<listReportMarkerCurrentRoute.size){
+            btnNextReport.setOnClickListener {
+                //                Toast.makeText(this,"onBtnNextReportClick",Toast.LENGTH_SHORT).show()
+                if (currentReportIndex + 1 < listReportMarkerCurrentRoute.size) {
                     currentReportIndex++
                     progressBar.progress++
-                    Log.v("ReportCount","currentReportIndex = "+currentReportIndex.toString())
+                    Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
 
                     updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
                 }
             }
-        }
-        else {
+        } else {
             layoutReport.visibility = View.GONE
         }
     }
-    private fun updateUIReportDetail(report:Report, view:View){
+
+    private fun updateUIReportDetail(report: Report, view: View) {
         val imReportIcon = view.findViewById<ImageView>(R.id.imIcon_report_detail)
         val tvReportType = view.findViewById<TextView>(R.id.tvType_report_detail)
         val tvReportDistance = view.findViewById<TextView>(R.id.tvDistance_report_detail)
         val tvReportAddress = view.findViewById<TextView>(R.id.tvAddress_report_detail)
 
-        if (true){
+        if (true) {
             // Làm tròn số double
             val decimalFormat = DecimalFormat("#")
             decimalFormat.roundingMode = RoundingMode.CEILING
@@ -629,7 +630,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
         } else {
-            Log.v("ReportCount","reportNULL")
+            Log.v("ReportCount", "reportNULL")
         }
     }
 
@@ -650,11 +651,76 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val imInstruction = viewNavigationPopup.findViewById<ImageView>(R.id.imInstruction_navigation_layout)
         val tvInstruction = viewNavigationPopup.findViewById<TextView>(R.id.tvInstruction_navigation_layout)
+        val tvDistance = viewNavigationPopup.findViewById<TextView>(R.id.tvDistance_navigation_layout)
 
         // imInstruction set source
 
         val currentStep = getNavigationInstruction(route)
         tvInstruction.text = currentStep.instruction
+        tvDistance.text = currentStep.distance!!.text
+        when (currentStep.maneuver) {
+            "ferry" -> {
+                imInstruction.setImageResource(R.drawable.ferry)
+            }
+            "ferry-train" -> {
+                imInstruction.setImageResource(R.drawable.ferry_train)
+            }
+            "fork-left" -> {
+                imInstruction.setImageResource(R.drawable.fork_left)
+            }
+            "fork-right" -> {
+                imInstruction.setImageResource(R.drawable.fork_right)
+            }
+            "keep-left" -> {
+                imInstruction.setImageResource(R.drawable.keep_left)
+            }
+            "keep-right" -> {
+                imInstruction.setImageResource(R.drawable.keep_right)
+            }
+            "merge" -> {
+                imInstruction.setImageResource(R.drawable.merge)
+            }
+            "ramp-left" -> {
+                imInstruction.setImageResource(R.drawable.ramp_left)
+            }
+            "ramp-right" -> {
+                imInstruction.setImageResource(R.drawable.ramp_right)
+            }
+            "roundabout-left" -> {
+                imInstruction.setImageResource(R.drawable.roundabout_left)
+            }
+            "roundabout-right" -> {
+                imInstruction.setImageResource(R.drawable.roundabout_right)
+            }
+            "straight" -> {
+                imInstruction.setImageResource(R.drawable.straight)
+            }
+            "turn-left" -> {
+                imInstruction.setImageResource(R.drawable.turn_left)
+            }
+            "turn-right" -> {
+                imInstruction.setImageResource(R.drawable.turn_right)
+            }
+            "turn-sharp-left" -> {
+                imInstruction.setImageResource(R.drawable.turn_sharp_left)
+            }
+            "turn-sharp-right" -> {
+                imInstruction.setImageResource(R.drawable.turn_sharp_right)
+            }
+            "turn-slight-left" -> {
+                imInstruction.setImageResource(R.drawable.turn_slight_left)
+            }
+            "turn-slight-right" -> {
+                imInstruction.setImageResource(R.drawable.turn_slight_right)
+            }
+            "uturn-left" -> {
+                imInstruction.setImageResource(R.drawable.uturn_left)
+            }
+            "uturn-right" -> {
+                imInstruction.setImageResource(R.drawable.uturn_right)
+            }
+        }
+
     }
 
     private fun getNavigationInstruction(route: Route): Step {
@@ -1324,13 +1390,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     onBtnStartNavigationClick(currentRoute)
 
                     // onReachReportMarker
-                    listReportMarker.sortedWith(compareBy{(it.tag as Report).distance})
+                    listReportMarker.sortedWith(compareBy { (it.tag as Report).distance })
                     mPopupWindowReport?.dismiss()
                     for (i in 0 until listReportMarker.size) {
                         val location = Location("tempLocation")
                         location.latitude = listReportMarker[i].position.latitude
                         location.longitude = listReportMarker[i].position.longitude
-                        if (lastLocation.distanceTo(location)<5){
+                        if (lastLocation.distanceTo(location) < 5) {
                             onOpenReportMarker(listReportMarker[i])
                         }
                         break
@@ -1397,7 +1463,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //            fusedLocationClient.lastLocation.addOnSuccessListener {
 //                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 17f))
 //            }
-            if (::lastLocation.isInitialized){
+            if (::lastLocation.isInitialized) {
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
             }
         } else {
