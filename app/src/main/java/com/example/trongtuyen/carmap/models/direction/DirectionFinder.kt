@@ -134,6 +134,17 @@ class DirectionFinder(private val listener: DirectionListener, private val origi
                     } else {
                         step.instruction = Html.fromHtml(xmlInstruction).toString()
                     }
+                    val subStringStartIndex = step.instruction!!.indexOf('\n',0,false)
+                    Log.v(TAG,"subStringStartIndex = "+subStringStartIndex.toString())
+                    if (subStringStartIndex>0){
+                        step.subInstruction = step.instruction!!.substring(subStringStartIndex+1)
+                        step.instruction = step.instruction!!.substring(0,subStringStartIndex)
+                    }
+
+                    try{
+                        step.maneuver = jsonStep.getString("maneuver")
+                    }catch (e:Exception){
+                    }
 
                     step.points = decodePolyLine(polylineJson.getString("points"))
                     step.distance = Distance(jsonStepDistance.getString("text"), jsonStepDistance.getInt("value"))

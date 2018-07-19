@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layoutReport_detail"
+
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:background="@color/background_front"
@@ -20,9 +21,14 @@
         android:layout_weight="7">
 
         <LinearLayout
+            android:id="@+id/btnCurrent_report_detail"
             android:layout_width="match_parent"
+
             android:layout_height="76dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true">
+
 
             <ImageView
                 android:id="@+id/imIcon_report_detail"
@@ -70,8 +76,9 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="5"
-            android:progress="1" />
+            android:max="1"
+            android:progress="1"/>
+
     </LinearLayout>
 
     <ImageView
