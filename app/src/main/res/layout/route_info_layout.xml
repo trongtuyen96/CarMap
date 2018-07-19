@@ -114,16 +114,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/btnStartNavigation_route_info"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:clickable="true"
-            android:focusable="true"
             android:gravity="center"
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btnStartNavigation_route_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_btn_yes_stroke"

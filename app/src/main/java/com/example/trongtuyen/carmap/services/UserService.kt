@@ -36,4 +36,7 @@ interface UserService {
 
     @PUT("user/updateWorkLocation")
     fun updateWorkLocation(@Body user: User): Call<UserProfileResponse>
+
+    @PUT("user/updateMyCar")
+    fun updateMyCar(@Body user: User): Call<UserProfileResponse>
 }
