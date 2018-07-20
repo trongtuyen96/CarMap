@@ -175,6 +175,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     // AudioPlayer
     private var mAudioPlayer = AudioPlayer()
 
+    // String step cũ để so sánh
+    var oldStep: String = ""
+
     // ==================================================================================================================================== //
     // ======== VỀ DIRECTION ============================================================================================================== //
     // ==================================================================================================================================== //
@@ -640,7 +643,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     @SuppressLint("InflateParams")
     private fun onBtnStartNavigationClick(route: Route) {
         if (::lastLocation.isInitialized) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
+
+
+            if (isNavigationInfoWindowUp) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
+            }
+//            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
+            // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
+            // moveCamera cho điểm, animateCamera cho CameraPosition
+            val camPos = CameraPosition.builder()
+                    .target(mMap.cameraPosition.target)
+                    .zoom(20f)
+                    .tilt(65.5f)
+                    .bearing(lastLocation.bearing)
+                    .build()
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
+
         }
 //            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -654,7 +672,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val tvDistance = viewNavigationPopup.findViewById<TextView>(R.id.tvDistance_navigation_layout)
 
         // imInstruction set source
-
         val currentStep = getNavigationInstruction(route)
         tvInstruction.text = currentStep.instruction
         tvDistance.text = currentStep.distance!!.text
@@ -1379,13 +1396,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                         val newGeo = Geometry("Point", listGeo)
                         AppController.userProfile?.currentLocation = newGeo
+//                        if (isNavigationInfoWindowUp) {
+//                            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
+//                            val camPos = CameraPosition.builder(mMap.cameraPosition)
+////                                    .target(mMap.cameraPosition.target)
+//                                    .zoom(20f)
+//                                    .tilt(65.5f)
+//                                    .bearing(location.bearing)
+//                                    .build()
+//                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
+//                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
+//                        }
                     }
                 }
                 // Update Navigation UI
                 Log.v("Navigation", "Success Location")
                 if (isNavigationInfoWindowUp) {
                     Log.v("Navigation", "Update Navigation UI")
-                    mPopupWindowNavigationInfo?.dismiss()
+//                    mPopupWindowNavigationInfo?.dismiss()
                     val currentRoute = currentPolyline.tag as Route
                     onBtnStartNavigationClick(currentRoute)
 
@@ -1396,7 +1424,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         val location = Location("tempLocation")
                         location.latitude = listReportMarker[i].position.latitude
                         location.longitude = listReportMarker[i].position.longitude
-                        if (lastLocation.distanceTo(location) < 5) {
+
+                        // Khoảng cách 20m thì hiện báo hiệu
+                        if (lastLocation.distanceTo(location) < 20) {
                             onOpenReportMarker(listReportMarker[i])
                         }
                         break
@@ -1413,7 +1443,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun createLocationRequest() {
         locationRequest = LocationRequest().apply {
             interval = 10000
-            fastestInterval = 5000
+            // change to 2000
+            fastestInterval = 3000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
@@ -1452,6 +1483,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
+//    private fun updateCameraBearing(googleMap: GoogleMap, bearing: Float) {
+//        if (googleMap == null) return
+////        val camPos = CameraPosition
+////                .builder(
+////                        googleMap.cameraPosition // current Camera
+////                )
+////                .bearing(bearing)
+////                .build()
+//        val camPos = CameraPosition(googleMap.cameraPosition.target, 20f, 65.5f, bearing)
+//        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
+//    }
 
     // ================================================================================================================================================== //
     // ======== VỀ CÁC NÚT TRÊN APP BAR MAIN ============================================================================================================ //
