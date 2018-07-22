@@ -56,7 +56,7 @@ class SettingActivity : AppCompatActivity() {
 
     private fun initComponents() {
 
-        if (AppController.settingInvisible == "true") {
+        if (AppController.settingInvisible == "invisible") {
             switchInvisible.isOn = true
         } else {
             switchInvisible.isOn = false
@@ -120,13 +120,13 @@ class SettingActivity : AppCompatActivity() {
                     if (AppController.soundMode == 1) {
                         mAudioPlayer.play(this@SettingActivity, R.raw.an_danh_voi_tai_xe_khac)
                     }
-                    AppController.settingInvisible = "true"
+                    AppController.settingInvisible = "invisible"
                 } else {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
                         mAudioPlayer.play(this@SettingActivity, R.raw.hien_thi_voi_tai_xe_khac)
                     }
-                    AppController.settingInvisible = "false"
+                    AppController.settingInvisible = "visible"
                 }
             }
         })
