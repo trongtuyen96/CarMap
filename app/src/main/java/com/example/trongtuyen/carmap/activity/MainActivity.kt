@@ -290,10 +290,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         showRouteInfoPopup(currentRoute)
     }
 
+    private lateinit var viewRoutePopup:View
+
     @SuppressLint("InflateParams")
     private fun showRouteInfoPopup(route: Route) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewRoutePopup = inflater.inflate(R.layout.steps_layout, null)
+        viewRoutePopup = inflater.inflate(R.layout.steps_layout, null)
         mPopupWindowRouteInfo = PopupWindow(viewRoutePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         imvReport.visibility = View.GONE
         mPopupWindowRouteInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
@@ -314,12 +316,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         btnSteps.setOnClickListener {
-            // Khởi tạo RecyclerView hiển thị step info
-//            Toast.makeText(this,"onBtnStepClick",Toast.LENGTH_SHORT).show()
             val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
-            recyclerView.visibility = View.VISIBLE
-            currentStepsLayout = recyclerView
-            initRecyclerView(route, viewRoutePopup)
+            if (recyclerView.visibility==View.GONE){
+                recyclerView.visibility = View.VISIBLE
+                currentStepsLayout = recyclerView
+                initRecyclerView(route, viewRoutePopup)
+
+                val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                layoutReport.visibility = View.GONE
+            }else{
+                currentStepsLayout!!.visibility = View.GONE
+                currentStepsLayout = null
+                if (listReportMarkerCurrentRoute.size > 0) {
+                    val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                    layoutReport.visibility = View.VISIBLE
+                }
+            }
         }
 
         // Count report on route
@@ -1413,7 +1425,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun createLocationRequest() {
         locationRequest = LocationRequest().apply {
             interval = 10000
-            fastestInterval = 5000
+            fastestInterval = 3000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
@@ -1459,13 +1471,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
-        if (::mMap.isInitialized) {
-//            fusedLocationClient.lastLocation.addOnSuccessListener {
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 17f))
-//            }
-            if (::lastLocation.isInitialized) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
-            }
+        if (::lastLocation.isInitialized) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         } else {
             TastyToast.makeText(this, "Vị trí hiện không khả dụng!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         }
@@ -1561,11 +1568,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onBackPressed() {
-//        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-//            drawer_layout.closeDrawer(GravityCompat.START)
-//        } else {
-//            super.onBackPressed()
-//        }
         when {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
@@ -1574,6 +1576,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             currentStepsLayout != null -> {
                 currentStepsLayout!!.visibility = View.GONE
                 currentStepsLayout = null
+                if (listReportMarkerCurrentRoute.size > 0) {
+                    val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                    layoutReport.visibility = View.VISIBLE
+                }
                 return
             }
             isNavigationInfoWindowUp -> {

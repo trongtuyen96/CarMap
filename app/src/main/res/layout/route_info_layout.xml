@@ -52,17 +52,6 @@
                     android:textColor="@color/textColorSecondary"
                     android:textStyle="italic"
                     android:layout_marginEnd="8dp"/>
-
-                <TextView
-                    android:id="@+id/tvReportCount_route_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large"
-                    android:textSize="18sp"
-                    android:text="0 báo hiệu"
-                    android:textColor="#ff0000"
-                    android:visibility="gone"
-                    />
             </LinearLayout>
 
             <LinearLayout
@@ -74,13 +63,14 @@
                 android:paddingTop="4dp">
 
                 <TextView
-                    android:id="@+id/tvNumReport_route_info"
+                    android:id="@+id/tvReportCount_route_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Số báo hiệu trên đường: "
+                    android:text="0 báo hiệu"
                     android:textAppearance="@android:style/TextAppearance.Material.Large"
-                    android:textColor="@color/textColorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textColor="#ff0000"
+                    android:visibility="gone"/>
             </LinearLayout>
 
             <LinearLayout
