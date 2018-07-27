@@ -184,10 +184,10 @@ class ReportHelpActivity : AppCompatActivity() {
 //                        TastyToast.makeText(this, "Loại: " + subType1 + " " + subType2 + " " + textInputEdit.text.toString(), TastyToast.LENGTH_SHORT).show()
                         if (sFileAudioPath == "" || sBase64Image == "") {
                             val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                            val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                            val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image, AppController.userProfile!!.phoneNumber.toString())
                             onAddNewReportHelp(mReport, false)
                         } else {
-                            val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                            val mReport = Report("help", subType1, subType2, textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image, AppController.userProfile!!.phoneNumber.toString())
                             onAddNewReportHelp(mReport, true)
                         }
                     } else {

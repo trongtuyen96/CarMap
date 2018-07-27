@@ -33,6 +33,8 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var txtPassword: EditText
     @BindView(R.id.txtFullName_signup)
     lateinit var txtFullName: EditText
+    @BindView(R.id.txtPhoneNumber_signup)
+    lateinit var txtPhoneNumber: EditText
     @BindView(R.id.btnSignUp_signup)
     lateinit var btnSignUp: View
     @BindView(R.id.btnSignIn_signup)
@@ -75,11 +77,13 @@ class SignUpActivity : AppCompatActivity() {
         txtEmail.setError(null)
         txtPassword.setError(null)
         txtFullName.setError(null)
+        txtPhoneNumber.setError(null)
 
         // Store values at the time of the login attempt.
         val email = txtEmail.text.toString()
         val password = txtPassword.text.toString()
         val fullName = txtFullName.text.toString()
+        val phoneNumber = txtPhoneNumber.text.toString()
         var isValidateOk = true
 
         // Validate email
@@ -103,12 +107,18 @@ class SignUpActivity : AppCompatActivity() {
             isValidateOk = false
         }
 
+        // Validate phone number
+        if (TextUtils.isEmpty(phoneNumber)) {
+            txtPhoneNumber.setError("Số điện thoại không thể bỏ trống!")
+            isValidateOk = false
+        }
+
         if (!isValidateOk)
             return
 
         val service = APIServiceGenerator.createService(AuthenticationService::class.java)
 
-        val call = service.registerWithEmail(email, password, fullName, "1996-01-01", "visisble")
+        val call = service.registerWithEmail(email, password, fullName, "1996-01-01", "visisble", phoneNumber)
         call.enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful) {

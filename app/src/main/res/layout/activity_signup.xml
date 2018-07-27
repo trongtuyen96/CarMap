@@ -51,7 +51,7 @@
             android:layout_below="@+id/textView"
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_user_login_fixed_size"
+            android:drawableStart="@drawable/ic_email_grey_600_36dp"
             android:drawablePadding="8dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
@@ -82,7 +82,7 @@
                 android:layout_height="36dp"
                 android:hint="Mật khẩu"
                 android:maxLines="1"
-                android:drawableStart="@drawable/ic_password_login_fixed_size"
+                android:drawableStart="@drawable/ic_vpn_key_grey_600_36dp"
                 android:drawablePadding="8dp"
                 />
             <ImageView
@@ -113,10 +113,10 @@
             android:paddingEnd="8dp"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:hint="Họ và tên"
             android:maxLines="1"
-            android:drawableStart="@drawable/ic_user_login_fixed_size"
+            android:drawableStart="@drawable/ic_face_grey_600_36dp"
             android:drawablePadding="8dp"
             android:layout_below="@+id/line2" />
 
@@ -127,13 +127,35 @@
             android:layout_height="1dp"
             android:layout_below="@+id/txtFullName_signup" />
 
+        <EditText
+            android:id="@+id/txtPhoneNumber_signup"
+            android:inputType="text"
+            android:background="@android:color/transparent"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginTop="24dp"
+            android:hint="Số điện thoại"
+            android:maxLines="1"
+            android:drawableStart="@drawable/ic_local_phone_grey_600_36dp"
+            android:drawablePadding="8dp"
+            android:layout_below="@+id/line3" />
+
+        <View
+            android:id="@+id/line4"
+            android:background="#928274"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/txtPhoneNumber_signup" />
+
         <Button
             android:id="@+id/btnSignUp_signup"
             android:layout_width="match_parent"
             android:layout_height="46dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/txtFullName_signup"
+            android:layout_below="@+id/txtPhoneNumber_signup"
             android:layout_marginTop="40dp"
             android:background="@drawable/bg_btn_send"
             android:text="Đăng ký"
