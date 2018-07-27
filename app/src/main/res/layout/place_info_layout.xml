@@ -24,12 +24,15 @@
         <TextView
             android:id="@+id/tvPlaceName_place_info"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:paddingTop="2dp"
             android:text="Tên địa điểm"
             android:textAppearance="@android:style/TextAppearance.Material.Large"
             android:textColor="@color/background_front"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:minHeight="38dp"
+            android:maxHeight="60dp"
+            android:gravity="center_vertical"/>
 
 
         <!--<TextView-->
@@ -47,7 +50,8 @@
             android:layout_height="wrap_content"
             android:text="Địa chỉ"
             android:textColor="@color/background_front"
-            android:textStyle="italic" />
+            android:textStyle="italic"
+            android:minHeight="40dp"/>
 
         <!--<TextView-->
         <!--android:id="@+id/tvDescription_marker_report"-->
@@ -65,31 +69,46 @@
         android:layout_height="match_parent"
         android:background="@color/background_front" />
 
+    <!--<LinearLayout-->
+        <!--android:id="@+id/btnStartDirection_place_info"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="3"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center_vertical|end"-->
+            <!--android:paddingStart="10dp"-->
+            <!--android:text="ĐI"-->
+            <!--android:textColor="@color/background_front"-->
+            <!--android:textSize="28sp"-->
+            <!--android:textStyle="bold" />-->
+
+    <!--</LinearLayout>-->
+
     <LinearLayout
-        android:id="@+id/btnStartDirection_place_info"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
-        android:background="@color/colorPrimary"
-        android:clickable="true"
-        android:focusable="true"
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|end"
-            android:paddingStart="10dp"
-            android:text="ĐI"
-            android:textColor="@color/background_front"
-            android:textSize="28sp"
+        <Button
+            android:id="@+id/btnStartDirection_place_info"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_margin="6dp"
+            android:background="@drawable/bg_btn_yes_stroke"
+            android:text="CHỈ DẪN"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
             android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="46dp"
-            android:layout_height="match_parent"
-            app:srcCompat="@android:drawable/ic_menu_directions" />
     </LinearLayout>
 
 </LinearLayout>

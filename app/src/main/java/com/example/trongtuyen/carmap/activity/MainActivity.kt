@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val tvPlaceName = viewPlacePopup.findViewById<TextView>(R.id.tvPlaceName_place_info)
         val tvPlaceAddress = viewPlacePopup.findViewById<TextView>(R.id.tvPlaceAddress_place_info)
-        val btnStartDirection = viewPlacePopup.findViewById<LinearLayout>(R.id.btnStartDirection_place_info)
+        val btnStartDirection = viewPlacePopup.findViewById<Button>(R.id.btnStartDirection_place_info)
         val btnSelectedPlace = viewPlacePopup.findViewById<LinearLayout>(R.id.btnSelectedPlace_place_info)
 
         tvPlaceName.text = place.name
