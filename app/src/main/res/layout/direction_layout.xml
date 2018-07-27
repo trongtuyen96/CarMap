@@ -52,6 +52,10 @@
                     android:textSize="14sp"
                     android:textColor="@color/background_front"/>
             </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/background_front"/>
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
