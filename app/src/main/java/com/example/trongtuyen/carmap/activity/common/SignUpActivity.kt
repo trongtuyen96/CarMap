@@ -108,7 +108,7 @@ class SignUpActivity : AppCompatActivity() {
 
         val service = APIServiceGenerator.createService(AuthenticationService::class.java)
 
-        val call = service.registerWithEmail(email, password, fullName, "1996-01-01")
+        val call = service.registerWithEmail(email, password, fullName, "1996-01-01", "visisble")
         call.enqueue(object : Callback<User> {
             override fun onResponse(call: Call<User>, response: Response<User>) {
                 if (response.isSuccessful) {
