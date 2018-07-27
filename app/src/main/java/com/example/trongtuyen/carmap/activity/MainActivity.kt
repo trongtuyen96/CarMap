@@ -1386,7 +1386,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Cập nhật địa điểm hiện tại
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "")
                     onUpdateCurrentLocation(user)
 
                     // Cập nhật người dùng xung quanh
@@ -1573,7 +1573,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressHome_menu.text = data!!.getStringExtra("home_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0, "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0, "", "", "", "", "")
                     onUpdateHomeLocation(user)
                 }
             }
@@ -1582,7 +1582,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!, "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!, "", "", "", "", "")
                     onUpdateWorkLocation(user)
                 }
             }
@@ -1619,7 +1619,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.settingInvisible == "invisible") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "invisible")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "invisible", "")
                         onUpdateStatus(user)
 //                        currentStatusSetting = AppController.settingInvisible
                     }
@@ -1628,7 +1628,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.settingInvisible == "visible") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "visible")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "visible", "")
                         onUpdateStatus(user)
 //                        currentStatusSetting = AppController.settingInvisible
                     }
@@ -1636,7 +1636,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.userProfile!!.typeCar != "" || AppController.userProfile!!.modelCar != "" || AppController.userProfile!!.colorCar != "") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString(), "")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString(), "", "")
                         onUpdateMyCar(user)
                     }
                 }

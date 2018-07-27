@@ -59,8 +59,11 @@ class User {
     @SerializedName("status")
     @Expose
     var status: String? = null
+    @SerializedName("phoneNumber")
+    @Expose
+    var phoneNumber: String? = null
 
-    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, socketID: String, currentLocation: Geometry, latHomeLocation: Double, longHomeLocation: Double, latWorkLocation: Double, longWorkLocation: Double, typeCar: String, modelCar: String, colorCar: String, status: String) {
+    constructor(email: String, name: String, avatar: String, googleUserID: String, birthDate: String, createdAt: String, socketID: String, currentLocation: Geometry, latHomeLocation: Double, longHomeLocation: Double, latWorkLocation: Double, longWorkLocation: Double, typeCar: String, modelCar: String, colorCar: String, status: String, phoneNumber: String) {
         this.email = email
         this.name = name
         this.avatar = avatar
@@ -77,5 +80,6 @@ class User {
         this.modelCar = modelCar
         this.colorCar = colorCar
         this.status = status
+        this.phoneNumber = phoneNumber
     }
 }
