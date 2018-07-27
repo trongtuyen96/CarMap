@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="70dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:weightSum="10">
+                <ImageView
+                    android:id="@+id/btnBack_edit_direction_layout"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_back_black_24dp"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_edit_direction_layout"
+                    android:layout_width="0dp"
+                    android:layout_weight="6"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"/>
+                <ImageView
+                    android:id="@+id/btnAdd_edit_direction_layout"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_add_black_24dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnDone_edit_direction_layout"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="HOÀN TẤT"
+                android:textSize="20sp"
+                android:textColor="@color/background_front"
+                android:textAlignment="center"
+                android:paddingBottom="4dp"/>
+        </LinearLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+</android.support.constraint.ConstraintLayout>

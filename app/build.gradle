@@ -108,4 +108,7 @@ dependencies {
 
     // Simple Color Picker
     implementation 'petrov.kristiyan:colorpicker-library:1.1.8'
+
+    // RecyclerView
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
 }

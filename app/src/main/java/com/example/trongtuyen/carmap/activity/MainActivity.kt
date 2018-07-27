@@ -22,21 +22,18 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.Layout
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
-import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.example.trongtuyen.carmap.models.Geometry
 import com.example.trongtuyen.carmap.models.Report
 import com.example.trongtuyen.carmap.models.User
-import com.example.trongtuyen.carmap.models.direction.DirectionFinder
-import com.example.trongtuyen.carmap.models.direction.Route
-import com.example.trongtuyen.carmap.models.direction.Step
+import com.example.trongtuyen.carmap.models.direction.*
 import com.example.trongtuyen.carmap.models.navigation.StepAdapter
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
@@ -76,8 +73,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener {
-
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener,OnStartDragListener {
     // Static variables
     companion object {
         // PERMISSION_REQUEST_CODE
@@ -98,12 +94,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
 
-    // PlaceAutoCompleteFragment
-    private var placeAutoComplete: PlaceAutocompleteFragment? = null
-
     private lateinit var mActionBarDrawerToggle: ActionBarDrawerToggle
 
-    // Maerket options for set up marker
+    // Marker options for set up marker
     private var markerOptions = MarkerOptions()
 
     // Popup windows
@@ -158,16 +151,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private var mPopupWindowNavigationInfo: PopupWindow? = null
 
+    private lateinit var viewNavigationPopup: View
+
     private var isPlaceInfoWindowUp = false
 
     private var currentSelectedPlace: Place? = null
 
-    // Của Direction
+    // Direction
     private lateinit var polylinePaths: MutableList<Polyline>
     private var originMarkers: MutableList<Marker>? = ArrayList()
     private var destinationMarkers: MutableList<Marker>? = ArrayList()
     private lateinit var currentPolyline: Polyline
+    private lateinit var viewRoutePopup:View
     private var isRouteInfoWindowUp: Boolean = false
+    private var isNavigationInfoWindowUp = false
+    private var currentStepsLayout: RecyclerView? = null
+    private var currentDirectionRoute:ArrayList<SimplePlace> = ArrayList<SimplePlace>()
 
     // setting hiện tại của socket
     private var currentSocketSetting: String? = null
@@ -180,6 +179,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     // String step cũ để so sánh
     var oldStep: String = ""
+
+    // Settings
+    private var isTouchSoundsEnabled: Boolean = false
+    private var isTouchVibrateEnabled: Boolean = false
 
     // ==================================================================================================================================== //
     // ======== VỀ DIRECTION ============================================================================================================== //
@@ -201,22 +204,35 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         tvPlaceAddress.text = place.address
 
         btnStartDirection.setOnClickListener {
-            onBtnStartDirectionClick(place)
+            currentDirectionRoute.clear()
+            currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude)))
+            currentDirectionRoute.add(SimplePlace(place.name.toString(),LatLng(place.latLng.latitude,place.latLng.longitude)))
+            onBtnStartDirectionClick(currentDirectionRoute)
         }
 
         btnSelectedPlace.setOnClickListener {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17f))
         }
-//        imvReport.visibility = View.GONE
+        imvReport.visibility = View.GONE
     }
 
-    private fun onBtnStartDirectionClick(place: Place) {
-        val origin = lastLocation.latitude.toString() + "," + lastLocation.longitude.toString()
+    private fun onBtnStartDirectionClick(places: ArrayList<SimplePlace>) {
+        if (places.size < 2)
+            return
+        if (isRouteInfoWindowUp)
+            dismissPopupWindowRouteInfo()
+        val origin = places[0].location!!.latitude.toString() + "," + places[0].location!!.longitude.toString()
 
-        val destination = place.name.toString()
+        val destination = places[places.size-1].location!!.latitude.toString() + "," + places[places.size-1].location!!.longitude.toString()
+
+        val waypoints = ArrayList<SimplePlace>()
+
+        for (i in 1 until places.size - 1) {
+            waypoints.add(places[i])
+        }
 
         try {
-            DirectionFinder(this, origin, destination).execute()
+            DirectionFinder(this, origin, destination, waypoints).execute()
         } catch (e: UnsupportedEncodingException) {
             e.printStackTrace()
         }
@@ -247,8 +263,41 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         removeCurrentDirectionPolyline()
     }
 
+    private lateinit var viewDirectionPopup:View
+
+    private lateinit var viewEditDirectionPopup:View
+
+    private var mPopupWindowDirectionInfo:PopupWindow? = null
+
+    private var mPopupWindowEditDirection:PopupWindow? = null
+
+    private var isDirectionInfoWindowUp:Boolean = false
+
+    private var isEditDirectionWindowUp:Boolean = false
+
+//    private fun onDirectionChange(stops: ArrayList<SimplePlace>){
+//        if (stops.size<2){
+//            return
+//        }
+//        try {
+//            val origin = stops[0].location!!.latitude.toString() + "," + stops[0].location!!.longitude.toString()
+//
+//            val destination = stops[stops.size-1].location!!.latitude.toString() + "," + stops[stops.size-1].location!!.longitude.toString()
+//
+//            stops.removeAt(stops.size-1)
+//            stops.removeAt(0)
+//
+//            DirectionFinder(this, origin, destination, stops).execute()
+//        } catch (e: UnsupportedEncodingException) {
+//            e.printStackTrace()
+//        }
+//    }
+
     override fun onDirectionFinderSuccess(routes: List<Route>) {
         dismissPopupWindowPlaceInfo()
+        // show Direction Info Popup
+        showDirectionInfoPopup()
+
         polylinePaths = ArrayList()
         originMarkers = ArrayList<Marker>()
         destinationMarkers = ArrayList<Marker>()
@@ -269,6 +318,117 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 showRouteInfoPopup(route)
             }
         }
+    }
+
+    private fun showDirectionInfoPopup(){
+        if (isDirectionInfoWindowUp)
+            return
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        viewDirectionPopup = inflater.inflate(R.layout.direction_layout, null)
+        mPopupWindowDirectionInfo = PopupWindow(viewDirectionPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowDirectionInfo!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+        isDirectionInfoWindowUp = true
+
+        val tvOrigin=viewDirectionPopup.findViewById<TextView>(R.id.tvOrigin_direction_layout)
+        val tvWayPoints=viewDirectionPopup.findViewById<TextView>(R.id.tvWaypoints_direction_layout)
+        val tvDestination=viewDirectionPopup.findViewById<TextView>(R.id.tvDestination_direction_layout)
+        val btnEdit = viewDirectionPopup.findViewById<LinearLayout>(R.id.btnEdit_direction_layout)
+        val btnBack= viewDirectionPopup.findViewById<ImageView>(R.id.btnBack_direction_layout)
+
+        if (currentDirectionRoute.size>1){
+            tvOrigin.text = "Từ: " + currentDirectionRoute[0].name
+            if (currentDirectionRoute.size<3){
+                tvWayPoints.visibility=View.GONE
+            } else{
+                tvWayPoints.visibility=View.VISIBLE
+                tvWayPoints.text = "Qua: " + (currentDirectionRoute.size-2).toString() + " điểm dừng"
+            }
+
+            tvDestination.text="Đến: " + currentDirectionRoute[currentDirectionRoute.size-1].name
+        }
+
+        btnEdit.setOnClickListener{
+            dismissPopupWindowDirectionInfo()
+            showEditDirectionPopup()
+        }
+
+        btnBack.setOnClickListener{
+            if (::polylinePaths.isInitialized && polylinePaths.isNotEmpty() && isRouteInfoWindowUp && isDirectionInfoWindowUp){
+                removeCurrentDirectionPolyline()
+                dismissPopupWindowRouteInfo()
+                dismissPopupWindowDirectionInfo()
+            }
+        }
+    }
+
+    private fun showEditDirectionPopup(){
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        viewEditDirectionPopup = inflater.inflate(R.layout.edit_direction_layout, null)
+        mPopupWindowEditDirection = PopupWindow(viewEditDirectionPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowEditDirection!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+        isEditDirectionWindowUp = true
+
+        val btnBack= viewEditDirectionPopup.findViewById<ImageView>(R.id.btnBack_edit_direction_layout)
+        val btnDone=viewEditDirectionPopup.findViewById<TextView>(R.id.btnDone_edit_direction_layout)
+        val btnAdd=viewEditDirectionPopup.findViewById<ImageView>(R.id.btnAdd_edit_direction_layout)
+
+//        val stopsOnRoute = ArrayList<SimplePlace>()
+//        val origin = SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude))
+//        stopsOnRoute.add(origin)
+//
+//        val wayPoints = ArrayList<SimplePlace>()
+//
+//        for (i in 0 until wayPoints.size) {
+//            stopsOnRoute.add(wayPoints[i])
+//        }
+//
+//        if (currentSelectedPlace!=null){
+//            val destination = SimplePlace(currentSelectedPlace!!.name.toString(),LatLng(route.endLocation!!.latitude,route.endLocation!!.longitude))
+//            stopsOnRoute.add(destination)
+//        }
+
+        initDirectionRecyclerView(currentDirectionRoute, viewEditDirectionPopup,btnAdd)
+
+        btnBack.setOnClickListener{
+            dismissPopupWindowEditDirection()
+            onBtnStartDirectionClick(currentDirectionRoute)
+        }
+
+        btnDone.setOnClickListener{
+            dismissPopupWindowEditDirection()
+            onBtnStartDirectionClick(currentDirectionRoute)
+        }
+    }
+
+    private lateinit var viewAddPlacePopup:View
+    private var mPopupWindowAddPlace:PopupWindow? = null
+    private var isAddPlaceWindowUp = false
+
+    private fun showAddPlacePopup(myDataSet: ArrayList<SimplePlace>, adapter: PlaceAdapter){
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        if (!::viewAddPlacePopup.isInitialized){
+            viewAddPlacePopup = inflater.inflate(R.layout.place_picker_layout, null)
+        }
+        mPopupWindowAddPlace = PopupWindow(viewAddPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        mPopupWindowAddPlace!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+        isAddPlaceWindowUp = true
+
+        val placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete_place_picker_layout)
+                as PlaceAutocompleteFragment
+        placeAutoComplete.setText(null)
+        placeAutoComplete.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                Log.d("Maps", "Place selected: " + place.name)
+                myDataSet.add(SimplePlace(place.name.toString(),LatLng(place.latLng.latitude,place.latLng.longitude)))
+                adapter.notifyItemInserted(myDataSet.size-1)
+                isAddPlaceWindowUp = false
+                mPopupWindowAddPlace?.dismiss()
+            }
+
+            override fun onError(status: Status) {
+                Log.d("Maps", "An error occurred: $status")
+            }
+        })
     }
 
     private fun drawPolyline(route: Route, options: PolylineOptions): Polyline {
@@ -292,14 +452,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         currentPolyline.zIndex = 0F
         currentPolyline = p0
         val currentRoute = currentPolyline.tag as Route
-        dismissPopupWindowRouteInfo()
-        showRouteInfoPopup(currentRoute)
+//        dismissPopupWindowRouteInfo()
+//        showRouteInfoPopup(currentRoute)
+        updateUIRouteInfoPopup(currentRoute)
     }
 
     @SuppressLint("InflateParams")
     private fun showRouteInfoPopup(route: Route) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewRoutePopup = inflater.inflate(R.layout.steps_layout, null)
+        viewRoutePopup = inflater.inflate(R.layout.steps_layout, null)
         mPopupWindowRouteInfo = PopupWindow(viewRoutePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         imvReport.visibility = View.GONE
         mPopupWindowRouteInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
@@ -320,12 +481,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         btnSteps.setOnClickListener {
-            // Khởi tạo RecyclerView hiển thị step info
-//            Toast.makeText(this,"onBtnStepClick",Toast.LENGTH_SHORT).show()
             val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
-            recyclerView.visibility = View.VISIBLE
-            currentStepsLayout = recyclerView
-            initRecyclerView(route, viewRoutePopup)
+//            val directionLayout = viewDirectionPopup.findViewById<ConstraintLayout>(R.id.root_direction_layout)
+            if (recyclerView.visibility==View.GONE){
+//                dismissPopupWindowDirectionInfo()
+//                directionLayout.visibility=View.GONE
+
+                recyclerView.visibility = View.VISIBLE
+                currentStepsLayout = recyclerView
+                initStepRecyclerView(route, viewRoutePopup)
+
+                val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                layoutReport.visibility = View.GONE
+            }else{
+//                directionLayout.visibility=View.VISIBLE
+//                mPopupWindowDirectionInfo?.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+                currentStepsLayout!!.visibility = View.GONE
+                currentStepsLayout = null
+                if (listReportMarkerCurrentRoute.size > 0) {
+                    val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                    layoutReport.visibility = View.VISIBLE
+                }
+            }
         }
 
         // Count report on route
@@ -334,7 +511,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         listReportCurrentRoute = ArrayList()
 
         for (i in 0 until listReportMarker.size) {
-            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, 5.0/*meter(s)*/)) {
+            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, 20.0/*meter(s)*/)) {
                 listReportMarkerCurrentRoute.add(listReportMarker[i])
             }
         }
@@ -351,7 +528,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         if (listReportMarkerCurrentRoute.size > 0) {
             tvReportCount.visibility = View.VISIBLE
-            tvReportCount.text = listReportMarkerCurrentRoute.size.toString() + " báo hiệu"
+            tvReportCount.text = "Số báo hiệu: " + listReportMarkerCurrentRoute.size.toString()
 
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
@@ -360,6 +537,120 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             progressBar.max = listReportMarkerCurrentRoute.size
             if (listReportMarkerCurrentRoute.size == 1) {
                 progressBar.visibility = View.GONE
+                btnNextReport.visibility = View.INVISIBLE
+                btnPreviousReport.visibility = View.INVISIBLE
+            }
+            progressBar.progress = 1
+
+            var currentReportIndex = 0
+
+            updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
+
+            btnCurrentReport.setOnClickListener {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+            }
+
+            btnPreviousReport.setOnClickListener {
+                //                Toast.makeText(this,"onBtnPreviousReportClick",Toast.LENGTH_SHORT).show()
+                if (currentReportIndex > 0) {
+                    currentReportIndex--
+                    progressBar.progress--
+                    Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
+
+                    updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                }
+            }
+            btnNextReport.setOnClickListener {
+                //                Toast.makeText(this,"onBtnNextReportClick",Toast.LENGTH_SHORT).show()
+                if (currentReportIndex + 1 < listReportMarkerCurrentRoute.size) {
+                    currentReportIndex++
+                    progressBar.progress++
+                    Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
+
+                    updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                }
+            }
+        } else {
+            layoutReport.visibility = View.GONE
+        }
+    }
+
+    private fun updateUIRouteInfoPopup(route: Route){
+        if (!isRouteInfoWindowUp || !::viewRoutePopup.isInitialized)
+            return
+        val tvRouteDuration = viewRoutePopup.findViewById<TextView>(R.id.tvDuration_route_info)
+        val tvRouteDistance = viewRoutePopup.findViewById<TextView>(R.id.tvDistance_route_info)
+        val tvReportCount = viewRoutePopup.findViewById<TextView>(R.id.tvReportCount_route_info)
+        val btnStartNavigation = viewRoutePopup.findViewById<Button>(R.id.btnStartNavigation_route_info)
+        val btnSteps = viewRoutePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
+
+        tvRouteDuration.text = route.duration!!.text
+        tvRouteDistance.text = route.distance!!.text
+
+        btnStartNavigation.setOnClickListener {
+            onBtnStartNavigationClick(route)
+        }
+
+        btnSteps.setOnClickListener {
+            val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
+            if (recyclerView.visibility==View.GONE){
+                recyclerView.visibility = View.VISIBLE
+                currentStepsLayout = recyclerView
+                initStepRecyclerView(route, viewRoutePopup)
+
+                val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                layoutReport.visibility = View.GONE
+            }else{
+                currentStepsLayout!!.visibility = View.GONE
+                currentStepsLayout = null
+                if (listReportMarkerCurrentRoute.size > 0) {
+                    val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                    layoutReport.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        // Count report on route
+        val currentRoute = currentPolyline.tag as Route
+        listReportMarkerCurrentRoute = ArrayList()
+        listReportCurrentRoute = ArrayList()
+
+        for (i in 0 until listReportMarker.size) {
+            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, 20.0/*meter(s)*/)) {
+                listReportMarkerCurrentRoute.add(listReportMarker[i])
+            }
+        }
+
+        listReportMarkerCurrentRoute.sortedWith(compareBy { (it.tag as Report).distance })
+
+        for (i in 0 until listReportMarkerCurrentRoute.size) {
+            listReportCurrentRoute.add(listReportMarkerCurrentRoute[i].tag as Report)
+        }
+
+        val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+
+        Log.v("ReportCount", "NumReport = " + listReportMarkerCurrentRoute.size.toString())
+
+        if (listReportMarkerCurrentRoute.size > 0) {
+            layoutReport.visibility = View.VISIBLE
+            tvReportCount.visibility = View.VISIBLE
+            tvReportCount.text = "Số báo hiệu: " + listReportMarkerCurrentRoute.size.toString()
+
+            val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
+            val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
+            val btnCurrentReport = viewRoutePopup.findViewById<LinearLayout>(R.id.btnCurrent_report_detail)
+            val progressBar = viewRoutePopup.findViewById<ProgressBar>(R.id.progressBar_report_detail)
+            progressBar.max = listReportMarkerCurrentRoute.size
+            if (listReportMarkerCurrentRoute.size == 1) {
+                progressBar.visibility = View.GONE
+                btnNextReport.visibility = View.INVISIBLE
+                btnPreviousReport.visibility = View.INVISIBLE
+            } else{
+                progressBar.visibility = View.VISIBLE
+                btnNextReport.visibility = View.VISIBLE
+                btnPreviousReport.visibility = View.VISIBLE
             }
             progressBar.progress = 1
 
@@ -640,14 +931,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-
-    private var isNavigationInfoWindowUp = false
-
     @SuppressLint("InflateParams")
     private fun onBtnStartNavigationClick(route: Route) {
+        dismissPopupWindowDirectionInfo()
+
         if (::lastLocation.isInitialized) {
-
-
             if (isNavigationInfoWindowUp) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
             }
@@ -661,11 +949,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     .bearing(lastLocation.bearing)
                     .build()
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
-
         }
 //            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewNavigationPopup = inflater.inflate(R.layout.navigation_layout, null)
+        viewNavigationPopup = inflater.inflate(R.layout.navigation_layout, null)
         mPopupWindowNavigationInfo = PopupWindow(viewNavigationPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         mPopupWindowNavigationInfo!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
         isNavigationInfoWindowUp = true
@@ -740,7 +1027,82 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 imInstruction.setImageResource(R.drawable.uturn_right)
             }
         }
+    }
 
+    private fun updateUINavigation(route: Route){
+        if (!isNavigationInfoWindowUp||!::viewNavigationPopup.isInitialized)
+            return
+
+        val imInstruction = viewNavigationPopup.findViewById<ImageView>(R.id.imInstruction_navigation_layout)
+        val tvInstruction = viewNavigationPopup.findViewById<TextView>(R.id.tvInstruction_navigation_layout)
+        val tvDistance = viewNavigationPopup.findViewById<TextView>(R.id.tvDistance_navigation_layout)
+
+        // imInstruction set source
+        val currentStep = getNavigationInstruction(route)
+        tvInstruction.text = currentStep.instruction
+        tvDistance.text = currentStep.distance!!.text
+        when (currentStep.maneuver) {
+            "ferry" -> {
+                imInstruction.setImageResource(R.drawable.ferry)
+            }
+            "ferry-train" -> {
+                imInstruction.setImageResource(R.drawable.ferry_train)
+            }
+            "fork-left" -> {
+                imInstruction.setImageResource(R.drawable.fork_left)
+            }
+            "fork-right" -> {
+                imInstruction.setImageResource(R.drawable.fork_right)
+            }
+            "keep-left" -> {
+                imInstruction.setImageResource(R.drawable.keep_left)
+            }
+            "keep-right" -> {
+                imInstruction.setImageResource(R.drawable.keep_right)
+            }
+            "merge" -> {
+                imInstruction.setImageResource(R.drawable.merge)
+            }
+            "ramp-left" -> {
+                imInstruction.setImageResource(R.drawable.ramp_left)
+            }
+            "ramp-right" -> {
+                imInstruction.setImageResource(R.drawable.ramp_right)
+            }
+            "roundabout-left" -> {
+                imInstruction.setImageResource(R.drawable.roundabout_left)
+            }
+            "roundabout-right" -> {
+                imInstruction.setImageResource(R.drawable.roundabout_right)
+            }
+            "straight" -> {
+                imInstruction.setImageResource(R.drawable.straight)
+            }
+            "turn-left" -> {
+                imInstruction.setImageResource(R.drawable.turn_left)
+            }
+            "turn-right" -> {
+                imInstruction.setImageResource(R.drawable.turn_right)
+            }
+            "turn-sharp-left" -> {
+                imInstruction.setImageResource(R.drawable.turn_sharp_left)
+            }
+            "turn-sharp-right" -> {
+                imInstruction.setImageResource(R.drawable.turn_sharp_right)
+            }
+            "turn-slight-left" -> {
+                imInstruction.setImageResource(R.drawable.turn_slight_left)
+            }
+            "turn-slight-right" -> {
+                imInstruction.setImageResource(R.drawable.turn_slight_right)
+            }
+            "uturn-left" -> {
+                imInstruction.setImageResource(R.drawable.uturn_left)
+            }
+            "uturn-right" -> {
+                imInstruction.setImageResource(R.drawable.uturn_right)
+            }
+        }
     }
 
     private fun getNavigationInstruction(route: Route): Step {
@@ -781,8 +1143,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         return route.legs!![0].steps!![0]
     }
 
-    private var currentStepsLayout: RecyclerView? = null
-
     private fun dismissPopupWindowRouteInfo() {
         mPopupWindowRouteInfo?.dismiss()
         isRouteInfoWindowUp = false
@@ -795,18 +1155,39 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun dismissPopupWindowNavigationInfo() {
         mPopupWindowNavigationInfo?.dismiss()
         isNavigationInfoWindowUp = false
+        if (mPopupWindowDirectionInfo!=null){
+            mPopupWindowDirectionInfo!!.showAtLocation(this.currentFocus, Gravity.TOP,0,0)
+            isDirectionInfoWindowUp = true
+        }
+    }
+
+    private fun dismissPopupWindowDirectionInfo(){
+        mPopupWindowDirectionInfo?.dismiss()
+        isDirectionInfoWindowUp = false
+    }
+
+    private fun dismissPopupWindowEditDirection(){
+        mPopupWindowEditDirection?.dismiss()
+        isEditDirectionWindowUp = false
+//        if (mPopupWindowDirectionInfo!=null){
+//
+//        }
     }
 
     // ========================================================================================================================================= //
     // ======== VỀ MAIN ======================================================================================================================== //
     // ========================================================================================================================================= //
+    private lateinit var placeAutoComplete:PlaceAutocompleteFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         // Obtain placeAutoComplete fragment
-        placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete) as PlaceAutocompleteFragment
-        placeAutoComplete!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+        // PlaceAutoCompleteFragment
+        placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete)
+                as PlaceAutocompleteFragment
+        placeAutoComplete.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 Log.d("Maps", "Place selected: " + place.name)
                 dismissPopupWindowPlaceInfo()
@@ -911,8 +1292,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         layoutEditWork.setOnClickListener(this)
     }
 
-    private var isTouchSoundsEnabled: Boolean = false
-    private var isTouchVibrateEnabled: Boolean = false
     private fun initSoundVibrate() {
         if (Settings.System.getInt(contentResolver, Settings.System.SOUND_EFFECTS_ENABLED, 1) == 0) {
             Settings.System.putInt(contentResolver, Settings.System.SOUND_EFFECTS_ENABLED, 1)
@@ -1438,7 +1817,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     Log.v("Navigation", "Update Navigation UI")
 //                    mPopupWindowNavigationInfo?.dismiss()
                     val currentRoute = currentPolyline.tag as Route
-                    onBtnStartNavigationClick(currentRoute)
+//                    onBtnStartNavigationClick(currentRoute)
+                    updateUINavigation(currentRoute)
 
                     // onReachReportMarker
                     listReportMarker.sortedWith(compareBy { (it.tag as Report).distance })
@@ -1524,13 +1904,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
-        if (::mMap.isInitialized) {
-//            fusedLocationClient.lastLocation.addOnSuccessListener {
-//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 17f))
-//            }
-            if (::lastLocation.isInitialized) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
-            }
+        if (::lastLocation.isInitialized) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         } else {
             TastyToast.makeText(this, "Vị trí hiện không khả dụng!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         }
@@ -1626,11 +2001,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onBackPressed() {
-//        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-//            drawer_layout.closeDrawer(GravityCompat.START)
-//        } else {
-//            super.onBackPressed()
-//        }
         when {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> {
                 drawer_layout.closeDrawer(GravityCompat.START)
@@ -1639,15 +2009,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             currentStepsLayout != null -> {
                 currentStepsLayout!!.visibility = View.GONE
                 currentStepsLayout = null
+                if (listReportMarkerCurrentRoute.size > 0) {
+                    val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
+                    layoutReport.visibility = View.VISIBLE
+                }
                 return
             }
             isNavigationInfoWindowUp -> {
                 dismissPopupWindowNavigationInfo()
+
+                // Đóng popup windows
+                mPopupWindowReport?.dismiss()
+                curMarkerReport = null
+
                 return
             }
-            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty() && isRouteInfoWindowUp -> {
+            ::polylinePaths.isInitialized && polylinePaths.isNotEmpty() && isRouteInfoWindowUp && isDirectionInfoWindowUp -> {
                 removeCurrentDirectionPolyline()
                 dismissPopupWindowRouteInfo()
+                dismissPopupWindowDirectionInfo()
                 return
             }
             isPlaceInfoWindowUp -> {
@@ -1670,7 +2050,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun removeCurrentSelectedPlace() {
         currentSelectedPlaceMarker?.remove()
-        placeAutoComplete?.setText(null)
+        placeAutoComplete.setText(null)
         currentSelectedPlace = null
     }
 
@@ -1741,7 +2121,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         currentSelectedPlaceMarker = mMap.addMarker(markerOptions)
         currentSelectedPlaceMarker?.title = "current_place"
     }
-
 
     // ================================================================================================================================================= //
     // ======== VỀ THÔNG TIN NGƯỜI DÙNG USER =========================================================================================================== //
@@ -1823,7 +2202,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         startActivity(intent)
         this.finish()
     }
-
 
     // ================================================================================================================================================= //
     // ======== VỂ CLICK MARKER ======================================================================================================================== //
@@ -2734,7 +3112,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-
     // ======================================================================================================================================================== //
     // ======== SOCKET EVENT ================================================================================================================================== //
     // ======================================================================================================================================================== //
@@ -3360,7 +3737,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         socket.emit("event_report_other_server", email, socket.id(), receiveSocketID, type, base64Image, licensePlate)
     }
 
-
     // ====================================================================================================================================================== //
     // ======== VỀ GỌI API VÀ LISTENER REPORT =============================================================================================================== //
     // ====================================================================================================================================================== //
@@ -3627,26 +4003,46 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    // RecyclerView for Step Info
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    private fun initStepRecyclerView(myDataSet: Route, view: View) {
+        val viewManagerStep = LinearLayoutManager(this)
+        val viewAdapterStep = StepAdapter(getStepSet(myDataSet))
 
-    private fun initRecyclerView(myDataSet: Route, view: View) {
-        viewManager = LinearLayoutManager(this)
-        viewAdapter = StepAdapter(getStepSet(myDataSet))
+        val recyclerViewStep = view.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
 
-        recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view_steps_layout).apply {
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        recyclerViewStep.setHasFixedSize(true)
+
+        // use a linear layout manager
+        recyclerViewStep.layoutManager = viewManagerStep
+
+        // specify an viewAdapterStep (see also next example)
+        recyclerViewStep.adapter = viewAdapterStep
+    }
+
+    private lateinit var mItemTouchHelper:ItemTouchHelper
+
+    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd:ImageView) {
+        val viewManagerEditDirection = LinearLayoutManager(this)
+        val viewAdapterEditDirection = PlaceAdapter(myDataSet,this)
+
+        val recyclerViewEditDirection = view.findViewById<RecyclerView>(R.id.recycler_view_edit_direction_layout).apply {
             // use this setting to improve performance if you know that changes
             // in content do not change the layout size of the RecyclerView
             setHasFixedSize(true)
 
             // use a linear layout manager
-            layoutManager = viewManager
+            layoutManager = viewManagerEditDirection
 
-            // specify an viewAdapter (see also next example)
-            adapter = viewAdapter
+            // specify an viewAdapterStep (see also next example)
+            adapter = viewAdapterEditDirection
+        }
+        val callback = SimpleItemTouchHelperCallback(viewAdapterEditDirection)
+        mItemTouchHelper = ItemTouchHelper(callback)
+        mItemTouchHelper.attachToRecyclerView(recyclerViewEditDirection)
 
+        btnAdd.setOnClickListener{
+            showAddPlacePopup(myDataSet,viewAdapterEditDirection)
         }
     }
 
@@ -3658,5 +4054,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
         return stepSet
+    }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        mItemTouchHelper.startDrag(viewHolder)
     }
 }

@@ -19,7 +19,7 @@ import java.net.URLEncoder
 import java.util.ArrayList
 
 
-class DirectionFinder(private val listener: DirectionListener, private val origin: String, private val destination: String) {
+class DirectionFinder(private val listener: DirectionListener, private val origin: String, private val destination: String, private var waypoints: ArrayList<SimplePlace>) {
     companion object {
         private const val DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?"
         private const val GOOGLE_API_KEY = "AIzaSyDTWxpGP0Zjgifxrau0BrNdzebFmuUKEpI"
@@ -42,6 +42,17 @@ class DirectionFinder(private val listener: DirectionListener, private val origi
         var url = DIRECTION_URL_API
         url += "origin=" + URLEncoder.encode(origin, "utf-8")
         url += "&destination=" + URLEncoder.encode(destination, "utf-8")
+        if (waypoints.size>0){
+            url += "&waypoints="
+            for (i in 0 until waypoints.size) {
+                val coordinate = waypoints[i].location!!.latitude.toString()+","+waypoints[i].location!!.longitude.toString()
+                url += URLEncoder.encode(coordinate, "utf-8")
+                if (i<waypoints.size-1){
+                    url+="|"
+                }
+            }
+        }
+
         url += "&alternatives=true"
         url += "&language=vi"
 

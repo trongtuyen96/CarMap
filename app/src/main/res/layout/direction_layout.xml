@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/root_direction_layout"
+    android:visibility="visible">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:weightSum="10">
+            <ImageView
+                android:id="@+id/btnBack_direction_layout"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_back_black_24dp"
+                android:layout_weight="1.5"/>
+            <LinearLayout
+                android:id="@+id/btnEdit_direction_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp"
+                android:gravity="center_vertical"
+                android:layout_weight="7">
+                <TextView
+                    android:id="@+id/tvOrigin_direction_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Từ: Điểm bắt đầu"
+                    android:textSize="14sp"
+                    android:textColor="@color/background_front"/>
+                <TextView
+                    android:id="@+id/tvWaypoints_direction_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Qua: 0 điểm dừng"
+                    android:textSize="14sp"
+                    android:textColor="@color/background_front"
+                    android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/tvDestination_direction_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Đến: Điểm đến"
+                    android:textSize="14sp"
+                    android:textColor="@color/background_front"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit_black_24dp"
+                android:layout_weight="1.5"/>
+        </LinearLayout>
+    </android.support.design.widget.AppBarLayout>
+</android.support.constraint.ConstraintLayout>
