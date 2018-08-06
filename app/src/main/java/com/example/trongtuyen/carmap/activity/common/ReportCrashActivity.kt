@@ -206,12 +206,12 @@ class ReportCrashActivity : AppCompatActivity() {
 //                Toast.makeText(this, "Chạy 1", Toast.LENGTH_SHORT).show()
                 // Encode file ghi âm
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image, "")
                 onAddNewReportCrash(mReport, false)
             } else {
                 // Gửi cái có file ảnh trước
 //                Toast.makeText(this, "Chạy 2", Toast.LENGTH_SHORT).show()
-                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                val mReport = Report("crash", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image, "")
                 onAddNewReportCrash(mReport, true)
             }
         }

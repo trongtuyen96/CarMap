@@ -66,15 +66,16 @@
                 android:paddingTop="4dp">
 
                 <TextView
-                    android:id="@+id/tvReportCount_route_info"
+                    android:id="@+id/tvNumReport_route_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large"
+                    android:paddingBottom="2dp"
                     android:text="Số báo hiệu: "
+                    android:textAppearance="@android:style/TextAppearance.Material.Large"
                     android:textColor="@color/textColorPrimary"
                     android:textSize="18sp"
-                    android:visibility="gone"
-                    android:paddingBottom="2dp"/>
+                    android:visibility="gone"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -120,23 +121,23 @@
                 android:id="@+id/btnStartNavigation_route_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_btn_yes_stroke"
                 android:layout_margin="6dp"
+                android:background="@drawable/bg_btn_yes_stroke"
                 android:text="ĐI"
                 android:textColor="#ffffff"
                 android:textSize="28sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:gravity="center_vertical|end"-->
-                <!--android:paddingEnd="8dp"-->
-                <!--android:paddingStart="10dp"-->
-                <!--android:text="ĐI"-->
-                <!--android:textColor="#ffffff"-->
-                <!--android:textSize="28sp"-->
-                <!--android:textStyle="bold" />-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:gravity="center_vertical|end"-->
+            <!--android:paddingEnd="8dp"-->
+            <!--android:paddingStart="10dp"-->
+            <!--android:text="ĐI"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:textSize="28sp"-->
+            <!--android:textStyle="bold" />-->
 
             <!--<ImageView-->
             <!--android:layout_width="36dp"-->

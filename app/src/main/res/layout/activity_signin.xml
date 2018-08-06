@@ -51,7 +51,7 @@
             android:layout_below="@+id/textView"
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/ic_user_login_fixed_size"
+            android:drawableLeft="@drawable/ic_email_grey_600_36dp"
             android:drawablePadding="8dp"
             android:hint="Email"
             android:inputType="textEmailAddress"
@@ -83,7 +83,7 @@
                 android:layout_height="36dp"
                 android:hint="Mật khẩu"
                 android:maxLines="1"
-                android:drawableStart="@drawable/ic_password_login_fixed_size"
+                android:drawableStart="@drawable/ic_vpn_key_grey_600_36dp"
                 android:drawablePadding="8dp"
                 android:drawableLeft="@drawable/ic_key" />
             <ImageView

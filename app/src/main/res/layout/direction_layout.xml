@@ -51,6 +51,10 @@
                     android:textSize="14sp"
                     android:textColor="@color/background_front"/>
             </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/background_front"/>
             <ImageView
                 android:id="@+id/btnEdit_direction_layout"
                 android:layout_width="0dp"

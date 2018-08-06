@@ -40,10 +40,13 @@ class Report {
     @SerializedName("byteImageFile")
     @Expose
     var byteImageFile: String? = null
+    @SerializedName("phoneNumber")
+    @Expose
+    var phoneNumber: String? = null
 
     var distance: Double? = null
 
-    constructor(type: String, subtype1: String, subtype2: String, description: String, geometry: Geometry, userID: String, numReport: Number, numDelete: Number, status: Boolean, byteAudioFile: String, byteImageFile: String) {
+    constructor(type: String, subtype1: String, subtype2: String, description: String, geometry: Geometry, userID: String, numReport: Number, numDelete: Number, status: Boolean, byteAudioFile: String, byteImageFile: String, phoneNumber: String) {
         this.type = type
         this.subtype1 = subtype1
         this.subtype2 = subtype2
@@ -55,5 +58,6 @@ class Report {
         this.status = status
         this.byteAudioFile = byteAudioFile
         this.byteImageFile = byteImageFile
+        this.phoneNumber = phoneNumber
     }
 }

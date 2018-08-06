@@ -27,6 +27,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -73,7 +74,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener,OnStartDragListener {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnInfoWindowCloseListener, View.OnClickListener, DirectionFinder.DirectionListener, GoogleMap.OnPolylineClickListener, OnStartDragListener {
     // Static variables
     companion object {
         // PERMISSION_REQUEST_CODE
@@ -167,11 +168,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var originMarkers: MutableList<Marker>? = ArrayList()
     private var destinationMarkers: MutableList<Marker>? = ArrayList()
     private lateinit var currentPolyline: Polyline
-    private lateinit var viewRoutePopup:View
+    private lateinit var viewRoutePopup: View
     private var isRouteInfoWindowUp: Boolean = false
     private var isNavigationInfoWindowUp = false
     private var currentStepsLayout: RecyclerView? = null
-    private var currentDirectionRoute:ArrayList<SimplePlace> = ArrayList<SimplePlace>()
+    private var currentDirectionRoute: ArrayList<SimplePlace> = ArrayList<SimplePlace>()
 
     // setting hiện tại của socket
     private var currentSocketSetting: String? = null
@@ -202,7 +203,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val tvPlaceName = viewPlacePopup.findViewById<TextView>(R.id.tvPlaceName_place_info)
         val tvPlaceAddress = viewPlacePopup.findViewById<TextView>(R.id.tvPlaceAddress_place_info)
-        val btnStartDirection = viewPlacePopup.findViewById<LinearLayout>(R.id.btnStartDirection_place_info)
+        val btnStartDirection = viewPlacePopup.findViewById<Button>(R.id.btnStartDirection_place_info)
         val btnSelectedPlace = viewPlacePopup.findViewById<LinearLayout>(R.id.btnSelectedPlace_place_info)
 
         tvPlaceName.text = place.name
@@ -210,8 +211,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         btnStartDirection.setOnClickListener {
             currentDirectionRoute.clear()
-            currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude)))
-            currentDirectionRoute.add(SimplePlace(place.name.toString(),LatLng(place.latLng.latitude,place.latLng.longitude)))
+            currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude, lastLocation.longitude)))
+            currentDirectionRoute.add(SimplePlace(place.name.toString(), LatLng(place.latLng.latitude, place.latLng.longitude)))
             onBtnStartDirectionClick(currentDirectionRoute)
         }
 
@@ -228,7 +229,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             dismissPopupWindowRouteInfo()
         val origin = places[0].location!!.latitude.toString() + "," + places[0].location!!.longitude.toString()
 
-        val destination = places[places.size-1].location!!.latitude.toString() + "," + places[places.size-1].location!!.longitude.toString()
+        val destination = places[places.size - 1].location!!.latitude.toString() + "," + places[places.size - 1].location!!.longitude.toString()
 
         val waypoints = ArrayList<SimplePlace>()
 
@@ -268,17 +269,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         removeCurrentDirectionPolyline()
     }
 
-    private lateinit var viewDirectionPopup:View
+    private lateinit var viewDirectionPopup: View
 
-    private lateinit var viewEditDirectionPopup:View
+    private lateinit var viewEditDirectionPopup: View
 
-    private var mPopupWindowDirectionInfo:PopupWindow? = null
+    private var mPopupWindowDirectionInfo: PopupWindow? = null
 
-    private var mPopupWindowEditDirection:PopupWindow? = null
+    private var mPopupWindowEditDirection: PopupWindow? = null
 
-    private var isDirectionInfoWindowUp:Boolean = false
+    private var isDirectionInfoWindowUp: Boolean = false
 
-    private var isEditDirectionWindowUp:Boolean = false
+    private var isEditDirectionWindowUp: Boolean = false
 
 //    private fun onDirectionChange(stops: ArrayList<SimplePlace>){
 //        if (stops.size<2){
@@ -325,7 +326,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    private fun showDirectionInfoPopup(){
+    private fun showDirectionInfoPopup() {
         if (isDirectionInfoWindowUp)
             return
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -340,25 +341,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val btnEdit = viewDirectionPopup.findViewById<ImageView>(R.id.btnEdit_direction_layout)
         val btnBack= viewDirectionPopup.findViewById<ImageView>(R.id.btnBack_direction_layout)
 
-        if (currentDirectionRoute.size>1){
+        if (currentDirectionRoute.size > 1) {
             tvOrigin.text = "Từ: " + currentDirectionRoute[0].name
-            if (currentDirectionRoute.size<3){
-                tvWayPoints.visibility=View.GONE
-            } else{
-                tvWayPoints.visibility=View.VISIBLE
-                tvWayPoints.text = "Qua: " + (currentDirectionRoute.size-2).toString() + " điểm dừng"
+            if (currentDirectionRoute.size < 3) {
+                tvWayPoints.visibility = View.GONE
+            } else {
+                tvWayPoints.visibility = View.VISIBLE
+                tvWayPoints.text = "Qua: " + (currentDirectionRoute.size - 2).toString() + " điểm dừng"
             }
 
-            tvDestination.text="Đến: " + currentDirectionRoute[currentDirectionRoute.size-1].name
+            tvDestination.text = "Đến: " + currentDirectionRoute[currentDirectionRoute.size - 1].name
         }
 
-        btnEdit.setOnClickListener{
+        btnEdit.setOnClickListener {
             dismissPopupWindowDirectionInfo()
             showEditDirectionPopup()
         }
 
-        btnBack.setOnClickListener{
-            if (::polylinePaths.isInitialized && polylinePaths.isNotEmpty() && isRouteInfoWindowUp && isDirectionInfoWindowUp){
+        btnBack.setOnClickListener {
+            if (::polylinePaths.isInitialized && polylinePaths.isNotEmpty() && isRouteInfoWindowUp && isDirectionInfoWindowUp) {
                 removeCurrentDirectionPolyline()
                 dismissPopupWindowRouteInfo()
                 dismissPopupWindowDirectionInfo()
@@ -366,16 +367,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    private fun showEditDirectionPopup(){
+    private fun showEditDirectionPopup() {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         viewEditDirectionPopup = inflater.inflate(R.layout.edit_direction_layout, null)
         mPopupWindowEditDirection = PopupWindow(viewEditDirectionPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         mPopupWindowEditDirection!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
         isEditDirectionWindowUp = true
 
-        val btnBack= viewEditDirectionPopup.findViewById<ImageView>(R.id.btnBack_edit_direction_layout)
-        val btnDone=viewEditDirectionPopup.findViewById<TextView>(R.id.btnDone_edit_direction_layout)
-        val btnAdd=viewEditDirectionPopup.findViewById<ImageView>(R.id.btnAdd_edit_direction_layout)
+        val btnBack = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnBack_edit_direction_layout)
+        val btnDone = viewEditDirectionPopup.findViewById<TextView>(R.id.btnDone_edit_direction_layout)
+        val btnAdd = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnAdd_edit_direction_layout)
 
 //        val stopsOnRoute = ArrayList<SimplePlace>()
 //        val origin = SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude))
@@ -392,26 +393,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //            stopsOnRoute.add(destination)
 //        }
 
-        initDirectionRecyclerView(currentDirectionRoute, viewEditDirectionPopup,btnAdd)
+        initDirectionRecyclerView(currentDirectionRoute, viewEditDirectionPopup, btnAdd)
 
-        btnBack.setOnClickListener{
+        btnBack.setOnClickListener {
             dismissPopupWindowEditDirection()
             onBtnStartDirectionClick(currentDirectionRoute)
         }
 
-        btnDone.setOnClickListener{
+        btnDone.setOnClickListener {
             dismissPopupWindowEditDirection()
             onBtnStartDirectionClick(currentDirectionRoute)
         }
     }
 
-    private lateinit var viewAddPlacePopup:View
-    private var mPopupWindowAddPlace:PopupWindow? = null
+    private lateinit var viewAddPlacePopup: View
+    private var mPopupWindowAddPlace: PopupWindow? = null
     private var isAddPlaceWindowUp = false
 
-    private fun showAddPlacePopup(myDataSet: ArrayList<SimplePlace>, adapter: PlaceAdapter){
+    private fun showAddPlacePopup(myDataSet: ArrayList<SimplePlace>, adapter: PlaceAdapter) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        if (!::viewAddPlacePopup.isInitialized){
+        if (!::viewAddPlacePopup.isInitialized) {
             viewAddPlacePopup = inflater.inflate(R.layout.place_picker_layout, null)
         }
         mPopupWindowAddPlace = PopupWindow(viewAddPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -475,7 +476,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val tvRouteDuration = viewRoutePopup.findViewById<TextView>(R.id.tvDuration_route_info)
         val tvRouteDistance = viewRoutePopup.findViewById<TextView>(R.id.tvDistance_route_info)
-        val tvReportCount = viewRoutePopup.findViewById<TextView>(R.id.tvReportCount_route_info)
+        val tvReportCount = viewRoutePopup.findViewById<TextView>(R.id.tvNumReport_route_info)
         val btnStartNavigation = viewRoutePopup.findViewById<Button>(R.id.btnStartNavigation_route_info)
         val btnSteps = viewRoutePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
         val tvBackToMap = viewRoutePopup.findViewById<TextView>(R.id.tvSteps_detail_route_info_layout)
@@ -490,7 +491,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         btnSteps.setOnClickListener {
             val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
 //            val directionLayout = viewDirectionPopup.findViewById<ConstraintLayout>(R.id.root_direction_layout)
-            if (recyclerView.visibility==View.GONE){
+            if (recyclerView.visibility == View.GONE) {
 //                dismissPopupWindowDirectionInfo()
 //                directionLayout.visibility=View.GONE
 
@@ -537,7 +538,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         if (listReportMarkerCurrentRoute.size > 0) {
             tvReportCount.visibility = View.VISIBLE
-            tvReportCount.text = "Số báo hiệu: " + listReportMarkerCurrentRoute.size.toString()
+            tvReportCount.text = listReportMarkerCurrentRoute.size.toString() + " báo hiệu"
 
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
@@ -586,12 +587,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    private fun updateUIRouteInfoPopup(route: Route){
+    private fun updateUIRouteInfoPopup(route: Route) {
         if (!isRouteInfoWindowUp || !::viewRoutePopup.isInitialized)
             return
         val tvRouteDuration = viewRoutePopup.findViewById<TextView>(R.id.tvDuration_route_info)
         val tvRouteDistance = viewRoutePopup.findViewById<TextView>(R.id.tvDistance_route_info)
-        val tvReportCount = viewRoutePopup.findViewById<TextView>(R.id.tvReportCount_route_info)
+        val tvReportCount = viewRoutePopup.findViewById<TextView>(R.id.tvNumReport_route_info)
         val btnStartNavigation = viewRoutePopup.findViewById<Button>(R.id.btnStartNavigation_route_info)
         val btnSteps = viewRoutePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
 
@@ -604,14 +605,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         btnSteps.setOnClickListener {
             val recyclerView = viewRoutePopup.findViewById<RecyclerView>(R.id.recycler_view_steps_layout)
-            if (recyclerView.visibility==View.GONE){
+            if (recyclerView.visibility == View.GONE) {
                 recyclerView.visibility = View.VISIBLE
                 currentStepsLayout = recyclerView
                 initStepRecyclerView(route, viewRoutePopup)
 
                 val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
                 layoutReport.visibility = View.GONE
-            }else{
+            } else {
                 currentStepsLayout!!.visibility = View.GONE
                 currentStepsLayout = null
                 if (listReportMarkerCurrentRoute.size > 0) {
@@ -645,7 +646,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         if (listReportMarkerCurrentRoute.size > 0) {
             layoutReport.visibility = View.VISIBLE
             tvReportCount.visibility = View.VISIBLE
-            tvReportCount.text = "Số báo hiệu: " + listReportMarkerCurrentRoute.size.toString()
+            tvReportCount.text = listReportMarkerCurrentRoute.size.toString() + " báo hiệu"
 
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
@@ -656,7 +657,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 progressBar.visibility = View.GONE
                 btnNextReport.visibility = View.INVISIBLE
                 btnPreviousReport.visibility = View.INVISIBLE
-            } else{
+            } else {
                 progressBar.visibility = View.VISIBLE
                 btnNextReport.visibility = View.VISIBLE
                 btnPreviousReport.visibility = View.VISIBLE
@@ -946,11 +947,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         if (::lastLocation.isInitialized) {
             if (isNavigationInfoWindowUp) {
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
             }
 //            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
             // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
-            // animateCamera cho điểm, animateCamera cho CameraPosition
+            // moveCamera cho điểm, animateCamera cho CameraPosition
             val camPos = CameraPosition.builder()
                     .target(mMap.cameraPosition.target)
                     .zoom(20f)
@@ -1038,8 +1039,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    private fun updateUINavigation(route: Route){
-        if (!isNavigationInfoWindowUp||!::viewNavigationPopup.isInitialized)
+    private fun updateUINavigation(route: Route) {
+        if (!isNavigationInfoWindowUp || !::viewNavigationPopup.isInitialized)
             return
 
         val imInstruction = viewNavigationPopup.findViewById<ImageView>(R.id.imInstruction_navigation_layout)
@@ -1164,18 +1165,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun dismissPopupWindowNavigationInfo() {
         mPopupWindowNavigationInfo?.dismiss()
         isNavigationInfoWindowUp = false
-        if (mPopupWindowDirectionInfo!=null){
-            mPopupWindowDirectionInfo!!.showAtLocation(this.currentFocus, Gravity.TOP,0,0)
+        if (mPopupWindowDirectionInfo != null) {
+            mPopupWindowDirectionInfo!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
             isDirectionInfoWindowUp = true
         }
     }
 
-    private fun dismissPopupWindowDirectionInfo(){
+    private fun dismissPopupWindowDirectionInfo() {
         mPopupWindowDirectionInfo?.dismiss()
         isDirectionInfoWindowUp = false
     }
 
-    private fun dismissPopupWindowEditDirection(){
+    private fun dismissPopupWindowEditDirection() {
         mPopupWindowEditDirection?.dismiss()
         isEditDirectionWindowUp = false
 //        if (mPopupWindowDirectionInfo!=null){
@@ -1186,7 +1187,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     // ========================================================================================================================================= //
     // ======== VỀ MAIN ======================================================================================================================== //
     // ========================================================================================================================================= //
-    private lateinit var placeAutoComplete:PlaceAutocompleteFragment
+    private lateinit var placeAutoComplete: PlaceAutocompleteFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -1394,7 +1395,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Cập nhật địa điểm hiện tại
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "")
                     onUpdateCurrentLocation(user)
 
                     // Cập nhật người dùng xung quanh
@@ -1604,7 +1605,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressHome_menu.text = data!!.getStringExtra("home_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0, "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0, "", "", "", "", "")
                     onUpdateHomeLocation(user)
                 }
             }
@@ -1613,7 +1614,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!, "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!, "", "", "", "", "")
                     onUpdateWorkLocation(user)
                 }
             }
@@ -1649,7 +1650,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.settingInvisible == "invisible") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "invisible")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "invisible", "")
                         onUpdateStatus(user)
 //                        currentStatusSetting = AppController.settingInvisible
                     }
@@ -1658,7 +1659,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.settingInvisible == "visible") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "visible")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "visible", "")
                         onUpdateStatus(user)
 //                        currentStatusSetting = AppController.settingInvisible
                     }
@@ -1666,7 +1667,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.userProfile!!.typeCar != "" || AppController.userProfile!!.modelCar != "" || AppController.userProfile!!.colorCar != "") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString(), "")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString(), "", "")
                         onUpdateMyCar(user)
                     }
                 }
@@ -2277,297 +2278,429 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     @SuppressLint("InflateParams", "SetTextI18n")
     private fun onOpenReportMarker(marker: Marker) {
         if (marker.title == "report") {
-            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val viewReportPopup = inflater.inflate(R.layout.marker_report_layout, null)
-            mPopupWindowReport = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            mPopupWindowReport!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
-
-            // Phải có con trỏ vào customViewPopup, nếu không sẽ null
-            val tvType = viewReportPopup.findViewById<TextView>(R.id.tvType_marker_report)
-            val tvDistance = viewReportPopup.findViewById<TextView>(R.id.tvDistance_marker_report)
-            val tvLocation = viewReportPopup.findViewById<TextView>(R.id.tvLocation_marker_report)
-            val tvDescription = viewReportPopup.findViewById<TextView>(R.id.tvDescription_marker_report)
-            val imvType = viewReportPopup.findViewById<ImageView>(R.id.imvType_marker_report)
-            val imvUpVote = viewReportPopup.findViewById<LinearLayout>(R.id.imvUpVote_marker_report)
-            val imvDownVote = viewReportPopup.findViewById<ImageView>(R.id.imvDownVote_marker_report)
-            val imvRecord = viewReportPopup.findViewById<ImageView>(R.id.imRecord_marker_report)
-            val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report)
-            val tvNumReport = viewReportPopup.findViewById<TextView>(R.id.tvNumReport_marker_report)
-
             val dataReport: Report = marker.tag as Report
+            if (dataReport.type == "help") {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewReportPopup = inflater.inflate(R.layout.marker_report_layout_help, null)
+                mPopupWindowReport = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowReport!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+
+                // Phải có con trỏ vào customViewPopup, nếu không sẽ null
+                val tvType = viewReportPopup.findViewById<TextView>(R.id.tvType_marker_report_help)
+                val tvDistance = viewReportPopup.findViewById<TextView>(R.id.tvDistance_marker_report_help)
+                val tvLocation = viewReportPopup.findViewById<TextView>(R.id.tvLocation_marker_report_help)
+                val tvDescription = viewReportPopup.findViewById<TextView>(R.id.tvDescription_marker_report_help)
+                val imvType = viewReportPopup.findViewById<ImageView>(R.id.imvType_marker_report_help)
+                val imvUpVote = viewReportPopup.findViewById<LinearLayout>(R.id.imvUpVote_marker_report_help)
+                val imvDownVote = viewReportPopup.findViewById<ImageView>(R.id.imvDownVote_marker_report_help)
+                val imvRecord = viewReportPopup.findViewById<ImageView>(R.id.imRecord_marker_report_help)
+                val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report_help)
+                val imvCall = viewReportPopup.findViewById<ImageView>(R.id.imCall_marker_report_help)
+                val tvNumReport = viewReportPopup.findViewById<TextView>(R.id.tvNumReport_marker_report_help)
+
+                // Làm tròn số double
+                val decimalFormat = DecimalFormat("#")
+                decimalFormat.roundingMode = RoundingMode.CEILING
+
+                tvDistance.text = "Cách " + decimalFormat.format(dataReport.distance) + " m"
+
+                // Lấy địa chỉ sử dụng Geocoder
+                try {
+                    val geocoder = Geocoder(this, Locale.getDefault())
+                    val yourAddresses: List<Address>
+                    yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
+
+                    if (yourAddresses.isNotEmpty()) {
+                        val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
+                        tvLocation.text = address
+                    }
+
+                } catch (ex: Exception) {
+                }
+
+
+                tvDescription.text = dataReport.description.toString()
+                when (dataReport.type) {
+                    "help" -> {
+                        imvType.background = getDrawable(R.drawable.bg_btn_report_assistance)
+                        when (dataReport.subtype2) {
+                            "no_gas" -> {
+                                imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
+                                tvType.text = "Hết xăng"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.het_xang)
+                                }
+                            }
+                            "flat_tire" -> {
+                                imvType.setImageResource(R.drawable.ic_report_sos_flat_tire)
+                                tvType.text = "Xẹp lốp xe"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.xep_lop_xe)
+                                }
+                            }
+                            "no_battery" -> {
+                                imvType.setImageResource(R.drawable.ic_report_sos_no_battery)
+                                tvType.text = "Hết bình"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.het_binh)
+                                }
+                            }
+                            "medical_care" -> {
+                                imvType.setImageResource(R.drawable.ic_report_sos_medical_care)
+                                tvType.text = "Chăm sóc y tế"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.cham_soc_y_te)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                curMarkerReport = marker
+
+                // Số report
+                tvNumReport.text = dataReport.numReport.toString()
+
+                imvUpVote.setOnClickListener {
+                    viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    onUpdateNumReport(dataReport._id.toString())
+                    tvNumReport.text = (dataReport.numReport!!.toInt() + 1).toString()
+                }
+
+                // Nếu là người sở hữu, sửa nút DownVote thành nút Xoá
+                var isDelete = false
+                if (AppController.userProfile!!._id == dataReport.userID) {
+                    imvDownVote.setImageResource(R.drawable.ic_delete_white)
+                    isDelete = true
+                }
+                imvDownVote.setOnClickListener {
+                    viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    if (isDelete) {
+//                    Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
+
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this, R.raw.xoa_bao_hieu)
+                        }
+
+                        mPopupWindowReport!!.dismiss()
+                        curMarkerReport = null
+
+                        val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                        val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
+                        mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                        mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                        val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+                        val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+                        val layoutOutside = viewDeletePopup.findViewById<LinearLayout>(R.id.bg_to_remove_confirm_delete_report)
+                        btnYes.setOnClickListener {
+                            viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                            mPopupWindowDelete!!.dismiss()
+                            onDeleteReport(dataReport._id.toString())
+                        }
+
+                        btnNo.setOnClickListener {
+                            viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                            mPopupWindowDelete!!.dismiss()
+                        }
+
+                        layoutOutside.setOnClickListener {
+                            viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                            mPopupWindowDelete!!.dismiss()
+                        }
+                    } else {
+//                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
+                        onUpdateNumDelete(dataReport._id.toString())
+                        mPopupWindowReport!!.dismiss()
+                        curMarkerReport = null
+                    }
+                }
+                imvRecord.setOnClickListener {
+                    //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
+                    if (dataReport.byteAudioFile != "") {
+                        val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
+                        FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
+                    } else {
+                        TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                    }
+                }
+                imvImage.setOnClickListener {
+                    if (dataReport.byteImageFile != "") {
+                        val intent = Intent(this, CustomCameraActivity::class.java)
+                        intent.putExtra("base64Image", dataReport.byteImageFile)
+                        startActivity(intent)
+                    } else {
+                        TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                    }
+                }
+                imvCall.setOnClickListener {
+                    if (dataReport.phoneNumber == AppController.userProfile!!.phoneNumber) {
+                        TastyToast.makeText(this, "Không thể gọi vì đây là báo hiệu của bạn", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                    } else {
+                        val callURI = "tel:" + dataReport.phoneNumber
+                        val intent = Intent(Intent.ACTION_DIAL)
+                        intent.setData(Uri.parse(callURI))
+                        startActivity(intent)
+                    }
+                }
+            } else {
+                val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val viewReportPopup = inflater.inflate(R.layout.marker_report_layout, null)
+                mPopupWindowReport = PopupWindow(viewReportPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowReport!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
+
+                // Phải có con trỏ vào customViewPopup, nếu không sẽ null
+                val tvType = viewReportPopup.findViewById<TextView>(R.id.tvType_marker_report)
+                val tvDistance = viewReportPopup.findViewById<TextView>(R.id.tvDistance_marker_report)
+                val tvLocation = viewReportPopup.findViewById<TextView>(R.id.tvLocation_marker_report)
+                val tvDescription = viewReportPopup.findViewById<TextView>(R.id.tvDescription_marker_report)
+                val imvType = viewReportPopup.findViewById<ImageView>(R.id.imvType_marker_report)
+                val imvUpVote = viewReportPopup.findViewById<LinearLayout>(R.id.imvUpVote_marker_report)
+                val imvDownVote = viewReportPopup.findViewById<ImageView>(R.id.imvDownVote_marker_report)
+                val imvRecord = viewReportPopup.findViewById<ImageView>(R.id.imRecord_marker_report)
+                val imvImage = viewReportPopup.findViewById<ImageView>(R.id.imImage_marker_report)
+                val tvNumReport = viewReportPopup.findViewById<TextView>(R.id.tvNumReport_marker_report)
+
 //            if (dataReport.subtype2 == "") {
 //                tvType.text = dataReport.subtype1
 //            } else {
 //                tvType.text = dataReport.subtype2
 //            }
 
-            // Làm tròn số double
-            val decimalFormat = DecimalFormat("#")
-            decimalFormat.roundingMode = RoundingMode.CEILING
+                // Làm tròn số double
+                val decimalFormat = DecimalFormat("#")
+                decimalFormat.roundingMode = RoundingMode.CEILING
 
-            tvDistance.text = "Cách " + decimalFormat.format(dataReport.distance) + " m"
+                tvDistance.text = "Cách " + decimalFormat.format(dataReport.distance) + " m"
 
-            // Lấy địa chỉ sử dụng Geocoder
-            try {
-                val geocoder = Geocoder(this, Locale.getDefault())
-                val yourAddresses: List<Address>
-                yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
+                // Lấy địa chỉ sử dụng Geocoder
+                try {
+                    val geocoder = Geocoder(this, Locale.getDefault())
+                    val yourAddresses: List<Address>
+                    yourAddresses = geocoder.getFromLocation(dataReport.geometry!!.coordinates!![1], dataReport.geometry!!.coordinates!![0], 1)
 
-                if (yourAddresses.isNotEmpty()) {
+                    if (yourAddresses.isNotEmpty()) {
 //                val yourAddress = yourAddresses.get(0).getAddressLine(0)
 //                val yourCity = yourAddresses.get(0).getAddressLine(1)
 //                val yourCountry = yourAddresses.get(0).getAddressLine(2)
-                    val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
-                    tvLocation.text = address
-                }
-
-            } catch (ex: Exception) {
-            }
-
-
-
-            tvDescription.text = dataReport.description.toString()
-            when (dataReport.type) {
-                "traffic" -> {
-                    imvType.background = getDrawable(R.drawable.bg_btn_report_traffic)
-                    when (dataReport.subtype1) {
-                        "moderate" -> {
-                            imvType.setImageResource(R.drawable.ic_report_traffic_moderate)
-                            tvType.text = "Kẹt xe vừa"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.ket_xe_vua)
-                            }
-                        }
-                        "heavy" -> {
-                            imvType.setImageResource(R.drawable.ic_report_traffic_heavy)
-                            tvType.text = "Kẹt xe nặng"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.ket_xe_nang)
-                            }
-                        }
-                        "standstill" -> {
-                            imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
-                            tvType.text = "Kẹt xe cứng"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.ket_xe_cung)
-                            }
-                        }
+                        val address = yourAddresses.get(0).thoroughfare + ", " + yourAddresses.get(0).locality + ", " + yourAddresses.get(0).subAdminArea
+                        tvLocation.text = address
                     }
+
+                } catch (ex: Exception) {
                 }
-                "crash" -> {
-                    imvType.background = getDrawable(R.drawable.bg_btn_report_crash)
-                    when (dataReport.subtype1) {
-                        "minor" -> {
-                            imvType.setImageResource(R.drawable.ic_accident_minor)
-                            tvType.text = "Tai nạn nhỏ"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.tai_nan_nho)
-                            }
-                        }
-                        "major" -> {
-                            imvType.setImageResource(R.drawable.ic_accident_major)
-                            tvType.text = "Tai nạn nghiêm trọng"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
-                            }
-                        }
-                        "other_side" -> {
-                            imvType.setImageResource(R.drawable.ic_accident_other_side)
-                            tvType.text = "Tai nạn bên đường"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
-                            }
-                        }
-                    }
-                }
-                "hazard" -> {
-                    imvType.background = getDrawable(R.drawable.bg_btn_report_hazard)
-                    when (dataReport.subtype2) {
-                        "object" -> {
-                            imvType.setImageResource(R.drawable.ic_report_hazard_object)
-                            tvType.text = "Vật cản"
-                            // Chạy audio
-                            if (AppController.soundMode == 1) {
-                                mAudioPlayer.play(this, R.raw.vat_can)
-                            }
-                        }
-                        "construction" -> {
-                            imvType.setImageResource(R.drawable.ic_report_hazard_construction)
-                            tvType.text = "Công trình"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.cong_trinh)
-                            }
-                        }
-                        "broken_light" -> {
-                            imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
-                            tvType.text = "Đèn báo hư"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.den_bao_hu)
-                            }
-                        }
-                        "pothole" -> {
-                            imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
-                            tvType.text = "Hố voi"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.ho_voi)
-                            }
-                        }
-                        "vehicle_stop" -> {
-                            imvType.setImageResource(R.drawable.ic_report_hazard_stopped)
-                            if (dataReport.subtype1 == "on_road") {
-                                tvType.text = "Xe đậu"
-                                // Chạy audio
-                                if (AppController.soundMode == 1) {
-                                    mAudioPlayer.play(this, R.raw.xe_dau)
-                                }
-                            }
-                            if (dataReport.subtype1 == "shoulder") {
-                                tvType.text = "Xe đậu bên lề"
+
+
+
+                tvDescription.text = dataReport.description.toString()
+                when (dataReport.type) {
+                    "traffic" -> {
+                        imvType.background = getDrawable(R.drawable.bg_btn_report_traffic)
+                        when (dataReport.subtype1) {
+                            "moderate" -> {
+                                imvType.setImageResource(R.drawable.ic_report_traffic_moderate)
+                                tvType.text = "Kẹt xe vừa"
                                 // Chạy audio
                                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                    mAudioPlayer.play(this, R.raw.xe_dau_ben_le)
+                                    mAudioPlayer.play(this, R.raw.ket_xe_vua)
+                                }
+                            }
+                            "heavy" -> {
+                                imvType.setImageResource(R.drawable.ic_report_traffic_heavy)
+                                tvType.text = "Kẹt xe nặng"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.ket_xe_nang)
+                                }
+                            }
+                            "standstill" -> {
+                                imvType.setImageResource(R.drawable.ic_report_traffic_standstill)
+                                tvType.text = "Kẹt xe cứng"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.ket_xe_cung)
                                 }
                             }
                         }
-                        "road_kill" -> {
-                            imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
-                            tvType.text = "Động vật chết"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong)
+                    }
+                    "crash" -> {
+                        imvType.background = getDrawable(R.drawable.bg_btn_report_crash)
+                        when (dataReport.subtype1) {
+                            "minor" -> {
+                                imvType.setImageResource(R.drawable.ic_accident_minor)
+                                tvType.text = "Tai nạn nhỏ"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.tai_nan_nho)
+                                }
+                            }
+                            "major" -> {
+                                imvType.setImageResource(R.drawable.ic_accident_major)
+                                tvType.text = "Tai nạn nghiêm trọng"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
+                                }
+                            }
+                            "other_side" -> {
+                                imvType.setImageResource(R.drawable.ic_accident_other_side)
+                                tvType.text = "Tai nạn bên đường"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
+                                }
                             }
                         }
-                        "animal" -> {
-                            imvType.setImageResource(R.drawable.ic_report_hazard_animals)
-                            tvType.text = "Động vật nguy hiểm"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem)
+                    }
+                    "hazard" -> {
+                        imvType.background = getDrawable(R.drawable.bg_btn_report_hazard)
+                        when (dataReport.subtype2) {
+                            "object" -> {
+                                imvType.setImageResource(R.drawable.ic_report_hazard_object)
+                                tvType.text = "Vật cản"
+                                // Chạy audio
+                                if (AppController.soundMode == 1) {
+                                    mAudioPlayer.play(this, R.raw.vat_can)
+                                }
                             }
-                        }
-                        "missing_sign" -> {
-                            imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
-                            tvType.text = "Thiếu biển báo"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.thieu_bien_bao)
+                            "construction" -> {
+                                imvType.setImageResource(R.drawable.ic_report_hazard_construction)
+                                tvType.text = "Công trình"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.cong_trinh)
+                                }
                             }
-                        }
-                        "fog" -> {
-                            imvType.setImageResource(R.drawable.ic_hazard_weather_fog)
-                            tvType.text = "Sương mù"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.suong_mu)
+                            "broken_light" -> {
+                                imvType.setImageResource(R.drawable.ic_report_broken_traffic_light)
+                                tvType.text = "Đèn báo hư"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.den_bao_hu)
+                                }
                             }
-                        }
-                        "hail" -> {
-                            imvType.setImageResource(R.drawable.ic_hazard_weather_hail)
-                            tvType.text = "Mưa đá"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.mua_da)
+                            "pothole" -> {
+                                imvType.setImageResource(R.drawable.ic_report_hazard_pothole)
+                                tvType.text = "Hố voi"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.ho_voi)
+                                }
                             }
-                        }
-                        "flood" -> {
-                            imvType.setImageResource(R.drawable.ic_hazard_weather_flood)
-                            tvType.text = "Lũ lụt"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.lu_lut)
+                            "vehicle_stop" -> {
+                                imvType.setImageResource(R.drawable.ic_report_hazard_stopped)
+                                if (dataReport.subtype1 == "on_road") {
+                                    tvType.text = "Xe đậu"
+                                    // Chạy audio
+                                    if (AppController.soundMode == 1) {
+                                        mAudioPlayer.play(this, R.raw.xe_dau)
+                                    }
+                                }
+                                if (dataReport.subtype1 == "shoulder") {
+                                    tvType.text = "Xe đậu bên lề"
+                                    // Chạy audio
+                                    if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                        mAudioPlayer.play(this, R.raw.xe_dau_ben_le)
+                                    }
+                                }
                             }
-                        }
-                        "ice" -> {
-                            imvType.setImageResource(R.drawable.ic_hazard_weather_ice)
-                            tvType.text = "Đá trơn"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.da_tron_tren_duong)
+                            "road_kill" -> {
+                                imvType.setImageResource(R.drawable.ic_report_hazard_roadkill)
+                                tvType.text = "Động vật chết"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong)
+                                }
+                            }
+                            "animal" -> {
+                                imvType.setImageResource(R.drawable.ic_report_hazard_animals)
+                                tvType.text = "Động vật nguy hiểm"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem)
+                                }
+                            }
+                            "missing_sign" -> {
+                                imvType.setImageResource(R.drawable.ic_report_hazard_missingsign)
+                                tvType.text = "Thiếu biển báo"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.thieu_bien_bao)
+                                }
+                            }
+                            "fog" -> {
+                                imvType.setImageResource(R.drawable.ic_hazard_weather_fog)
+                                tvType.text = "Sương mù"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.suong_mu)
+                                }
+                            }
+                            "hail" -> {
+                                imvType.setImageResource(R.drawable.ic_hazard_weather_hail)
+                                tvType.text = "Mưa đá"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.mua_da)
+                                }
+                            }
+                            "flood" -> {
+                                imvType.setImageResource(R.drawable.ic_hazard_weather_flood)
+                                tvType.text = "Lũ lụt"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.lu_lut)
+                                }
+                            }
+                            "ice" -> {
+                                imvType.setImageResource(R.drawable.ic_hazard_weather_ice)
+                                tvType.text = "Đá trơn"
+                                // Chạy audio
+                                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                                    mAudioPlayer.play(this, R.raw.da_tron_tren_duong)
+                                }
                             }
                         }
                     }
                 }
-                "help" -> {
-                    imvType.background = getDrawable(R.drawable.bg_btn_report_assistance)
-                    when (dataReport.subtype2) {
-                        "no_gas" -> {
-                            imvType.setImageResource(R.drawable.ic_report_sos_no_gas)
-                            tvType.text = "Hết xăng"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.het_xang)
-                            }
-                        }
-                        "flat_tire" -> {
-                            imvType.setImageResource(R.drawable.ic_report_sos_flat_tire)
-                            tvType.text = "Xẹp lốp xe"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.xep_lop_xe)
-                            }
-                        }
-                        "no_battery" -> {
-                            imvType.setImageResource(R.drawable.ic_report_sos_no_battery)
-                            tvType.text = "Hết bình"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.het_binh)
-                            }
-                        }
-                        "medical_care" -> {
-                            imvType.setImageResource(R.drawable.ic_report_sos_medical_care)
-                            tvType.text = "Chăm sóc y tế"
-                            // Chạy audio
-                            if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.cham_soc_y_te)
-                            }
-                        }
-                    }
-                }
-            }
 
-            curMarkerReport = marker
+                curMarkerReport = marker
 
-            // Số report
-            tvNumReport.text = dataReport.numReport.toString()
+                // Số report
+                tvNumReport.text = dataReport.numReport.toString()
 
-            imvUpVote.setOnClickListener {
-                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                imvUpVote.setOnClickListener {
+                    viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 //                Toast.makeText(this, "Up Vote", Toast.LENGTH_SHORT).show()
 
 //                mPopupWindowReport!!.dismiss()
 //                curMarkerReport = null
-                onUpdateNumReport(dataReport._id.toString())
-                tvNumReport.text = (dataReport.numReport!!.toInt() + 1).toString()
-            }
+                    onUpdateNumReport(dataReport._id.toString())
+                    tvNumReport.text = (dataReport.numReport!!.toInt() + 1).toString()
+                }
 
-            // Nếu là người sở hữu, sửa nút DownVote thành nút Xoá
-            var isDelete = false
-            if (AppController.userProfile!!._id == dataReport.userID) {
-                imvDownVote.setImageResource(R.drawable.ic_delete_white)
-                isDelete = true
-            }
-            imvDownVote.setOnClickListener {
-                viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                if (isDelete) {
+                // Nếu là người sở hữu, sửa nút DownVote thành nút Xoá
+                var isDelete = false
+                if (AppController.userProfile!!._id == dataReport.userID) {
+                    imvDownVote.setImageResource(R.drawable.ic_delete_white)
+                    isDelete = true
+                }
+                imvDownVote.setOnClickListener {
+                    viewReportPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    if (isDelete) {
 //                    Toast.makeText(this, "Remove Report", Toast.LENGTH_SHORT).show()
 
-                    // Chạy audio
-                    if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this, R.raw.xoa_bao_hieu)
-                    }
+                        // Chạy audio
+                        if (AppController.soundMode == 1) {
+                            mAudioPlayer.play(this, R.raw.xoa_bao_hieu)
+                        }
 
-                    mPopupWindowReport!!.dismiss()
-                    curMarkerReport = null
+                        mPopupWindowReport!!.dismiss()
+                        curMarkerReport = null
 
 //                    val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 //                    val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
@@ -2587,7 +2720,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                        mPopupWindowDelete!!.dismiss()
 //                    }
 
-                    // Hiện nhưng còn viền trắng
+                        // Hiện nhưng còn viền trắng
 //                    val deleteDialog : Dialog = Dialog(this)
 //                    deleteDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 //                    deleteDialog.setCancelable(true)
@@ -2607,53 +2740,55 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                    }
 //                    deleteDialog.show()
 
-                    val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                    val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
-                    mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                    mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
-                    val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
-                    val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
-                    val layoutOutside = viewDeletePopup.findViewById<LinearLayout>(R.id.bg_to_remove_confirm_delete_report)
-                    btnYes.setOnClickListener {
-                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                        mPopupWindowDelete!!.dismiss()
-                        onDeleteReport(dataReport._id.toString())
-                    }
+                        val inflater2 = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                        val viewDeletePopup = inflater2.inflate(R.layout.confirm_delete_report_dialog_layout, null)
+                        mPopupWindowDelete = PopupWindow(viewDeletePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                        mPopupWindowDelete!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                        val btnYes = viewDeletePopup.findViewById<Button>(R.id.btnYes_confirm_delete_report)
+                        val btnNo = viewDeletePopup.findViewById<Button>(R.id.btnNo_confirm_delete_report)
+                        val layoutOutside = viewDeletePopup.findViewById<LinearLayout>(R.id.bg_to_remove_confirm_delete_report)
+                        btnYes.setOnClickListener {
+                            viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                            mPopupWindowDelete!!.dismiss()
+                            onDeleteReport(dataReport._id.toString())
+                        }
 
-                    btnNo.setOnClickListener {
-                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                        mPopupWindowDelete!!.dismiss()
-                    }
+                        btnNo.setOnClickListener {
+                            viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                            mPopupWindowDelete!!.dismiss()
+                        }
 
-                    layoutOutside.setOnClickListener {
-                        viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                        mPopupWindowDelete!!.dismiss()
-                    }
-                } else {
+                        layoutOutside.setOnClickListener {
+                            viewDeletePopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                            mPopupWindowDelete!!.dismiss()
+                        }
+                    } else {
 //                    Toast.makeText(this, "Down Vote", Toast.LENGTH_SHORT).show()
-                    onUpdateNumDelete(dataReport._id.toString())
-                    mPopupWindowReport!!.dismiss()
-                    curMarkerReport = null
+                        onUpdateNumDelete(dataReport._id.toString())
+                        mPopupWindowReport!!.dismiss()
+                        curMarkerReport = null
+                    }
+                }
+                imvRecord.setOnClickListener {
+                    //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
+                    if (dataReport.byteAudioFile != "") {
+                        val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
+                        FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
+                    } else {
+                        TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                    }
+                }
+                imvImage.setOnClickListener {
+                    if (dataReport.byteImageFile != "") {
+                        val intent = Intent(this, CustomCameraActivity::class.java)
+                        intent.putExtra("base64Image", dataReport.byteImageFile)
+                        startActivity(intent)
+                    } else {
+                        TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                    }
                 }
             }
-            imvRecord.setOnClickListener {
-                //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
-                if (dataReport.byteAudioFile != "") {
-                    val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
-                    FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
-                } else {
-                    TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                }
-            }
-            imvImage.setOnClickListener {
-                if (dataReport.byteImageFile != "") {
-                    val intent = Intent(this, CustomCameraActivity::class.java)
-                    intent.putExtra("base64Image", dataReport.byteImageFile)
-                    startActivity(intent)
-                } else {
-                    TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                }
-            }
+
         }
         if (marker.title == "user") {
 //            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -4075,11 +4210,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         recyclerViewStep.adapter = viewAdapterStep
     }
 
-    private lateinit var mItemTouchHelper:ItemTouchHelper
+    private lateinit var mItemTouchHelper: ItemTouchHelper
 
-    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd:ImageView) {
+    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: ImageView) {
         val viewManagerEditDirection = LinearLayoutManager(this)
-        val viewAdapterEditDirection = PlaceAdapter(myDataSet,this)
+        val viewAdapterEditDirection = PlaceAdapter(myDataSet, this)
 
         val recyclerViewEditDirection = view.findViewById<RecyclerView>(R.id.recycler_view_edit_direction_layout).apply {
             // use this setting to improve performance if you know that changes
@@ -4096,8 +4231,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper.attachToRecyclerView(recyclerViewEditDirection)
 
-        btnAdd.setOnClickListener{
-            showAddPlacePopup(myDataSet,viewAdapterEditDirection)
+        btnAdd.setOnClickListener {
+            showAddPlacePopup(myDataSet, viewAdapterEditDirection)
         }
     }
 

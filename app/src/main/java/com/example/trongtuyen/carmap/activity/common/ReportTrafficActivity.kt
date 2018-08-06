@@ -139,7 +139,7 @@ class ReportTrafficActivity : AppCompatActivity() {
         }
 
         btnTakePhoto.setOnClickListener {
-//            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            //            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 //            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 //            startActivityForResult(intent, 1)
 
@@ -194,11 +194,11 @@ class ReportTrafficActivity : AppCompatActivity() {
             if (sFileAudioPath == "" || sBase64Image == "") {
                 // Encode file ghi âm
                 val encoded = FileUtils.encodeAudioFile(sFileAudioPath)
-                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image)
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, encoded, sBase64Image, "")
                 onAddNewReportTraffic(mReport, false)
 //                Toast.makeText(this, "Chạy 1", Toast.LENGTH_SHORT).show()
             } else {
-                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image)
+                val mReport = Report("traffic", subType1, "", textInputEdit.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image, "")
                 onAddNewReportTraffic(mReport, true)
 //                Toast.makeText(this, "Chạy 2", Toast.LENGTH_SHORT).show()
             }
