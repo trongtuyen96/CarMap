@@ -371,7 +371,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val btnBack = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnBack_edit_direction_layout)
         val btnDone = viewEditDirectionPopup.findViewById<TextView>(R.id.btnDone_edit_direction_layout)
-        val btnAdd = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnAdd_edit_direction_layout)
+//        val btnAdd = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnAdd_edit_direction_layout)
+        val btnAdd = viewEditDirectionPopup.findViewById<TextView>(R.id.btnAdd_edit_direction_layout)
 
 //        val stopsOnRoute = ArrayList<SimplePlace>()
 //        val origin = SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude))
