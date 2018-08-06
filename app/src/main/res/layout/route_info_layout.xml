@@ -73,7 +73,7 @@
                     android:text="Số báo hiệu: "
                     android:textColor="@color/textColorPrimary"
                     android:textSize="18sp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:paddingBottom="2dp"/>
             </LinearLayout>
 
@@ -86,20 +86,22 @@
                 android:focusable="true"
                 android:paddingBottom="2dp"
                 android:paddingStart="20dp"
-                android:paddingTop="2dp">
+                android:paddingTop="2dp"
+                android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginTop="0dp"
                     app:srcCompat="@drawable/ic_menu_grey_800_48dp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/tvSteps_detail_route_info_layout"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:paddingStart="4dp"
+                    android:paddingStart="8dp"
                     android:text="CHI TIẾT CÁC BƯỚC"
                     android:textAppearance="@android:style/TextAppearance.Material.Large"
                     android:textColor="#424242"

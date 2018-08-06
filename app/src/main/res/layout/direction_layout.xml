@@ -22,7 +22,6 @@
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:layout_weight="1.5"/>
             <LinearLayout
-                android:id="@+id/btnEdit_direction_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -53,6 +52,7 @@
                     android:textColor="@color/background_front"/>
             </LinearLayout>
             <ImageView
+                android:id="@+id/btnEdit_direction_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_edit_black_24dp"

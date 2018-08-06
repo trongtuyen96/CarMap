@@ -80,6 +80,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         private const val MY_LOCATION_PERMISSION_REQUEST_CODE = 1
         // Log
         private const val TAG = "MainActivity"
+        // Distance to determine whether a report is on Route or not
+        private const val REPORT_ON_ROUTE_DISTANCE_DIRECTION = 5.0 // meter
+        private const val REPORT_ON_ROUTE_DISTANCE_NAVIGATION = 20.0 // meter
+        // Request code for activity result
+        private const val PICK_PLACE_HISTORY_REQUEST = 4
     }
 
     // Permission variables
@@ -304,7 +309,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         var firstRoute = true
 
         for (route in routes) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16f))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16f))
 
             val polylineOptions = PolylineOptions().geodesic(true).width(10f).color(Color.GRAY)
 
@@ -332,7 +337,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val tvOrigin=viewDirectionPopup.findViewById<TextView>(R.id.tvOrigin_direction_layout)
         val tvWayPoints=viewDirectionPopup.findViewById<TextView>(R.id.tvWaypoints_direction_layout)
         val tvDestination=viewDirectionPopup.findViewById<TextView>(R.id.tvDestination_direction_layout)
-        val btnEdit = viewDirectionPopup.findViewById<LinearLayout>(R.id.btnEdit_direction_layout)
+        val btnEdit = viewDirectionPopup.findViewById<ImageView>(R.id.btnEdit_direction_layout)
         val btnBack= viewDirectionPopup.findViewById<ImageView>(R.id.btnBack_direction_layout)
 
         if (currentDirectionRoute.size>1){
@@ -420,7 +425,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             override fun onPlaceSelected(place: Place) {
                 Log.d("Maps", "Place selected: " + place.name)
                 myDataSet.add(SimplePlace(place.name.toString(),LatLng(place.latLng.latitude,place.latLng.longitude)))
-                adapter.notifyItemInserted(myDataSet.size-1)
+//                adapter.notifyItemInserted(myDataSet.size)
+                adapter.notifyDataSetChanged()
                 isAddPlaceWindowUp = false
                 mPopupWindowAddPlace?.dismiss()
             }
@@ -472,6 +478,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val tvReportCount = viewRoutePopup.findViewById<TextView>(R.id.tvReportCount_route_info)
         val btnStartNavigation = viewRoutePopup.findViewById<Button>(R.id.btnStartNavigation_route_info)
         val btnSteps = viewRoutePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
+        val tvBackToMap = viewRoutePopup.findViewById<TextView>(R.id.tvSteps_detail_route_info_layout)
 
         tvRouteDuration.text = route.duration!!.text
         tvRouteDistance.text = route.distance!!.text
@@ -493,6 +500,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
                 layoutReport.visibility = View.GONE
+                tvBackToMap.text = "QUAY LẠI BẢN ĐỒ"
             }else{
 //                directionLayout.visibility=View.VISIBLE
 //                mPopupWindowDirectionInfo?.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
@@ -502,6 +510,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
                     layoutReport.visibility = View.VISIBLE
                 }
+                tvBackToMap.text = "CHI TIẾT CÁC BƯỚC"
             }
         }
 
@@ -511,7 +520,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         listReportCurrentRoute = ArrayList()
 
         for (i in 0 until listReportMarker.size) {
-            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, 20.0/*meter(s)*/)) {
+            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, REPORT_ON_ROUTE_DISTANCE_DIRECTION)) {
                 listReportMarkerCurrentRoute.add(listReportMarker[i])
             }
         }
@@ -547,7 +556,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
 
             btnCurrentReport.setOnClickListener {
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
             }
 
             btnPreviousReport.setOnClickListener {
@@ -558,7 +567,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
 
                     updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
                 }
             }
             btnNextReport.setOnClickListener {
@@ -569,7 +578,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
 
                     updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
                 }
             }
         } else {
@@ -618,7 +627,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         listReportCurrentRoute = ArrayList()
 
         for (i in 0 until listReportMarker.size) {
-            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, 20.0/*meter(s)*/)) {
+            if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, REPORT_ON_ROUTE_DISTANCE_DIRECTION)) {
                 listReportMarkerCurrentRoute.add(listReportMarker[i])
             }
         }
@@ -659,7 +668,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
 
             btnCurrentReport.setOnClickListener {
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
             }
 
             btnPreviousReport.setOnClickListener {
@@ -670,7 +679,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
 
                     updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
                 }
             }
             btnNextReport.setOnClickListener {
@@ -681,7 +690,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     Log.v("ReportCount", "currentReportIndex = " + currentReportIndex.toString())
 
                     updateUIReportDetail(listReportCurrentRoute[currentReportIndex], viewRoutePopup)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(listReportMarkerCurrentRoute[currentReportIndex].position))
                 }
             }
         } else {
@@ -937,11 +946,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         if (::lastLocation.isInitialized) {
             if (isNavigationInfoWindowUp) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
             }
 //            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
             // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
-            // moveCamera cho điểm, animateCamera cho CameraPosition
+            // animateCamera cho điểm, animateCamera cho CameraPosition
             val camPos = CameraPosition.builder()
                     .target(mMap.cameraPosition.target)
                     .zoom(20f)
@@ -1123,7 +1132,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 //                val tmpLine = mMap.addPolyline(options)
 
-                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude, lastLocation.longitude), route.legs!![iL].steps!![iS].points, true, 1.0/*meter(s)*/)) {
+                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude, lastLocation.longitude), route.legs!![iL].steps!![iS].points, true, REPORT_ON_ROUTE_DISTANCE_DIRECTION)) {
                     // The polyline is composed of great circle segments if geodesic is true, and of Rhumb segments otherwise
                     Log.v("Navigation", "OnPathOK")
                     return if (iS + 1 < route.legs!![iL].steps!!.size) {
@@ -1196,7 +1205,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 addMarker(place)
 
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(place.latLng))
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(place.latLng))
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
                 showPlaceInfoPopup(place)
 
@@ -1482,7 +1491,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                        })
 //                        .start()
             }
-
             R.id.imvReport -> {
                 val intent = Intent(this, ReportMenuActivity::class.java)
                 startActivity(intent)
@@ -1499,14 +1507,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
             R.id.layoutHomeMenu -> {
-
+                if (AppController.userProfile!=null){
+                    if (AppController.userProfile!!.latHomeLocation!=null&& AppController.userProfile!!.longHomeLocation!=null){
+                        drawer_layout.closeDrawer(GravityCompat.START)
+                        currentDirectionRoute.clear()
+                        currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude)))
+                        currentDirectionRoute.add(SimplePlace("Nhà",LatLng(AppController.userProfile!!.latHomeLocation!!,AppController.userProfile!!.longHomeLocation!!)))
+                        onBtnStartDirectionClick(currentDirectionRoute)
+                    } else {
+                        Log.v("Direction","User Home not set")
+                    }
+                } else {
+                    Log.v("Direction","User Profile not found")
+                }
             }
             R.id.layoutWorkMenu -> {
-
+                if (AppController.userProfile!=null){
+                    if (AppController.userProfile!!.latWorkLocation!=null&& AppController.userProfile!!.longWorkLocation!=null){
+                        drawer_layout.closeDrawer(GravityCompat.START)
+                        currentDirectionRoute.clear()
+                        currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude)))
+                        currentDirectionRoute.add(SimplePlace("Nhà",LatLng(AppController.userProfile!!.latWorkLocation!!,AppController.userProfile!!.longWorkLocation!!)))
+                        onBtnStartDirectionClick(currentDirectionRoute)
+                    } else {
+                        Log.v("Direction","User Work not set")
+                    }
+                } else {
+                    Log.v("Direction","User Profile not found")
+                }
             }
             R.id.layoutHistoryMenu -> {
                 val intent = Intent(this, HistorySettingActivity::class.java)
-                startActivity(intent)
+                startActivityForResult(intent,PICK_PLACE_HISTORY_REQUEST)
             }
             R.id.layoutSettingMenu -> {
                 val intent = Intent(this, SettingActivity::class.java)
@@ -1585,7 +1617,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     onUpdateWorkLocation(user)
                 }
             }
-
             3 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     // Set lần đầu cho setting âm thanh
@@ -1638,6 +1669,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString(), "")
                         onUpdateMyCar(user)
                     }
+                }
+            }
+            PICK_PLACE_HISTORY_REQUEST -> {
+                if (resultCode == Activity.RESULT_OK&&data!=null) {
+                    val place = SimplePlace(data.getStringExtra("PLACE_NAME"),
+                            LatLng(data.getDoubleExtra("PLACE_LAT", 0.0),data.getDoubleExtra("PLACE_LONG",0.0)))
+                    currentDirectionRoute.clear()
+                    currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude)))
+                    currentDirectionRoute.add(SimplePlace(place.name,LatLng(place.location!!.latitude,place.location!!.longitude)))
+                    drawer_layout.closeDrawer(GravityCompat.START)
+                    onBtnStartDirectionClick(currentDirectionRoute)
                 }
             }
         }
@@ -1829,7 +1871,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         location.longitude = listReportMarker[i].position.longitude
 
                         // Khoảng cách 20m thì hiện báo hiệu
-                        if (lastLocation.distanceTo(location) < 20) {
+                        if (lastLocation.distanceTo(location) < REPORT_ON_ROUTE_DISTANCE_NAVIGATION) {
                             onOpenReportMarker(listReportMarker[i])
                         }
                         break
@@ -2006,6 +2048,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 drawer_layout.closeDrawer(GravityCompat.START)
                 return
             }
+            isAddPlaceWindowUp -> {
+                mPopupWindowAddPlace?.dismiss()
+                isAddPlaceWindowUp = false
+                return
+            }
             currentStepsLayout != null -> {
                 currentStepsLayout!!.visibility = View.GONE
                 currentStepsLayout = null
@@ -2015,12 +2062,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
                 return
             }
+            isEditDirectionWindowUp -> {
+                dismissPopupWindowEditDirection()
+                onBtnStartDirectionClick(currentDirectionRoute)
+                return
+            }
             isNavigationInfoWindowUp -> {
                 dismissPopupWindowNavigationInfo()
 
                 // Đóng popup windows
                 mPopupWindowReport?.dismiss()
                 curMarkerReport = null
+
+                // Update Camera
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 14f))
 
                 return
             }
@@ -2115,7 +2170,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 
 //        mMap.addMarker(markerOptions)
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(p.latLng))
+//        mMap.animateCamera(CameraUpdateFactory.newLatLng(p.latLng))
 //        mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
 
         currentSelectedPlaceMarker = mMap.addMarker(markerOptions)
