@@ -378,7 +378,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val btnBack = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnBack_edit_direction_layout)
         val btnDone = viewEditDirectionPopup.findViewById<TextView>(R.id.btnDone_edit_direction_layout)
-        val btnAdd = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnAdd_edit_direction_layout)
+//        val btnAdd = viewEditDirectionPopup.findViewById<ImageView>(R.id.btnAdd_edit_direction_layout)
+        val btnAdd = viewEditDirectionPopup.findViewById<TextView>(R.id.btnAdd_edit_direction_layout)
 
 //        val stopsOnRoute = ArrayList<SimplePlace>()
 //        val origin = SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude))
@@ -482,6 +483,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val btnStartNavigation = viewRoutePopup.findViewById<Button>(R.id.btnStartNavigation_route_info)
         val btnSteps = viewRoutePopup.findViewById<LinearLayout>(R.id.btnSteps_route_info)
         val tvBackToMap = viewRoutePopup.findViewById<TextView>(R.id.tvSteps_detail_route_info_layout)
+        val dividerAboveRecyclerView = viewRoutePopup.findViewById<LinearLayout>(R.id.recycler_view_divider_steps_layout)
+        val dividerAboveReportDetail = viewRoutePopup.findViewById<LinearLayout>(R.id.report_detail_divider_route_info_layout)
 
         tvRouteDuration.text = route.duration!!.text
         tvRouteDistance.text = route.distance!!.text
@@ -504,6 +507,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
                 layoutReport.visibility = View.GONE
                 tvBackToMap.text = "QUAY LẠI BẢN ĐỒ"
+                dividerAboveRecyclerView.visibility = View.VISIBLE
             }else{
 //                directionLayout.visibility=View.VISIBLE
 //                mPopupWindowDirectionInfo?.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
@@ -514,6 +518,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     layoutReport.visibility = View.VISIBLE
                 }
                 tvBackToMap.text = "CHI TIẾT CÁC BƯỚC"
+                dividerAboveRecyclerView.visibility = View.GONE
             }
         }
 
@@ -539,6 +544,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         Log.v("ReportCount", "NumReport = " + listReportMarkerCurrentRoute.size.toString())
 
         if (listReportMarkerCurrentRoute.size > 0) {
+            dividerAboveReportDetail.visibility = View.VISIBLE
             tvReportCount.visibility = View.VISIBLE
             tvReportCount.text = listReportMarkerCurrentRoute.size.toString() + " báo hiệu"
 
@@ -586,6 +592,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         } else {
             layoutReport.visibility = View.GONE
+            dividerAboveReportDetail.visibility = View.GONE
         }
     }
 
@@ -4237,7 +4244,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private lateinit var mItemTouchHelper: ItemTouchHelper
 
-    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: ImageView) {
+    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: TextView) {
         val viewManagerEditDirection = LinearLayoutManager(this)
         val viewAdapterEditDirection = PlaceAdapter(myDataSet, this)
 

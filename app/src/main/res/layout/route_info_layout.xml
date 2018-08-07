@@ -4,6 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/report_detail_divider_route_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:visibility="gone"
+        android:orientation="vertical">
+    </LinearLayout>
 
     <include layout="@layout/report_detail_layout" />
 
@@ -63,7 +71,7 @@
                 android:orientation="horizontal"
                 android:paddingBottom="2dp"
                 android:paddingStart="20dp"
-                android:paddingTop="4dp">
+                android:paddingTop="2dp">
 
                 <TextView
                     android:id="@+id/tvNumReport_route_info"
