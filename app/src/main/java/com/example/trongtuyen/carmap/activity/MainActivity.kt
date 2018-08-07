@@ -3,7 +3,9 @@ package com.example.trongtuyen.carmap.activity
 import `in`.championswimmer.sfg.lib.SimpleFingerGestures
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentSender
 import android.content.res.Configuration
@@ -946,10 +948,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         dismissPopupWindowDirectionInfo()
 
         if (::lastLocation.isInitialized) {
-            if (isNavigationInfoWindowUp) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
-            }
-//            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
             // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
             // moveCamera cho điểm, animateCamera cho CameraPosition
             val camPos = CameraPosition.builder()
@@ -959,6 +958,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     .bearing(lastLocation.bearing)
                     .build()
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
+
+//            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
         }
 //            Toast.makeText(this,"onBtnStartNavigationClick",Toast.LENGTH_SHORT).show()
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -1042,6 +1043,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun updateUINavigation(route: Route) {
         if (!isNavigationInfoWindowUp || !::viewNavigationPopup.isInitialized)
             return
+
+        if (::lastLocation.isInitialized) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
+            // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
+            // moveCamera cho điểm, animateCamera cho CameraPosition
+            val camPos = CameraPosition.builder()
+                    .target(mMap.cameraPosition.target)
+                    .zoom(20f)
+                    .tilt(80f)
+                    .bearing(lastLocation.bearing)
+                    .build()
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
+
+//            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
+        }
 
         val imInstruction = viewNavigationPopup.findViewById<ImageView>(R.id.imInstruction_navigation_layout)
         val tvInstruction = viewNavigationPopup.findViewById<TextView>(R.id.tvInstruction_navigation_layout)
@@ -2094,7 +2110,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 removeCurrentSelectedPlace()
                 return
             }
-            else -> super.onBackPressed()
+            else -> {
+                val builder = android.support.v7.app.AlertDialog.Builder(this)
+                builder.setMessage("Bạn có muốn thoát khỏi ứng dụng?")
+                        .setCancelable(false)
+                        .setPositiveButton("Có") { _, _ -> finish() }
+                        .setNegativeButton("Không") { dialog, _ -> dialog.cancel() }
+                val alert = builder.create()
+                alert.show()
+            }
+//            else -> super.onBackPressed()
         }
     }
 
