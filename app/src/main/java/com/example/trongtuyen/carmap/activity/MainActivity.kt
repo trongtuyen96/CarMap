@@ -4158,7 +4158,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private lateinit var mItemTouchHelper: ItemTouchHelper
 
-    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: ImageView) {
+//    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: ImageView) {
+//        val viewManagerEditDirection = LinearLayoutManager(this)
+//        val viewAdapterEditDirection = PlaceAdapter(myDataSet, this)
+//
+//        val recyclerViewEditDirection = view.findViewById<RecyclerView>(R.id.recycler_view_edit_direction_layout).apply {
+//            // use this setting to improve performance if you know that changes
+//            // in content do not change the layout size of the RecyclerView
+//            setHasFixedSize(true)
+//
+//            // use a linear layout manager
+//            layoutManager = viewManagerEditDirection
+//
+//            // specify an viewAdapterStep (see also next example)
+//            adapter = viewAdapterEditDirection
+//        }
+//        val callback = SimpleItemTouchHelperCallback(viewAdapterEditDirection)
+//        mItemTouchHelper = ItemTouchHelper(callback)
+//        mItemTouchHelper.attachToRecyclerView(recyclerViewEditDirection)
+//
+//        btnAdd.setOnClickListener {
+//            showAddPlacePopup(myDataSet, viewAdapterEditDirection)
+//        }
+//    }
+
+    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: TextView) {
         val viewManagerEditDirection = LinearLayoutManager(this)
         val viewAdapterEditDirection = PlaceAdapter(myDataSet, this)
 
