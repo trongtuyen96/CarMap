@@ -2779,14 +2779,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             if (dataUser.typeCar != "") {
                 when (dataUser.typeCar) {
-                    "4 cho" -> {
-                        tvTypeCar.text = "4 chỗ " + dataUser.modelCar.toString()
-                    }
-                    "68 cho" -> {
-                        tvTypeCar.text = "6-8 chỗ " + dataUser.modelCar.toString()
+                    "xe con" -> {
+                        tvTypeCar.text = "Xe con " + dataUser.modelCar.toString()
                     }
                     "xe tai" -> {
-                        tvTypeCar.text = "xe tải " + dataUser.modelCar.toString()
+                        tvTypeCar.text = "Xe tải " + dataUser.modelCar.toString()
+                    }
+                    "xe khach" -> {
+                        tvTypeCar.text = "Xe khách " + dataUser.modelCar.toString()
+                    }
+                    "xe container" -> {
+                        tvTypeCar.text = "Xe container " + dataUser.modelCar.toString()
                     }
                 }
             }
@@ -3126,7 +3129,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         markerOptions.position(LatLng(user.currentLocation!!.coordinates!![1], user.currentLocation!!.coordinates!![0]))
         markerOptions.title("user")
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_other_car_44dp))
+        when (user.typeCar) {
+            "xe con" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_car_44dp))
+            }
+            "xe tai" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_truck_44dp))
+            }
+            "xe khach" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_bus_44dp))
+            }
+            "xe container" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_container_44dp))
+            }
+            else -> markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_other_car_44dp))
+        }
+//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_other_car_44dp))
         val marker = mMap.addMarker(markerOptions)
         listUserMarker.add(marker)
         marker.tag = user
