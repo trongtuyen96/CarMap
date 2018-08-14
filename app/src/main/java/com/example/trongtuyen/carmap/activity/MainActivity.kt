@@ -2779,14 +2779,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             if (dataUser.typeCar != "") {
                 when (dataUser.typeCar) {
-                    "4 cho" -> {
-                        tvTypeCar.text = "4 chỗ " + dataUser.modelCar.toString()
-                    }
-                    "68 cho" -> {
-                        tvTypeCar.text = "6-8 chỗ " + dataUser.modelCar.toString()
+                    "xe con" -> {
+                        tvTypeCar.text = "Xe con " + dataUser.modelCar.toString()
                     }
                     "xe tai" -> {
-                        tvTypeCar.text = "xe tải " + dataUser.modelCar.toString()
+                        tvTypeCar.text = "Xe tải " + dataUser.modelCar.toString()
+                    }
+                    "xe khach" -> {
+                        tvTypeCar.text = "xe khách " + dataUser.modelCar.toString()
+                    }
+                    "xe container" -> {
+                        tvTypeCar.text = "xe container " + dataUser.modelCar.toString()
                     }
                 }
             }

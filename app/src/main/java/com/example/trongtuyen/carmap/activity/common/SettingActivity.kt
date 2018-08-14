@@ -331,12 +331,70 @@ class SettingActivity : AppCompatActivity() {
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_my_car_dialog_layout, null)
 
+//            // Layout mới
+//            mPopupMyCarWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+//            mPopupMyCarWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
+//            val btnCon = viewPopup.findViewById<LinearLayout>(R.id.layout4_setting_my_car_dialog_layout)
+//            val btnTai = viewPopup.findViewById<LinearLayout>(R.id.layout6_setting_my_car_dialog_layout)
+//            val btnTai = viewPopup.findViewById<LinearLayout>(R.id.layoutTai_setting_my_car_dialog_layout)
+//            val editTextModel = viewPopup.findViewById<EditText>(R.id.editTextModel_setting_my_car_dialog_layout)
+//            val imColor = viewPopup.findViewById<ImageView>(R.id.imColor_setting_my_car_dialog_layout)
+//            val btnChooseColor = viewPopup.findViewById<Button>(R.id.btnChooseColor_setting_my_car_dialog_layout)
+//            val btnDismiss = viewPopup.findViewById<Button>(R.id.btnDismiss_setting_my_car_dialog_layout)
+//            val btnConfirm = viewPopup.findViewById<Button>(R.id.btnConfirm_setting_my_car_dialog_layout)
+//            val layoutOutside = viewPopup.findViewById<LinearLayout>(R.id.bg_to_remove_setting_my_car_dialog_layout)
+//
+////            editTextModel.clearFocus()
+//            // Load dữ liệu có sẵn
+//            if (AppController.userProfile!!.typeCar != "") {
+//                when (AppController.userProfile!!.typeCar) {
+//                    "4 cho" -> {
+//                        btnCon.background = getDrawable(R.color.divider)
+//                    }
+//                    "68 cho" -> {
+//                        btnTai.background = getDrawable(R.color.divider)
+//                    }
+//                    "xe tai" -> {
+//                        btnTai.background = getDrawable(R.color.divider)
+//                    }
+//                }
+//            }
+//            if (AppController.userProfile!!.modelCar != "") {
+//                editTextModel.setText(AppController.userProfile!!.modelCar, TextView.BufferType.EDITABLE)
+//            }
+//            if (AppController.userProfile!!.colorCar != "") {
+//                imColor.setBackgroundColor(Color.parseColor(AppController.userProfile!!.colorCar))
+//            }
+//
+//            var typeCar = AppController.userProfile!!.typeCar
+//            btnCon.setOnClickListener {
+//                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                btnCon.background = getDrawable(R.color.divider)
+//                btnTai.background = getDrawable(R.color.background_front)
+//                btnTai.background = getDrawable(R.color.background_front)
+//                typeCar = "4 cho"
+//            }
+//            btnTai.setOnClickListener {
+//                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                btnTai.background = getDrawable(R.color.divider)
+//                btnCon.background = getDrawable(R.color.background_front)
+//                btnTai.background = getDrawable(R.color.background_front)
+//                typeCar = "68 cho"
+//            }
+//            btnTai.setOnClickListener {
+//                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+//                btnTai.background = getDrawable(R.color.divider)
+//                btnTai.background = getDrawable(R.color.background_front)
+//                btnCon.background = getDrawable(R.color.background_front)
+//                typeCar = "xe tai"
+//            }
             // Layout mới
             mPopupMyCarWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
             mPopupMyCarWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
-            val btn4 = viewPopup.findViewById<LinearLayout>(R.id.layout4_setting_my_car_dialog_layout)
-            val btn6 = viewPopup.findViewById<LinearLayout>(R.id.layout6_setting_my_car_dialog_layout)
+            val btnCon = viewPopup.findViewById<LinearLayout>(R.id.layoutCon_setting_my_car_dialog_layout)
             val btnTai = viewPopup.findViewById<LinearLayout>(R.id.layoutTai_setting_my_car_dialog_layout)
+            val btnKhach = viewPopup.findViewById<LinearLayout>(R.id.layoutKhach_setting_my_car_dialog_layout)
+            val btnContainer = viewPopup.findViewById<LinearLayout>(R.id.layoutContainer_setting_my_car_dialog_layout)
             val editTextModel = viewPopup.findViewById<EditText>(R.id.editTextModel_setting_my_car_dialog_layout)
             val imColor = viewPopup.findViewById<ImageView>(R.id.imColor_setting_my_car_dialog_layout)
             val btnChooseColor = viewPopup.findViewById<Button>(R.id.btnChooseColor_setting_my_car_dialog_layout)
@@ -348,14 +406,17 @@ class SettingActivity : AppCompatActivity() {
             // Load dữ liệu có sẵn
             if (AppController.userProfile!!.typeCar != "") {
                 when (AppController.userProfile!!.typeCar) {
-                    "4 cho" -> {
-                        btn4.background = getDrawable(R.color.divider)
-                    }
-                    "68 cho" -> {
-                        btn6.background = getDrawable(R.color.divider)
+                    "xe con" -> {
+                        btnCon.background = getDrawable(R.color.divider)
                     }
                     "xe tai" -> {
                         btnTai.background = getDrawable(R.color.divider)
+                    }
+                    "xe khach" -> {
+                        btnKhach.background = getDrawable(R.color.divider)
+                    }
+                    "xe container" -> {
+                        btnContainer.background = getDrawable(R.color.divider)
                     }
                 }
             }
@@ -365,28 +426,40 @@ class SettingActivity : AppCompatActivity() {
             if (AppController.userProfile!!.colorCar != "") {
                 imColor.setBackgroundColor(Color.parseColor(AppController.userProfile!!.colorCar))
             }
+            
 
             var typeCar = AppController.userProfile!!.typeCar
-            btn4.setOnClickListener {
+            btnCon.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                btn4.background = getDrawable(R.color.divider)
-                btn6.background = getDrawable(R.color.background_front)
+                btnCon.background = getDrawable(R.color.divider)
                 btnTai.background = getDrawable(R.color.background_front)
-                typeCar = "4 cho"
-            }
-            btn6.setOnClickListener {
-                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                btn6.background = getDrawable(R.color.divider)
-                btn4.background = getDrawable(R.color.background_front)
-                btnTai.background = getDrawable(R.color.background_front)
-                typeCar = "68 cho"
+                btnKhach.background = getDrawable(R.color.background_front)
+                btnContainer.background = getDrawable(R.color.background_front)
+                typeCar = "xe con"
             }
             btnTai.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnTai.background = getDrawable(R.color.divider)
-                btn6.background = getDrawable(R.color.background_front)
-                btn4.background = getDrawable(R.color.background_front)
+                btnCon.background = getDrawable(R.color.background_front)
+                btnKhach.background = getDrawable(R.color.background_front)
+                btnContainer.background = getDrawable(R.color.background_front)
                 typeCar = "xe tai"
+            }
+            btnKhach.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                btnKhach.background = getDrawable(R.color.divider)
+                btnCon.background = getDrawable(R.color.background_front)
+                btnTai.background = getDrawable(R.color.background_front)
+                btnContainer.background = getDrawable(R.color.background_front)
+                typeCar = "xe khach"
+            }
+            btnContainer.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                btnContainer.background = getDrawable(R.color.divider)
+                btnCon.background = getDrawable(R.color.background_front)
+                btnTai.background = getDrawable(R.color.background_front)
+                btnKhach.background = getDrawable(R.color.background_front)
+                typeCar = "xe container"
             }
 
             btnChooseColor.setOnClickListener {

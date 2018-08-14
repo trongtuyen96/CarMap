@@ -23,5 +23,5 @@ interface AuthenticationService {
 
     @FormUrlEncoded
     @POST("register/email")
-    fun registerWithEmail(@Field("email") email: String, @Field("password") password: String, @Field("name") name: String, @Field("birthDate") birthDate: String, @Field("status") status: String, @Field("phoneNumber") phoneNumber: String): Call<User>
+    fun registerWithEmail(@Field("email") email: String, @Field("password") password: String, @Field("name") name: String, @Field("birthDate") birthDate: String, @Field("status") status: String, @Field("phoneNumber") phoneNumber: String, @Field("typeCar") typeCar: String, @Field("modelCar") modelCar: String, @Field("colorCar") colorCar: String): Call<User>
 }
