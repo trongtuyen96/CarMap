@@ -25,8 +25,10 @@ class PlaceAdapter(private val myPlaceSet: ArrayList<SimplePlace>,private var mD
     }
 
     override fun onItemDismiss(position: Int) {
-        myPlaceSet.removeAt(position)
-        notifyItemRemoved(position)
+        if (position<myPlaceSet.size){
+            myPlaceSet.removeAt(position)
+        }
+        notifyDataSetChanged()
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
