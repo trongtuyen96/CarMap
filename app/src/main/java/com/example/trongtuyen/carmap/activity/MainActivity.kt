@@ -49,6 +49,7 @@ import com.github.angads25.toggle.LabeledSwitch
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
+import com.google.android.gms.location.places.AutocompleteFilter
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
 import com.google.android.gms.location.places.ui.PlaceSelectionListener
@@ -222,7 +223,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         btnSelectedPlace.setOnClickListener {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17f))
         }
-        imvReport.visibility = View.GONE
+//        imvReport.visibility = View.GONE
     }
 
     private fun onBtnStartDirectionClick(places: ArrayList<SimplePlace>) {
@@ -497,7 +498,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         viewRoutePopup = inflater.inflate(R.layout.steps_layout, null)
         mPopupWindowRouteInfo = PopupWindow(viewRoutePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        imvReport.visibility = View.GONE
+//        imvReport.visibility = View.GONE
         mPopupWindowRouteInfo!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
 
         isRouteInfoWindowUp = true
@@ -1250,6 +1251,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // PlaceAutoCompleteFragment
         placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete)
                 as PlaceAutocompleteFragment
+
+        val typeFilter = AutocompleteFilter.Builder().setCountry("VN").build()
+        placeAutoComplete.setFilter(typeFilter)
         placeAutoComplete.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 Log.d("Maps", "Place selected: " + place.name)
@@ -2000,6 +2004,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
+        if (::fusedLocationClient.isInitialized){
+            fusedLocationClient.lastLocation.addOnSuccessListener (this){location->
+                if (location!=null) lastLocation=location }
+        }
         if (::lastLocation.isInitialized) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         } else {
@@ -2901,14 +2909,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             if (dataUser.typeCar != "") {
                 when (dataUser.typeCar) {
-                    "4 cho" -> {
-                        tvTypeCar.text = "4 chỗ " + dataUser.modelCar.toString()
-                    }
-                    "68 cho" -> {
-                        tvTypeCar.text = "6-8 chỗ " + dataUser.modelCar.toString()
+                    "xe con" -> {
+                        tvTypeCar.text = "Xe con " + dataUser.modelCar.toString()
                     }
                     "xe tai" -> {
-                        tvTypeCar.text = "xe tải " + dataUser.modelCar.toString()
+                        tvTypeCar.text = "Xe tải " + dataUser.modelCar.toString()
+                    }
+                    "xe khach" -> {
+                        tvTypeCar.text = "Xe khách " + dataUser.modelCar.toString()
+                    }
+                    "xe container" -> {
+                        tvTypeCar.text = "Xe container " + dataUser.modelCar.toString()
                     }
                 }
             }
@@ -3248,7 +3259,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         markerOptions.position(LatLng(user.currentLocation!!.coordinates!![1], user.currentLocation!!.coordinates!![0]))
         markerOptions.title("user")
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_other_car_44dp))
+        when (user.typeCar) {
+            "xe con" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_car_44dp))
+            }
+            "xe tai" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_truck_44dp))
+            }
+            "xe khach" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_bus_44dp))
+            }
+            "xe container" -> {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker_container_44dp))
+            }
+            else -> markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_other_car_44dp))
+        }
+//        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_other_car_44dp))
         val marker = mMap.addMarker(markerOptions)
         listUserMarker.add(marker)
         marker.tag = user
@@ -4280,7 +4306,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private lateinit var mItemTouchHelper: ItemTouchHelper
 
+//<<<<<<< HEAD
     private lateinit var viewAdapterEditDirection:PlaceAdapter
+//=======
+//    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: ImageView) {
+//        val viewManagerEditDirection = LinearLayoutManager(this)
+//        val viewAdapterEditDirection = PlaceAdapter(myDataSet, this)
+//
+//        val recyclerViewEditDirection = view.findViewById<RecyclerView>(R.id.recycler_view_edit_direction_layout).apply {
+//            // use this setting to improve performance if you know that changes
+//            // in content do not change the layout size of the RecyclerView
+//            setHasFixedSize(true)
+//
+//            // use a linear layout manager
+//            layoutManager = viewManagerEditDirection
+//
+//            // specify an viewAdapterStep (see also next example)
+//            adapter = viewAdapterEditDirection
+//        }
+//        val callback = SimpleItemTouchHelperCallback(viewAdapterEditDirection)
+//        mItemTouchHelper = ItemTouchHelper(callback)
+//        mItemTouchHelper.attachToRecyclerView(recyclerViewEditDirection)
+//
+//        btnAdd.setOnClickListener {
+//            showAddPlacePopup(myDataSet, viewAdapterEditDirection)
+//        }
+//    }
+//>>>>>>> e8cbadd32c29eacb3b8bd84c866e300385e38764
 
     private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: TextView) {
         val viewManagerEditDirection = LinearLayoutManager(this)
