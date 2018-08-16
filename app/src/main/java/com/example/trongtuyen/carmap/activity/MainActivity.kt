@@ -58,6 +58,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.tasks.Task
 import com.google.maps.android.PolyUtil
 import com.sdsmdg.tastytoast.TastyToast
 import io.socket.client.Socket
@@ -90,6 +91,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         private const val REPORT_ON_ROUTE_DISTANCE_NAVIGATION = 20.0 // meter
         // Request code for activity result
         private const val PICK_PLACE_HISTORY_REQUEST = 4
+
+        private const val REQUEST_CHECK_SETTINGS = 2
     }
 
     // Permission variables
@@ -188,7 +191,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var mAudioPlayer = AudioPlayer()
 
     // String step cũ để so sánh
-    var oldStep: String = ""
+    private lateinit var oldStep: Step
 
     // Settings
     private var isTouchSoundsEnabled: Boolean = false
@@ -1078,6 +1081,46 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
+    private fun getNavigationEndLocation(route: Route): LatLng? {
+        for (iL in 0 until route.legs!!.size) {
+            for (iS in 0 until route.legs!![iL].steps!!.size) {
+//                val line = ArrayList<LatLng>()
+
+                val options = PolylineOptions()
+                options.color(Color.RED)
+                options.width(5f)
+                options.zIndex(2F)
+
+                for (iP in 0 until route.legs!![iL].steps!![iS].points!!.size) {
+//                    line.add(route.legs!![iL].steps!![iS].points!![iP])
+
+                    options.add(route.legs!![iL].steps!![iS].points!![iP])
+                }
+
+//                val tmpLine = mMap.addPolyline(options)
+
+                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude, lastLocation.longitude), route.legs!![iL].steps!![iS].points, true, REPORT_ON_ROUTE_DISTANCE_DIRECTION)) {
+                    // The polyline is composed of great circle segments if geodesic is true, and of Rhumb segments otherwise
+                    Log.v("Navigation", "OnPathOK")
+                    return if (iS + 1 < route.legs!![iL].steps!!.size) {
+                        route.legs!![iL].steps!![iS + 1].endLocation
+                    } else {
+                        if (iL + 1 < route.legs!!.size) {
+                            route.legs!![iL + 1].steps!![0].endLocation
+                        } else {
+                            route.legs!![iL].steps!![iS].endLocation
+                        }
+                    }
+                }
+//                tmpLine.remove()
+            }
+        }
+        Log.v("Navigation", "OnPathFALSE")
+        return route.legs!![0].steps!![0].endLocation
+    }
+
+    private var haveNotReadSecondTime = true
+
     private fun updateUINavigation(route: Route) {
         if (!isNavigationInfoWindowUp || !::viewNavigationPopup.isInitialized)
             return
@@ -1103,6 +1146,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         // imInstruction set source
         val currentStep = getNavigationInstruction(route)
+
+        if (!::oldStep.isInitialized){
+            // NÓI
+            haveNotReadSecondTime = true
+            oldStep = currentStep
+        }else{
+            if (currentStep!=oldStep){
+                // NÓI
+                haveNotReadSecondTime = true
+                oldStep = currentStep
+            } else {
+                val endLocation = getNavigationEndLocation(route)
+                val results = FloatArray(3)
+                if (endLocation != null) {
+                    Location.distanceBetween(lastLocation.latitude,lastLocation.longitude,endLocation.latitude,endLocation.longitude,results)
+                }
+                if (results[0]<=30&&haveNotReadSecondTime){
+                    // NÓI
+                    haveNotReadSecondTime = false
+                }
+            }
+
+        }
+
         tvInstruction.text = currentStep.instruction
         tvDistance.text = currentStep.distance!!.text
         when (currentStep.maneuver) {
@@ -1942,6 +2009,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         createLocationRequest()
     }
 
+    private lateinit var locationTask: Task<LocationSettingsResponse>
+
     @SuppressLint("RestrictedApi")
     private fun createLocationRequest() {
         locationRequest = LocationRequest().apply {
@@ -1954,27 +2023,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val builder = LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest)
         val client = LocationServices.getSettingsClient(this)
-        val task = client.checkLocationSettings(builder.build())
 
-        task.addOnSuccessListener {
+        locationTask = client.checkLocationSettings(builder.build())
+
+        locationTask.addOnSuccessListener {
             startLocationUpdates()
         }
 
-        task.addOnFailureListener { e ->
-            // 6
-            if (e is ResolvableApiException) {
-                // Location settings are not satisfied, but this can be fixed
-                // by showing the user a dialog.
-                try {
-                    // Show the dialog by calling startResolutionForResult(),
-                    // and check the result in onActivityResult().
-//                    e.startResolutionForResult(this@MainActivity,
-//                            REQUEST_CHECK_SETTINGS)
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    // Ignore the error.
+
+            locationTask.addOnFailureListener { e ->
+                // 6
+                if (e is ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        e.startResolutionForResult(this@MainActivity,
+                                REQUEST_CHECK_SETTINGS)
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        // Ignore the error.
+                    }
                 }
             }
-        }
+
     }
 
     private fun startLocationUpdates() {
@@ -2004,6 +2076,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     @SuppressLint("MissingPermission")
     private fun onMyLocationButtonClicked() {
+        mLocationPermission.execute()
+        if (::locationTask.isInitialized){
+            locationTask.addOnFailureListener { e ->
+                // 6
+                if (e is ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                    e.startResolutionForResult(this@MainActivity,
+                            REQUEST_CHECK_SETTINGS)
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        }
         if (::fusedLocationClient.isInitialized){
             fusedLocationClient.lastLocation.addOnSuccessListener (this){location->
                 if (location!=null) lastLocation=location }
@@ -2011,7 +2101,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         if (::lastLocation.isInitialized) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 17f))
         } else {
-            TastyToast.makeText(this, "Vị trí hiện không khả dụng!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//            TastyToast.makeText(this, "Vị trí hiện không khả dụng!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         }
     }
 
