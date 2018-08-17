@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -1084,39 +1085,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun getNavigationEndLocation(route: Route): LatLng? {
         for (iL in 0 until route.legs!!.size) {
             for (iS in 0 until route.legs!![iL].steps!!.size) {
-//                val line = ArrayList<LatLng>()
-
-                val options = PolylineOptions()
-                options.color(Color.RED)
-                options.width(5f)
-                options.zIndex(2F)
-
-                for (iP in 0 until route.legs!![iL].steps!![iS].points!!.size) {
-//                    line.add(route.legs!![iL].steps!![iS].points!![iP])
-
-                    options.add(route.legs!![iL].steps!![iS].points!![iP])
-                }
-
-//                val tmpLine = mMap.addPolyline(options)
-
                 if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude, lastLocation.longitude), route.legs!![iL].steps!![iS].points, true, REPORT_ON_ROUTE_DISTANCE_DIRECTION)) {
-                    // The polyline is composed of great circle segments if geodesic is true, and of Rhumb segments otherwise
-                    Log.v("Navigation", "OnPathOK")
-                    return if (iS + 1 < route.legs!![iL].steps!!.size) {
-                        route.legs!![iL].steps!![iS + 1].endLocation
-                    } else {
-                        if (iL + 1 < route.legs!!.size) {
-                            route.legs!![iL + 1].steps!![0].endLocation
-                        } else {
-                            route.legs!![iL].steps!![iS].endLocation
-                        }
-                    }
+                    return route.legs!![iL].steps!![iS].endLocation
                 }
-//                tmpLine.remove()
             }
         }
-        Log.v("Navigation", "OnPathFALSE")
-        return route.legs!![0].steps!![0].endLocation
+        return route.legs!![route.legs!!.size-1].steps!![route.legs!![route.legs!!.size-1].steps!!.size].endLocation
     }
 
     private var haveNotReadSecondTime = true
@@ -1136,15 +1110,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     .bearing(lastLocation.bearing)
                     .build()
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
-
-//            Toast.makeText(this@MainActivity, "bearing" + lastLocation.bearing.toString(), Toast.LENGTH_SHORT).show()
         }
 
         val imInstruction = viewNavigationPopup.findViewById<ImageView>(R.id.imInstruction_navigation_layout)
         val tvInstruction = viewNavigationPopup.findViewById<TextView>(R.id.tvInstruction_navigation_layout)
         val tvDistance = viewNavigationPopup.findViewById<TextView>(R.id.tvDistance_navigation_layout)
 
-        // imInstruction set source
         val currentStep = getNavigationInstruction(route)
 
         if (!::oldStep.isInitialized){
@@ -1162,7 +1133,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 if (endLocation != null) {
                     Location.distanceBetween(lastLocation.latitude,lastLocation.longitude,endLocation.latitude,endLocation.longitude,results)
                 }
-                if (results[0]<=30&&haveNotReadSecondTime){
+                if (results[0]<=100&&haveNotReadSecondTime){
                     // NÓI
                     haveNotReadSecondTime = false
                 }
@@ -2030,17 +2001,29 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             startLocationUpdates()
         }
 
-
             locationTask.addOnFailureListener { e ->
                 // 6
                 if (e is ResolvableApiException) {
+                    val lm:LocationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    var needToEnableLocation = false
+                    try {
+                        val isGpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                        if(!isGpsEnabled && !isNetworkEnabled){
+                            needToEnableLocation = true
+                        }
+                    } catch (ex: Exception) {}
+
+
                     // Location settings are not satisfied, but this can be fixed
                     // by showing the user a dialog.
                     try {
                         // Show the dialog by calling startResolutionForResult(),
                         // and check the result in onActivityResult().
-                        e.startResolutionForResult(this@MainActivity,
-                                REQUEST_CHECK_SETTINGS)
+                        if (needToEnableLocation){
+                            e.startResolutionForResult(this@MainActivity,
+                                    REQUEST_CHECK_SETTINGS)
+                        }
                     } catch (sendEx: IntentSender.SendIntentException) {
                         // Ignore the error.
                     }
