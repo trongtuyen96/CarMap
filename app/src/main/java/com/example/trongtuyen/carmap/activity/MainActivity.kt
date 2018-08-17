@@ -1090,16 +1090,59 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
         }
-        return route.legs!![route.legs!!.size-1].steps!![route.legs!![route.legs!!.size-1].steps!!.size].endLocation
+        return route.legs!![route.legs!!.size-1].steps!![route.legs!![route.legs!!.size-1].steps!!.size-1].endLocation
     }
 
     private var haveNotReadSecondTime = true
 
+    private var countOutOfRoute = 0
+
+    private fun isOutOfRoute(route: Route): Boolean {
+        for (iL in 0 until route.legs!!.size) {
+            for (iS in 0 until route.legs!![iL].steps!!.size) {
+                if (PolyUtil.isLocationOnPath(LatLng(lastLocation.latitude, lastLocation.longitude), route.legs!![iL].steps!![iS].points, true, REPORT_ON_ROUTE_DISTANCE_DIRECTION)) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
     private fun updateUINavigation(route: Route) {
-        if (!isNavigationInfoWindowUp || !::viewNavigationPopup.isInitialized)
+        if (!isNavigationInfoWindowUp || !::viewNavigationPopup.isInitialized||!::lastLocation.isInitialized)
             return
 
-        if (::lastLocation.isInitialized) {
+        if (isOutOfRoute(route)){
+            countOutOfRoute++
+        } else {
+            countOutOfRoute = 0
+        }
+        Log.d("ReDirection","countOutOfRoute = "+countOutOfRoute.toString())
+
+        if (countOutOfRoute>=3){
+            val newRoute = ArrayList<SimplePlace>()
+            newRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude,lastLocation.longitude)))
+            for (i in 1 until currentDirectionRoute.size){
+                newRoute.add(currentDirectionRoute[i])
+            }
+            currentDirectionRoute.clear()
+            currentDirectionRoute = newRoute
+
+            onBtnStartDirectionClick(currentDirectionRoute)
+
+            val currentChosenRoute = currentPolyline.tag as Route?
+            dismissPopupWindowNavigationInfo()
+            if (currentChosenRoute!=null){
+                onBtnStartNavigationClick(currentChosenRoute)
+            } else {
+                Log.d("ReDirection","currentChosenRoute = null")
+                onBtnStartNavigationClick(route)
+            }
+            Log.d("ReDirection","ReDirection")
+            countOutOfRoute = 0
+        }
+
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
             // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
             // moveCamera cho điểm, animateCamera cho CameraPosition
@@ -1110,7 +1153,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     .bearing(lastLocation.bearing)
                     .build()
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
-        }
+
 
         val imInstruction = viewNavigationPopup.findViewById<ImageView>(R.id.imInstruction_navigation_layout)
         val tvInstruction = viewNavigationPopup.findViewById<TextView>(R.id.tvInstruction_navigation_layout)
@@ -2064,13 +2107,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             locationTask.addOnFailureListener { e ->
                 // 6
                 if (e is ResolvableApiException) {
+                    val lm:LocationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    var needToEnableLocation = false
+                    try {
+                        val isGpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                        val isNetworkEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                        if(!isGpsEnabled && !isNetworkEnabled){
+                            needToEnableLocation = true
+                        }
+                    } catch (ex: Exception) {}
                     // Location settings are not satisfied, but this can be fixed
                     // by showing the user a dialog.
                     try {
                         // Show the dialog by calling startResolutionForResult(),
                         // and check the result in onActivityResult().
-                    e.startResolutionForResult(this@MainActivity,
-                            REQUEST_CHECK_SETTINGS)
+                        if (needToEnableLocation){
+                            e.startResolutionForResult(this@MainActivity,
+                                    REQUEST_CHECK_SETTINGS)
+                        }
                     } catch (sendEx: IntentSender.SendIntentException) {
                         // Ignore the error.
                     }
@@ -2208,7 +2262,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 curMarkerReport = null
 
                 // Update Camera
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 14f))
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 14f))
+                val camPos = CameraPosition.builder()
+                        .target(LatLng(lastLocation.latitude,lastLocation.longitude))
+                        .zoom(14f)
+                        .tilt(0f)
+                        .build()
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos))
 
                 return
             }
@@ -2227,6 +2287,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return
             }
             else -> {
+                dismissPopupWindowNavigationInfo()
                 val builder = android.support.v7.app.AlertDialog.Builder(this)
                 builder.setMessage("Bạn có muốn thoát khỏi ứng dụng?")
                         .setCancelable(false)
