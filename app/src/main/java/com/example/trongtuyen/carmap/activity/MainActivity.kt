@@ -322,23 +322,44 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         polylinePaths = ArrayList()
         originMarkers = ArrayList<Marker>()
         destinationMarkers = ArrayList<Marker>()
-        var firstRoute = true
 
-        for (route in routes) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16f))
+        if (routes.size==1&&routes[0].legs!!.size>1){
+            var firstLeg = true
+            for (leg in routes[0].legs!!){
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(leg.startLocation, 16f))
 
-            val polylineOptions = PolylineOptions().geodesic(true).width(10f).color(Color.GRAY)
+                val polylineOptions = PolylineOptions().geodesic(true).width(10f).color(Color.GRAY)
 
-            val polyline = drawPolyline(route, polylineOptions)
+                val polyline = drawPolyline(routes[0], polylineOptions, leg)
 
-            if (firstRoute) {
-                firstRoute = false
-                currentPolyline = polyline
-                currentPolyline.zIndex = 1F
-                currentPolyline.color = Color.BLUE
-                showRouteInfoPopup(route)
+                if (firstLeg) {
+                    firstLeg = false
+                    currentPolyline = polyline
+                    currentPolyline.zIndex = 1F
+                    currentPolyline.color = Color.BLUE
+                }
+            }
+            markWaypointsOnRoute(currentDirectionRoute)
+            showRouteInfoPopup(routes[0])
+        } else {
+            var firstRoute = true
+            for (route in routes) {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16f))
+
+                val polylineOptions = PolylineOptions().geodesic(true).width(10f).color(Color.GRAY)
+
+                val polyline = drawPolyline(route, polylineOptions)
+
+                if (firstRoute) {
+                    firstRoute = false
+                    currentPolyline = polyline
+                    currentPolyline.zIndex = 1F
+                    currentPolyline.color = Color.BLUE
+                    showRouteInfoPopup(route)
+                }
             }
         }
+
     }
 
     private fun showDirectionInfoPopup() {
@@ -505,8 +526,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun drawPolyline(route: Route, options: PolylineOptions): Polyline {
-        for (i in 0 until route.points!!.size) {
-            options.add(route.points!![i])
+        for (point in route.points!!) {
+            options.add(point)
         }
 
         val polyline = mMap.addPolyline(options)
@@ -514,8 +535,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         polyline.tag = route
         polylinePaths.add(polyline)
 
-            markWaypointsOnRoute(currentDirectionRoute)
+        markWaypointsOnRoute(currentDirectionRoute)
 
+        return polyline
+    }
+
+    private fun drawPolyline(route: Route, options: PolylineOptions, leg: Leg): Polyline{
+        for (step in leg.steps!!){
+            for (point in step.points!!){
+                options.add(point)
+            }
+        }
+        val polyline = mMap.addPolyline(options)
+        polyline.tag = route
+        polylinePaths.add(polyline)
 
         return polyline
     }
@@ -4580,7 +4613,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             override fun onResponse(call: Call<NearbyPlacesResponse>?, response: Response<NearbyPlacesResponse>) {
                 try {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude,lastLocation.longitude), 16f))
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude,lastLocation.longitude), 14f))
                     nearbyPlacesResultMarkers.clear()
                     for (i in 0 until response.body()!!.results.size) {
                         val name = response.body()!!.results[i].name
