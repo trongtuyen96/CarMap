@@ -41,7 +41,7 @@
         <LinearLayout
             android:id="@+id/rowButton1_place_picker_layout"
             android:layout_width="match_parent"
-            android:layout_height="167dp"
+            android:layout_height="127dp"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
@@ -60,16 +60,17 @@
                     android:layout_height="0dp"
                     android:background="@color/background_front"
                     android:padding="16dp"
-                    android:src="@drawable/ic_logo"
+                    android:src="@drawable/ic_gas_station"
                     android:layout_weight="8.5"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.5"
                     android:background="@color/background_front"
-                    android:text="Gas station"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp"/>
+                    android:text="Trạm xăng"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -77,7 +78,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:layout_width="167dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:weightSum="10"
                 android:layout_marginStart="9dp">
@@ -87,23 +88,23 @@
                     android:layout_weight="8.5"
                     android:background="@color/background_front"
                     android:padding="16dp"
-                    android:src="@drawable/ic_logo"/>
+                    android:src="@drawable/ic_parking_new"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.5"
                     android:background="@color/background_front"
-                    android:text="Parking"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp"/>
+                    android:text="Bãi đỗ xe"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/rowButton2_place_picker_layout"
             android:layout_width="match_parent"
-            android:layout_height="167dp"
+            android:layout_height="127dp"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
@@ -122,16 +123,17 @@
                     android:layout_height="0dp"
                     android:background="@color/background_front"
                     android:padding="16dp"
-                    android:src="@drawable/ic_logo"
+                    android:src="@drawable/ic_coffee"
                     android:layout_weight="8.5"/>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.5"
                     android:background="@color/background_front"
-                    android:text="Coffee shop"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp"/>
+                    android:text="Coffee"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -139,7 +141,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:layout_width="167dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:weightSum="10"
                 android:layout_marginStart="9dp">
@@ -149,16 +151,16 @@
                     android:layout_weight="8.5"
                     android:background="@color/background_front"
                     android:padding="16dp"
-                    android:src="@drawable/ic_logo"/>
+                    android:src="@drawable/ic_restaurant"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.5"
                     android:background="@color/background_front"
-                    android:text="Restaurant"
                     android:gravity="center_horizontal"
-                    android:textSize="16sp"/>
+                    android:text="Nhà hàng"
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 

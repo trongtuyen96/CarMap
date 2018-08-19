@@ -18,7 +18,7 @@
             android:id="@+id/imDrag_place_adapter_layout"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/ic_menu_black_24dp" />
+            android:src="@drawable/ic_location_mini" />
 
     </LinearLayout>
 
@@ -26,15 +26,15 @@
         android:id="@+id/tvPlace_place_adapter_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="7.5"
+        android:layout_weight="7"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
         android:text="Địa điểm"
         android:textColor="@color/background_front"
-        android:textSize="14sp"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"/>
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -50,8 +50,14 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:padding="6dp"
-            android:src="@drawable/ic_close_black_24dp" />
+            android:padding="10dp"
+            android:src="@drawable/ic_close_white" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="0.5">
     </LinearLayout>
 
 </LinearLayout><!--<?xml version="1.0" encoding="utf-8"?>--><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:orientation="horizontal"--><!--android:background="@color/colorPrimary"--><!--android:weightSum="10"--><!--android:gravity="center_vertical"--><!--android:minHeight="35dp">--><!--<ImageView--><!--android:id="@+id/imDrag_place_adapter_layout"--><!--android:layout_width="0dp"--><!--android:layout_height="match_parent"--><!--android:layout_weight="2"--><!--android:src="@drawable/ic_menu_black_24dp"/>--><!--<TextView--><!--android:id="@+id/tvPlace_place_adapter_layout"--><!--android:clickable="true"--><!--android:focusable="true"--><!--android:layout_width="0dp"--><!--android:layout_weight="6"--><!--android:layout_height="wrap_content"--><!--android:text="Địa điểm"--><!--android:textSize="18sp"--><!--android:textColor="@color/background_front"/>--><!--<ImageView--><!--android:id="@+id/imRemove_place_adapter_layout"--><!--android:clickable="true"--><!--android:focusable="true"--><!--android:layout_width="0dp"--><!--android:layout_weight="2"--><!--android:layout_height="match_parent"--><!--android:src="@drawable/ic_close_black_24dp"/>-->
