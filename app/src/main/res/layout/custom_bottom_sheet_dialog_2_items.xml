@@ -73,7 +73,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_bird"
+                android:src="@drawable/ic_dangerous_zone"
                 android:id="@+id/imFrame2_2_items"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
@@ -82,7 +82,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Bồ câu"
+                android:text="Nguy hiểm khác"
                 android:textAlignment="center"
                 android:textColor="@color/textColorSecondary"
                 android:textSize="18sp"

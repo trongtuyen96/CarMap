@@ -4201,24 +4201,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val viewReportOtherPopup = inflater.inflate(R.layout.report_other_dialog_layout, null)
+                val viewReportOtherPopup = inflater.inflate(R.layout.report_other_other_dialog_layout, null)
                 mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
-                val tvEmail = viewReportOtherPopup.findViewById<TextView>(R.id.tvEmail_report_other_dialog)
-                val imImage = viewReportOtherPopup.findViewById<ImageView>(R.id.imImage_report_other_dialog)
-                val btnLicensePlate = viewReportOtherPopup.findViewById<Button>(R.id.btnLicensePlate_report_other_dialog)
-                val imPicture = viewReportOtherPopup.findViewById<ImageView>(R.id.imPicture_report_other_dialog)
-                val btnClose = viewReportOtherPopup.findViewById<Button>(R.id.btnClose_report_other_dialog)
-                val tvMess = viewReportOtherPopup.findViewById<TextView>(R.id.tvMess_report_other_dialog)
+                val tvEmail = viewReportOtherPopup.findViewById<TextView>(R.id.tvEmail_report_other_other_dialog)
+                val imImage = viewReportOtherPopup.findViewById<ImageView>(R.id.imImage_report_other_other_dialog)
+                val btnLicensePlate = viewReportOtherPopup.findViewById<Button>(R.id.btnLicensePlate_report_other_other_dialog)
+                val imPicture = viewReportOtherPopup.findViewById<ImageView>(R.id.imPicture_report_other_other_dialog)
+                val btnClose = viewReportOtherPopup.findViewById<Button>(R.id.btnClose_report_other_other_dialog)
+                val tvMess = viewReportOtherPopup.findViewById<TextView>(R.id.tvMess_report_other_other_dialog)
 
                 tvEmail.text = email
 
                 btnLicensePlate.text = licensePLate
-
-                tvMess.text = "... CÓ BỒ CÂU"
-
-                imImage.setImageResource(R.drawable.ic_bird)
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
