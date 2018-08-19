@@ -7,27 +7,160 @@
     tools:context=".activity.MainActivity"
     android:background="@color/divider">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@null"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="109dp">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_place_picker_layout"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ffffff">
-            <fragment
-                android:id="@+id/place_autocomplete_place_picker_layout"
-                android:name = "com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_place_picker_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+                android:layout_height="wrap_content"
+                android:background="#ffffff">
+
+                <fragment
+                    android:id="@+id/place_autocomplete_place_picker_layout"
+                    android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:id="@+id/rowButton1_place_picker_layout"
+            android:layout_width="match_parent"
+            android:layout_height="167dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/appBarLayout"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+            <LinearLayout
+                android:id="@+id/btnNearByGasStations_place_picker_layout"
+                android:layout_width="167dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="10">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/background_front"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_logo"
+                    android:layout_weight="8.5"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:background="@color/background_front"
+                    android:text="Gas station"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnNearByParkings_place_picker_layout"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="167dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="10"
+                android:layout_marginStart="9dp">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="8.5"
+                    android:background="@color/background_front"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_logo"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:background="@color/background_front"
+                    android:text="Parking"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rowButton2_place_picker_layout"
+            android:layout_width="match_parent"
+            android:layout_height="167dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/appBarLayout"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+            <LinearLayout
+                android:id="@+id/btnNearByCoffeeShops_place_picker_layout"
+                android:layout_width="167dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="10">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@color/background_front"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_logo"
+                    android:layout_weight="8.5"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:background="@color/background_front"
+                    android:text="Coffee shop"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/btnNearByRestaurants_place_picker_layout"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="167dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="10"
+                android:layout_marginStart="9dp">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="8.5"
+                    android:background="@color/background_front"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_logo"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:background="@color/background_front"
+                    android:text="Restaurant"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

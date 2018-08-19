@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.example.trongtuyen.carmap.R
 import com.google.android.gms.location.places.Place
 import java.util.*
+import com.example.trongtuyen.carmap.activity.MainActivity
 
 class PlaceAdapter(private val myPlaceSet: ArrayList<SimplePlace>,private var mDragStartListener:OnStartDragListener):
         RecyclerView.Adapter<PlaceAdapter.ViewHolder>(), ItemTouchHelperAdapter {
@@ -24,8 +25,10 @@ class PlaceAdapter(private val myPlaceSet: ArrayList<SimplePlace>,private var mD
     }
 
     override fun onItemDismiss(position: Int) {
-        myPlaceSet.removeAt(position)
-        notifyItemRemoved(position)
+        if (position<myPlaceSet.size){
+            myPlaceSet.removeAt(position)
+        }
+        notifyDataSetChanged()
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)

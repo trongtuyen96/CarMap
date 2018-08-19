@@ -1,5 +1,6 @@
 package com.example.trongtuyen.carmap.activity.common
 
+import android.app.Activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,6 +13,9 @@ import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
 import com.google.android.gms.location.places.Place
+import android.content.Intent
+import android.util.Log
+
 
 class HistorySettingActivity : AppCompatActivity() {
 
@@ -124,6 +128,17 @@ class HistorySettingActivity : AppCompatActivity() {
             selectedPlace = AppController.listHistoryPlace[2]
         }
 
-        btnChoose.setOnClickListener { }
+        btnChoose.setOnClickListener {
+            if (selectedPlace!=null){
+                val resultIntent = Intent()
+                resultIntent.putExtra("PLACE_NAME", selectedPlace!!.name)
+                resultIntent.putExtra("PLACE_LAT", selectedPlace!!.latLng.latitude)
+                resultIntent.putExtra("PLACE_LONG", selectedPlace!!.latLng.longitude)
+                setResult(Activity.RESULT_OK,resultIntent)
+                finish()
+            } else {
+                Log.v("Direction","History place null")
+            }
+        }
     }
 }

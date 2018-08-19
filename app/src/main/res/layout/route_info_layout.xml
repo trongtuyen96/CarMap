@@ -4,6 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/report_detail_divider_route_info_layout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:visibility="gone"
+        android:orientation="vertical">
+    </LinearLayout>
 
     <include layout="@layout/report_detail_layout" />
 
@@ -63,7 +71,7 @@
                 android:orientation="horizontal"
                 android:paddingBottom="2dp"
                 android:paddingStart="20dp"
-                android:paddingTop="4dp">
+                android:paddingTop="2dp">
 
                 <TextView
                     android:id="@+id/tvNumReport_route_info"
@@ -74,16 +82,8 @@
                     android:textAppearance="@android:style/TextAppearance.Material.Large"
                     android:textColor="@color/textColorPrimary"
                     android:textSize="18sp"
-                    android:visibility="visible" />
+                    android:visibility="gone"/>
 
-                <TextView
-                    android:id="@+id/tvReportCount_route_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0 báo hiệu"
-                    android:textAppearance="@android:style/TextAppearance.Material.Large"
-                    android:textColor="#ff0000"
-                    android:textSize="18sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -95,20 +95,22 @@
                 android:focusable="true"
                 android:paddingBottom="2dp"
                 android:paddingStart="20dp"
-                android:paddingTop="2dp">
+                android:paddingTop="2dp"
+                android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginTop="0dp"
                     app:srcCompat="@drawable/ic_menu_grey_800_48dp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/tvSteps_detail_route_info_layout"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:paddingStart="4dp"
+                    android:paddingStart="8dp"
                     android:text="CHI TIẾT CÁC BƯỚC"
                     android:textAppearance="@android:style/TextAppearance.Material.Large"
                     android:textColor="#424242"

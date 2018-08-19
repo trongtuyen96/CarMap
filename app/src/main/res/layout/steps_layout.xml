@@ -5,14 +5,24 @@
     android:background="@null"
     android:gravity="bottom"
     android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/recycler_view_divider_steps_layout"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:visibility="gone"
+        android:orientation="vertical">
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_steps_layout"
         android:layout_width="match_parent"
-        android:layout_height="495dp"
+        android:layout_height="340dp"
         android:background="@color/background_front"
         android:scrollbars="vertical"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:paddingEnd="10dp"
+        android:paddingStart="0dp"/>
 
     <include layout="@layout/route_info_layout" />
 

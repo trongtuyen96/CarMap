@@ -49,6 +49,22 @@
                 <!--android:layout_width="1dp"-->
                 <!--android:layout_height="match_parent"-->
                 <!--android:background="@color/background_front" />-->
+<!--<<<<<<< HEAD-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/btnAdd_edit_direction_layout"-->
+                    <!--android:layout_width="44dp"-->
+                    <!--android:layout_height="44dp"-->
+                    <!--android:layout_marginEnd="4dp"-->
+                    <!--android:layout_marginStart="4dp"-->
+                    <!--android:background="@drawable/bg_btn_yes_stroke"-->
+                    <!--android:clickable="true"-->
+                    <!--android:focusable="true"-->
+                    <!--android:padding="6dp"-->
+                    <!--android:src="@drawable/ic_add_black_24dp" />-->
+
+<!--=======-->
+<!--&gt;>>>>>> 97b6d387979df1e3ad8d0b2f28a86c65add7babe-->
 
             </LinearLayout>
 
@@ -56,7 +72,10 @@
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="1dp"-->
             <!--android:background="@color/background_front" />-->
+<!--<<<<<<< HEAD-->
+<!--=======-->
 
+<!--&gt;>>>>>> 97b6d387979df1e3ad8d0b2f28a86c65add7babe-->
 
             <LinearLayout
                 android:layout_width="match_parent"
