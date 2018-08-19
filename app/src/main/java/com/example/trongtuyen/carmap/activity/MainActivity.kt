@@ -271,6 +271,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             polylinePaths.clear()
         }
+
+        if (waypointsOnRouteMarkers.size>0){
+            for (marker in waypointsOnRouteMarkers){
+                marker.remove()
+            }
+            waypointsOnRouteMarkers.clear()
+        }
     }
 
     override fun onDirectionFinderStart() {
@@ -448,7 +455,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         val placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete_place_picker_layout)
                 as PlaceAutocompleteFragment
-        val btnNearbyGasStation = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByGasStations_place_picker_layout)
+        val btnNearbyGasStations = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByGasStations_place_picker_layout)
+        val btnNearbyParkings = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByParkings_place_picker_layout)
+        val btnNearbyCoffeeShops = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByCoffeeShops_place_picker_layout)
+        val btnNearbyRestaurants = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByRestaurants_place_picker_layout)
 
         placeAutoComplete.setText(null)
         placeAutoComplete.setOnPlaceSelectedListener(object : PlaceSelectionListener {
@@ -465,10 +475,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 Log.d("Maps", "An error occurred: $status")
             }
         })
-        btnNearbyGasStation.setOnClickListener {
+        btnNearbyGasStations.setOnClickListener {
             getNearbyPlaces("gas_station", lastLocation, 1500)
             dismissAddPlacePopup()
         }
+        btnNearbyParkings.setOnClickListener {
+            getNearbyPlaces("parking", lastLocation, 1500)
+            dismissAddPlacePopup()
+        }
+        btnNearbyCoffeeShops.setOnClickListener {
+            getNearbyPlaces("cafe", lastLocation, 1500)
+            dismissAddPlacePopup()
+        }
+        btnNearbyRestaurants.setOnClickListener {
+            getNearbyPlaces("restaurant", lastLocation, 1500)
+            dismissAddPlacePopup()
+        }
+    }
+
+    private var waypointsOnRouteMarkers = ArrayList<Marker>()
+
+    private fun markWaypointsOnRoute(places: ArrayList<SimplePlace>){
+        waypointsOnRouteMarkers.clear()
+        for (i in 1 until places.size){
+            waypointsOnRouteMarkers.add(mMap.addMarker(MarkerOptions().position(LatLng(places[i].location!!.latitude,places[i].location!!.longitude))))
+        }
+        // THAY HÌNH MARKER DESTINATION
+        // waypointsOnRouteMarkers[size] -> change image
     }
 
     private fun drawPolyline(route: Route, options: PolylineOptions): Polyline {
@@ -480,6 +513,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         polyline.isClickable = true
         polyline.tag = route
         polylinePaths.add(polyline)
+
+            markWaypointsOnRoute(currentDirectionRoute)
+
+
         return polyline
     }
 
@@ -516,8 +553,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val dividerAboveRecyclerView = viewRoutePopup.findViewById<LinearLayout>(R.id.recycler_view_divider_steps_layout)
         val dividerAboveReportDetail = viewRoutePopup.findViewById<LinearLayout>(R.id.report_detail_divider_route_info_layout)
 
-        tvRouteDuration.text = route.duration!!.text
-        tvRouteDistance.text = route.distance!!.text
+        if (currentDirectionRoute.size==2){
+            tvRouteDuration.text = route.duration!!.text
+            tvRouteDistance.text = route.distance!!.text
+        }else {
+            val seconds = route.duration!!.value.toLong()
+            Log.d("TimeConvert","text = "+route.duration!!.text)
+            Log.d("TimeConvert","second = "+seconds.toString())
+            val numHour = TimeUnit.SECONDS.toHours(seconds).toInt()
+            Log.d("TimeConvert", "numHour = $numHour")
+            val numMinute = (TimeUnit.SECONDS.toMinutes(seconds) - TimeUnit.HOURS.toMinutes(TimeUnit.SECONDS.toHours(seconds))).toInt()
+            Log.d("TimeConvert", "numMinute = $numMinute")
+            var convertedDuration = ""
+            val convertedDistance = route.distance!!.value/1000
+            if (numHour>0){
+                convertedDuration += numHour.toString() + " giờ "
+            }
+            convertedDuration += numMinute.toString() + " phút"
+
+            tvRouteDuration.text = convertedDuration
+            tvRouteDistance.text = convertedDistance.toString()+" km"
+        }
 
         btnStartNavigation.setOnClickListener {
             onBtnStartNavigationClick(route)
