@@ -22,6 +22,11 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.controllers.AppController
+import com.example.trongtuyen.carmap.models.Report
+import com.example.trongtuyen.carmap.services.APIServiceGenerator
+import com.example.trongtuyen.carmap.services.ErrorUtils
+import com.example.trongtuyen.carmap.services.ReportService
+import com.example.trongtuyen.carmap.utils.AudioPlayer
 import com.example.trongtuyen.carmap.utils.FileUtils
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -29,6 +34,9 @@ import com.sdsmdg.tastytoast.TastyToast
 import org.openalpr.OpenALPR
 import org.openalpr.model.Results
 import org.openalpr.model.ResultsError
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.IOException
 
@@ -64,6 +72,9 @@ class ReportOtherActivity : AppCompatActivity() {
     private var ANDROID_DATA_DIR: String? = null
 
     private var sBase64Image: String = ""
+
+    // Audio Player
+    private var mAudioPlayer = AudioPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,6 +154,7 @@ class ReportOtherActivity : AppCompatActivity() {
             }
 
             AppController.licensePlate = txtPlate.text.toString()
+            onSend()
             finish()
         }
         imVerified.setOnClickListener {
@@ -181,21 +193,47 @@ class ReportOtherActivity : AppCompatActivity() {
 //                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.height.toString() + " " + newBitmap.width.toString(), Toast.LENGTH_SHORT).show()
 
 
-                    // Solution cần bảo tồn
+//                    // Solution cần bảo tồn
+//                    val options = BitmapFactory.Options()
+//                    // Số inSampleSize là ảnh mới sẽ bằng 1 / inSampleSize của ảnh gốc, twucs chiều dài và rộng giảm đi inSampleSize lần
+//
+//
+//                    options.inSampleSize = 8
+//                    val imageStream = contentResolver.openInputStream(photoURI)
+//
+//
+//                    val bitmap = BitmapFactory.decodeStream(imageStream, null, options)
+//                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
+//                    val matrix = Matrix()
+//                    matrix.postRotate(90f)
+//                    val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+//
+//                    if (bitmap.density > 320) {
+//                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
+//                    } else {
+//                        sBase64Image = FileUtils.encodeImageFile(newBitmap, "normal")
+//                    }
+//                    AppController.base64ImageReportOther = sBase64Image
+
                     val options = BitmapFactory.Options()
-                    // Số inSampleSize là ảnh mới sẽ bằng 1 / inSampleSize của ảnh gốc, twucs chiều dài và rộng giảm đi inSampleSize lần
+                    // Số inSampleSize là ảnh mới sẽ bằng 1 / inSampleSize của ảnh gốc, tức chiều dài và rộng giảm đi inSampleSize lần
+                    // inJustRebound = true là sẽ đọc resource của ảnh chứ ko laod ảnh vào bộ nhớ, sẽ giảm bộ nhớ sử dụng
 
-
+                    options.inJustDecodeBounds = true
+                    BitmapFactory.decodeFile(mCurrentPhotoPath, options)
+//                    options.inSampleSize = calculateInSampleSize(options)
                     options.inSampleSize = 8
+                    Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
+//                    options.inDensity = 320
+                    options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
-
-
+//                    imageStream = contentResolver.openInputStream(photoURI)
                     val bitmap = BitmapFactory.decodeStream(imageStream, null, options)
-                    Toast.makeText(this, "BEFORE: " + bitmap.density.toString() + " " + bitmap.width.toString() + " " + bitmap.height.toString(), Toast.LENGTH_SHORT).show()
+
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-
+                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
                     if (bitmap.density > 320) {
                         sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
                     } else {
@@ -205,6 +243,74 @@ class ReportOtherActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun onSend() {
+        when (AppController.typeReportOther) {
+            "careless_driver" -> {
+                val mReport = Report("other", "careless_driver", "", txtPlate.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image, "")
+                onAddNewReportOther(mReport)
+            }
+            "piggy" -> {
+                val mReport = Report("other", "piggy", "", txtPlate.text.toString(), AppController.userProfile!!.currentLocation!!, AppController.userProfile!!._id.toString(), 1, 0, false, "", sBase64Image, "")
+                onAddNewReportOther(mReport)
+            }
+        }
+    }
+
+    private fun onAddNewReportOther(report: Report) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+
+        val call = service.addNewReport(report)
+        call.enqueue(object : Callback<Report> {
+            override fun onFailure(call: Call<Report>?, t: Throwable?) {
+                TastyToast.makeText(this@ReportOtherActivity, "Gửi báo hiệu thất bại!", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+            }
+
+            override fun onResponse(call: Call<Report>, response: Response<Report>) {
+                if (response.isSuccessful) {
+
+                    // Chạy audio
+                    if (AppController.soundMode == 1) {
+                        mAudioPlayer.play(this@ReportOtherActivity, R.raw.gui_bao_hieu_thanh_cong)
+                    }
+                    TastyToast.makeText(this@ReportOtherActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    finish()
+
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    TastyToast.makeText(this@ReportOtherActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+        })
+    }
+
+    val TARGET_IMAGE_WIDTH: Int = 614
+    val TARGET_IMAGE_HEIGHT: Int = 818
+    // This method is used to calculate largest inSampleSize
+    //which is used to decode bitmap in required bitmap.
+    private fun calculateInSampleSize(bmOptions: BitmapFactory.Options): Int {
+        // Raw height and width of image
+        val photoWidth = bmOptions.outWidth
+        val photoHeight = bmOptions.outHeight
+
+        Toast.makeText(this, "BEFORE: " + photoWidth + " " + photoHeight, Toast.LENGTH_SHORT).show()
+        var scaleFactor = 2
+//        if (photoWidth > TARGET_IMAGE_WIDTH || photoHeight > TARGET_IMAGE_HEIGHT) {
+//            val halfPhotoWidth = photoWidth / 2
+//            val halfPhotoHeight = photoHeight / 2
+
+        // Calculate the largest inSampleSize value that is a power of 2
+        //and keeps both height and width larger than the requested height and width.
+
+        // Test and replace with || ( or )
+        while ((photoWidth / scaleFactor) >= TARGET_IMAGE_WIDTH && (photoHeight / scaleFactor) >= TARGET_IMAGE_HEIGHT) {
+
+            scaleFactor *= 2
+        }
+//        }
+        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
+        return scaleFactor
     }
 
     @Throws(IOException::class)
