@@ -78,11 +78,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="2dp"
-                    android:text="Số báo hiệu: "
+                    android:text="0 báo hiệu"
                     android:textAppearance="@android:style/TextAppearance.Material.Large"
-                    android:textColor="@color/textColorPrimary"
-                    android:textSize="18sp"
-                    android:visibility="gone"/>
+                    android:textColor="@color/dangerous"
+                    android:textSize="18sp" />
+                    <!--android:visibility="gone" />-->
 
             </LinearLayout>
 
