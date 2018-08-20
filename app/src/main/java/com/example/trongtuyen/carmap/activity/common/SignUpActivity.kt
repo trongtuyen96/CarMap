@@ -126,12 +126,12 @@ class SignUpActivity : AppCompatActivity() {
                     signInWithEmail(email, password)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@SignUpActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    TastyToast.makeText(this@SignUpActivity, "Lỗi" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<User>, t: Throwable) {
-                TastyToast.makeText(this@SignUpActivity, "Failed!", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                TastyToast.makeText(this@SignUpActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
             }
         })
     }

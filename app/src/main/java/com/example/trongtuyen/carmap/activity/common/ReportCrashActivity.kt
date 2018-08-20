@@ -243,7 +243,7 @@ class ReportCrashActivity : AppCompatActivity() {
                     }
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@ReportCrashActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    TastyToast.makeText(this@ReportCrashActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
         })
@@ -310,7 +310,8 @@ class ReportCrashActivity : AppCompatActivity() {
                     options.inJustDecodeBounds = true
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
                     options.inSampleSize = calculateInSampleSize(options)
-                    Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
+                    // Bỏ vì bớt toast
+//                    Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
 //                    options.inDensity = 320
                     options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
@@ -320,7 +321,8 @@ class ReportCrashActivity : AppCompatActivity() {
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
+                    // Bỏ vì bớt toast
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
                     if (bitmap.density > 320) {
                         sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
                     } else {
@@ -342,8 +344,8 @@ class ReportCrashActivity : AppCompatActivity() {
         // Raw height and width of image
         val photoWidth = bmOptions.outWidth
         val photoHeight = bmOptions.outHeight
-
-        Toast.makeText(this, "BEFORE: " + photoWidth + " " + photoHeight, Toast.LENGTH_SHORT).show()
+// Bỏ vì bớt toast
+//        Toast.makeText(this, "BEFORE: " + photoWidth + " " + photoHeight, Toast.LENGTH_SHORT).show()
         var scaleFactor = 2
 //        if (photoWidth > TARGET_IMAGE_WIDTH || photoHeight > TARGET_IMAGE_HEIGHT) {
 //            val halfPhotoWidth = photoWidth / 2
@@ -358,7 +360,8 @@ class ReportCrashActivity : AppCompatActivity() {
             scaleFactor *= 2
         }
 //        }
-        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
+        // Bỏ vì bớt toast
+//        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
         return scaleFactor
     }
 

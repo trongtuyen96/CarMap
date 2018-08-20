@@ -3561,7 +3561,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
 
             override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                // Bỏ vì bớt toast
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 t.printStackTrace()
             }
         })
@@ -3645,7 +3646,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -3665,7 +3667,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Toast.makeText(this@MainActivity, "Socket ID hiện tại: " + response.body().user?.socketID, Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -3685,7 +3688,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -3704,7 +3708,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                     Toast.makeText(this@MainActivity, "Vị trí mới: " + "long:" + response.body()!!.user?.currentLocation?.coordinates!![0] + "- lat: " + response.body()!!.user?.currentLocation?.coordinates!![1], Toast.LENGTH_SHORT).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -3723,7 +3728,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -3742,7 +3748,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -3792,8 +3799,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private val onConnect = Emitter.Listener {
         this.runOnUiThread {
-            TastyToast.makeText(this.applicationContext,
-                    "Đã kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+            // Bỏ vì bớt toast
+//            TastyToast.makeText(this.applicationContext,
+//                    "Đã kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
             // Gán socket ID vào cho socketID của người dùng
             AppController.userProfile?.socketID = socket.id()
             onUpdateSocketID(AppController.userProfile!!)
@@ -3802,15 +3810,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private val onDisconnect = Emitter.Listener {
         this.runOnUiThread {
-            TastyToast.makeText(this.applicationContext,
-                    "Ngắt kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+            // Bỏ vì bớt toast
+//            TastyToast.makeText(this.applicationContext,
+//                    "Ngắt kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
         }
     }
 
     private val onConnectError = Emitter.Listener {
         this.runOnUiThread {
-            TastyToast.makeText(this.applicationContext,
-                    "Lỗi kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+            // Bỏ vì bớt toast
+//            TastyToast.makeText(this.applicationContext,
+//                    "Lỗi kết nối socket", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
         }
     }
 
@@ -4385,12 +4395,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     onAllReportSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Report>>, t: Throwable) {
-                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                // Bỏ vì bớt toast
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 t.printStackTrace()
             }
         })
@@ -4406,12 +4418,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     onNearbyReportsSuccess(response.body()!!)
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
             override fun onFailure(call: Call<NearbyReportsResponse>, t: Throwable) {
-                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                // Bỏ vì bớt toast
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                 t.printStackTrace()
             }
         })
@@ -4506,7 +4520,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     TastyToast.makeText(this@MainActivity, "Xoá báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -4545,7 +4560,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
@@ -4566,7 +4582,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
 
