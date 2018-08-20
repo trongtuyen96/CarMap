@@ -35,5 +35,8 @@
     <color name="bg_turn_around">#f27e7e</color>
     <color name="bg_watcher">#f44336</color>
     <color name="bg_hello">#1976d2</color>
-
+    <color name="bg_gas_station">#ffc166</color>
+    <color name="bg_restaurant">#66d2ff</color>
+    <color name="bg_coffee">#d0ae7d</color>
+    <color name="bg_parking">#a3d766</color>
 </resources>
