@@ -279,7 +279,7 @@ class ReportOtherActivity : AppCompatActivity() {
 
                 } else {
                     val apiError = ErrorUtils.parseError(response)
-                    TastyToast.makeText(this@ReportOtherActivity, "" + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                    TastyToast.makeText(this@ReportOtherActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
         })
@@ -293,8 +293,8 @@ class ReportOtherActivity : AppCompatActivity() {
         // Raw height and width of image
         val photoWidth = bmOptions.outWidth
         val photoHeight = bmOptions.outHeight
-
-        Toast.makeText(this, "BEFORE: " + photoWidth + " " + photoHeight, Toast.LENGTH_SHORT).show()
+// Bỏ vì bớt toast
+//        Toast.makeText(this, "BEFORE: " + photoWidth + " " + photoHeight, Toast.LENGTH_SHORT).show()
         var scaleFactor = 2
 //        if (photoWidth > TARGET_IMAGE_WIDTH || photoHeight > TARGET_IMAGE_HEIGHT) {
 //            val halfPhotoWidth = photoWidth / 2
@@ -309,7 +309,8 @@ class ReportOtherActivity : AppCompatActivity() {
             scaleFactor *= 2
         }
 //        }
-        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
+        // Bỏ vì bớt toast
+//        Toast.makeText(this, (photoWidth / scaleFactor).toString() + "  " + (photoHeight / scaleFactor).toString(), Toast.LENGTH_SHORT).show()
         return scaleFactor
     }
 
