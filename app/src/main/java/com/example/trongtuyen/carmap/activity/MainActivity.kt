@@ -173,8 +173,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     // Direction
     private lateinit var polylinePaths: MutableList<Polyline>
-    private var originMarkers: MutableList<Marker>? = ArrayList()
-    private var destinationMarkers: MutableList<Marker>? = ArrayList()
     private lateinit var currentPolyline: Polyline
     private lateinit var viewRoutePopup: View
     private var isRouteInfoWindowUp: Boolean = false
@@ -253,18 +251,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun removeCurrentDirectionPolyline() {
-        if (originMarkers != null) {
-            for (marker in originMarkers!!) {
-                marker.remove()
-            }
-        }
-
-        if (destinationMarkers != null) {
-            for (marker in destinationMarkers!!) {
-                marker.remove()
-            }
-        }
-
         if (::polylinePaths.isInitialized) {
             for (polyline in polylinePaths) {
                 polyline.remove()
@@ -272,12 +258,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             polylinePaths.clear()
         }
 
-        if (waypointsOnRouteMarkers.size > 0) {
-            for (marker in waypointsOnRouteMarkers) {
-                marker.remove()
-            }
-            waypointsOnRouteMarkers.clear()
+        for (marker in waypointsOnRouteMarkers) {
+            marker.remove()
         }
+        waypointsOnRouteMarkers.clear()
     }
 
     override fun onDirectionFinderStart() {
@@ -320,8 +304,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         showDirectionInfoPopup()
 
         polylinePaths = ArrayList()
-        originMarkers = ArrayList<Marker>()
-        destinationMarkers = ArrayList<Marker>()
 
         if (routes.size == 1 && routes[0].legs!!.size > 1) {
             var firstLeg = true
@@ -358,6 +340,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     showRouteInfoPopup(route)
                 }
             }
+            markWaypointsOnRoute(currentDirectionRoute)
         }
 
     }
@@ -534,8 +517,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         polyline.isClickable = true
         polyline.tag = route
         polylinePaths.add(polyline)
-
-        markWaypointsOnRoute(currentDirectionRoute)
 
         return polyline
     }
@@ -1077,6 +1058,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     @SuppressLint("InflateParams")
     private fun onBtnStartNavigationClick(route: Route) {
         dismissPopupWindowDirectionInfo()
+        dismissPopupWindowNavigationInfo()
 
         if (::lastLocation.isInitialized) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
@@ -1208,7 +1190,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
         Log.d("ReDirection", "countOutOfRoute = " + countOutOfRoute.toString())
 
-        if (countOutOfRoute >= 3) {
+        if (countOutOfRoute >= 5) {
             val newRoute = ArrayList<SimplePlace>()
             newRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude, lastLocation.longitude)))
             for (i in 1 until currentDirectionRoute.size) {
@@ -1216,11 +1198,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             currentDirectionRoute.clear()
             currentDirectionRoute = newRoute
-
+            onBackPressed()
+            onBackPressed()
             onBtnStartDirectionClick(currentDirectionRoute)
 
             val currentChosenRoute = currentPolyline.tag as Route?
-            dismissPopupWindowNavigationInfo()
+
             if (currentChosenRoute != null) {
                 onBtnStartNavigationClick(currentChosenRoute)
             } else {
@@ -1229,6 +1212,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             Log.d("ReDirection", "ReDirection")
             countOutOfRoute = 0
+            return
         }
 
 
@@ -1433,8 +1417,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 addMarker(place)
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(place.latLng))
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(17f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng,17f))
+
                 showPlaceInfoPopup(place)
 
                 // Thêm place vào AppController
@@ -2379,6 +2363,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return
             }
             else -> {
+                mPopupWindowDirectionInfo = null
                 dismissPopupWindowNavigationInfo()
                 val builder = android.support.v7.app.AlertDialog.Builder(this)
                 builder.setMessage("Bạn có muốn thoát khỏi ứng dụng?")
@@ -2805,7 +2790,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             tvType.text = "Nguy hiểm khác"
                             // Chạy audio
                             if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.canh_bao_co_bo_cau)
+                                mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac)
                             }
                         }
                     }
@@ -4340,7 +4325,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                    mAudioPlayer.play(this, R.raw.canh_bao_co_bo_cau)
+                    mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac)
                 }
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
