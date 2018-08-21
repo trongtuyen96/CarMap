@@ -3361,7 +3361,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         tvType.text = "NGUY HIỂM NÊN GIẢM TỐC ĐỘ"
                     }
                     if (fingers == 3 && gestureDistance >= 120) {
-                        // Báo có công an
+                        // Báo có giám sát
                         btnConfirm.visibility = View.VISIBLE
                         mType = 3
 //                        imvType.setImageResource(R.drawable.ic_report_watcher_44dp)
@@ -3451,7 +3451,48 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 mPopupWindow.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val btnClose = viewPopup.findViewById<ImageView>(R.id.btnClose_marker_user_instruction_dialog_layout)
+                val layout1 = viewPopup.findViewById<LinearLayout>(R.id.layout1_marker_user_instruction_dialog_layout)
+                val layout2 = viewPopup.findViewById<LinearLayout>(R.id.layout2_marker_user_instruction_dialog_layout)
+                val layout3 = viewPopup.findViewById<LinearLayout>(R.id.layout3_marker_user_instruction_dialog_layout)
+                val layout4 = viewPopup.findViewById<LinearLayout>(R.id.layout4_marker_user_instruction_dialog_layout)
+                val layout5 = viewPopup.findViewById<LinearLayout>(R.id.layout5_marker_user_instruction_dialog_layout)
 
+                layout1.setOnClickListener {
+                    mPopupWindow.dismiss()
+                    // Báo hạ độ sáng đèn pha
+                    btnConfirm.visibility = View.VISIBLE
+                    mType = 1
+                    imvType.setImageResource(R.drawable.ic_headlights_on_44dp)
+                    tvType.text = "HẠ ĐỘ SÁNG ĐÈN PHA"
+                }
+                layout2.setOnClickListener {
+                    mPopupWindow.dismiss()
+                    // Báo giảm tốc độ
+                    btnConfirm.visibility = View.VISIBLE
+                    mType = 2
+                    imvType.setImageResource(R.drawable.ic_report_hazard_44dp)
+                    tvType.text = "NGUY HIỂM NÊN GIẢM TỐC ĐỘ"
+                }
+                layout3.setOnClickListener {
+                    mPopupWindow.dismiss()
+                    // Báo có giám sát
+                    btnConfirm.visibility = View.VISIBLE
+                    mType = 3
+                    imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
+                    tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
+                }
+                layout4.setOnClickListener {
+                    mPopupWindow.dismiss()
+                    // Báo nên quay đầu
+                    btnConfirm.visibility = View.VISIBLE
+                    mType = 4
+                    imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
+                    tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
+                }
+                layout5.setOnClickListener {
+                    mPopupWindow.dismiss()
+                    btnHello.performClick()
+                }
                 btnClose.setOnClickListener {
                     mPopupWindow.dismiss()
                 }
