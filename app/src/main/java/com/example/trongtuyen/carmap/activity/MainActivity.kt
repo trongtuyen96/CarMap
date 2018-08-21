@@ -3552,7 +3552,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun drawValidUsers() {
         if (listUser.size == 1) {
-            Toast.makeText(this, "Không tìm thấy xe khác", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Không tìm thấy xe khác", Toast.LENGTH_SHORT).show()
         } else {
             if (curMarkerUser == null || listUserMarker.size == 0) {
                 for (i in 0 until listUserMarker.size) {

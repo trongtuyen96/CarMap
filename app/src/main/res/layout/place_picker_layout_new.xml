@@ -53,27 +53,36 @@
                 android:id="@+id/btnNearByGasStations_place_picker_layout"
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
-                android:background="@color/bg_gas_station"
+                android:background="@drawable/bg_place_gas_station"
                 android:orientation="vertical"
                 android:weightSum="10">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8"
+                    android:layout_weight="7.5"
                     android:padding="20dp"
                     android:src="@drawable/ic_gas_station" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/background_front" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:background="@color/background_front"
                     android:gravity="center_horizontal"
                     android:text="TRẠM XĂNG"
-                    android:textColor="@color/bg_gas_station"
+                    android:textColor="@color/background_front"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5" />
             </LinearLayout>
 
             <LinearLayout
@@ -81,7 +90,7 @@
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="9dp"
-                android:background="@color/bg_parking"
+                android:background="@drawable/bg_place_parking"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -90,20 +99,29 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8"
+                    android:layout_weight="7.5"
                     android:padding="20dp"
                     android:src="@drawable/ic_parking" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/background_front" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:background="@color/background_front"
                     android:gravity="center_horizontal"
                     android:text="BÃI ĐỖ XE"
-                    android:textColor="@color/bg_parking"
+                    android:textColor="@color/background_front"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5" />
             </LinearLayout>
         </LinearLayout>
 
@@ -122,27 +140,36 @@
                 android:id="@+id/btnNearByCoffeeShops_place_picker_layout"
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
-                android:background="@color/bg_coffee"
+                android:background="@drawable/bg_place_coffee"
                 android:orientation="vertical"
                 android:weightSum="10">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8"
+                    android:layout_weight="7.5"
                     android:padding="20dp"
                     android:src="@drawable/ic_coffee" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/background_front" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:background="@color/background_front"
                     android:gravity="center_horizontal"
                     android:text="CÀ PHÊ"
-                    android:textColor="@color/bg_coffee"
+                    android:textColor="@color/background_front"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"/>
             </LinearLayout>
 
             <LinearLayout
@@ -150,7 +177,7 @@
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="9dp"
-                android:background="@color/bg_restaurant"
+                android:background="@drawable/bg_place_restaurant"
                 android:clickable="true"
                 android:focusable="true"
                 android:orientation="vertical"
@@ -159,20 +186,29 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8"
+                    android:layout_weight="7.5"
                     android:padding="20dp"
                     android:src="@drawable/ic_restaurant" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/background_front" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:background="@color/background_front"
                     android:gravity="center_horizontal"
                     android:text="NHÀ HÀNG"
-                    android:textColor="@color/bg_restaurant"
+                    android:textColor="@color/background_front"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"/>
             </LinearLayout>
         </LinearLayout>
 
