@@ -1585,7 +1585,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //            Toast.makeText(this, "Vô chỗ gửi rồi", Toast.LENGTH_SHORT).show()
             for (i in 0 until listUser.size) {
                 if (listUser[i].email != AppController.userProfile!!.email) {
-                    attemptReportOther(AppController.userProfile!!.email!!, listUser[i].socketID.toString(), AppController.typeReportOther, AppController.base64ImageReportOther, AppController.licensePlate)
+                    attemptReportOther(AppController.userProfile!!.email!!, AppController.userProfile!!.name!!,listUser[i].socketID.toString(), AppController.typeReportOther, AppController.base64ImageReportOther, AppController.licensePlate)
 //                    Log.e("SOCKET", AppController.userProfile!!.email!!)
 //                    Log.e("SOCKET", listUser[i].socketID.toString())
 //                    Log.e("SOCKET", AppController.typeReportOther)
@@ -3280,7 +3280,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         mAudioPlayer.play(this, R.raw.gui_loi_chao)
                     }
 
-                    attemptHello(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
+                    attemptHello(AppController.userProfile?.email.toString(),AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     mPopupWindowUser!!.dismiss()
                     curMarkerUser = null
                     viewUserPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -3409,16 +3409,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     when (mType) {
                         1 -> {
-                            attemptWarnStrongLight(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
+                            attemptWarnStrongLight(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                         }
                         2 -> {
-                            attemptWarnSlowDown(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
+                            attemptWarnSlowDown(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                         }
                         3 -> {
-                            attemptWarnWatcher(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
+                            attemptWarnWatcher(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                         }
                         4 -> {
-                            attemptWarnTurnAround(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
+                            attemptWarnTurnAround(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                         }
                     }
                     TastyToast.makeText(this, "Đã gửi cảnh báo cho tài xế", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
@@ -3868,12 +3868,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
+            val name: String
             val sendID: String
             val message: String
             try {
                 email = args[0] as String
-                sendID = args[1] as String
-                message = args[2] as String
+                name = args[1] as String
+                sendID = args[2] as String
+                message = args[3] as String
 
             } catch (e: JSONException) {
                 Log.e("LOG", e.message)
@@ -3900,7 +3902,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val imImage = viewHelloPopup.findViewById<ImageView>(R.id.imImage_hello_dialog)
                 val btnOther = viewHelloPopup.findViewById<Button>(R.id.btnOther_hello_dialog)
 
-                tvEmail.text = email
+                tvEmail.text = name
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
@@ -3923,12 +3925,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.soundMode == 1) {
                         mAudioPlayer.play(this, R.raw.gui_loi_chao)
                     }
-                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+                    attemptHello(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
 
                 btnOther.setOnClickListener {
+                    mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     var i = 0
                     var isFinish = false
@@ -3941,8 +3944,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             i++
                         }
                     }
-                    Toast.makeText(this,isFinish.toString(),Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this,email,Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this,isFinish.toString(),Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this,email,Toast.LENGTH_SHORT).show()
                 }
 //                val factory = LayoutInflater.from(this)
 //                val customDialogView = factory.inflate(R.layout.hello_dialog_layout, null)
@@ -3965,7 +3968,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                })
 //
 //                customDialogView.findViewById<Button>(R.id.btnHello_hello_dialog).setOnClickListener {
-//                    attemptHello(AppController.userProfile?.email.toString(), sendID)
+//                    attemptHello(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
 //                    customDialog.dismiss()
 //                }
 //                customDialog.show()
@@ -3973,23 +3976,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptHello(email: String, receiveSocketID: String) {
+    private fun attemptHello(email: String, name: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_hello_server", email, socket.id(), receiveSocketID, "hello")
+        socket.emit("event_hello_server", email, name, socket.id(), receiveSocketID, "hello")
     }
 
     private val onWarnStrongLight = Emitter.Listener { args ->
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
+            val name: String
             val sendID: String
             val message: String
             try {
                 email = args[0] as String
-                sendID = args[1] as String
-                message = args[2] as String
+                name = args[1] as String
+                sendID = args[2] as String
+                message = args[3] as String
 
             } catch (e: JSONException) {
                 Log.e("LOG", e.message)
@@ -4015,8 +4020,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val btnThank = viewWarnStrongLightPopup.findViewById<Button>(R.id.btnThank_warn_strong_light_dialog)
                 val imImage = viewWarnStrongLightPopup.findViewById<ImageView>(R.id.imImage_warn_strong_light_dialog)
 
-                tvEmail.text = email
-
+//                // Tìm tên từ email
+//                var i = 0
+//                var isFinish = false
+//                while (isFinish == false && i < listUserMarker.size) {
+//                    if (listUser[i].email == email) {
+//                        isFinish = true
+//                        tvEmail.text = listUser[i].name
+//                    } else {
+//                        i++
+//                    }
+//                }
+                tvEmail.text = name
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
 
@@ -4034,7 +4049,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -4042,11 +4057,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptWarnStrongLight(email: String, receiveSocketID: String) {
+    private fun attemptWarnStrongLight(email: String, name: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_warn_strong_light_server", email, socket.id(), receiveSocketID, "strong light")
+        socket.emit("event_warn_strong_light_server", email, name, socket.id(), receiveSocketID, "strong light")
     }
 
     @SuppressLint("InflateParams")
@@ -4054,12 +4069,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
+            val name: String
             val sendID: String
             val message: String
             try {
                 email = args[0] as String
-                sendID = args[1] as String
-                message = args[2] as String
+                name = args[1] as String
+                sendID = args[2] as String
+                message = args[3] as String
 
             } catch (e: JSONException) {
                 Log.e("LOG", e.message)
@@ -4085,7 +4102,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val btnThank = viewWarnWatcherPopup.findViewById<Button>(R.id.btnThank_warn_watcher_dialog)
                 val imImage = viewWarnWatcherPopup.findViewById<ImageView>(R.id.imImage_warn_watcher_dialog)
 
-                tvEmail.text = email
+                tvEmail.text = name
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
@@ -4104,7 +4121,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -4112,11 +4129,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptWarnWatcher(email: String, receiveSocketID: String) {
+    private fun attemptWarnWatcher(email: String, name: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_warn_watcher_server", email, socket.id(), receiveSocketID, "watcher")
+        socket.emit("event_warn_watcher_server", email, name, socket.id(), receiveSocketID, "watcher")
     }
 
     @SuppressLint("InflateParams")
@@ -4124,12 +4141,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
+            val name: String
             val sendID: String
             val message: String
             try {
                 email = args[0] as String
-                sendID = args[1] as String
-                message = args[2] as String
+                name = args[1] as String
+                sendID = args[2] as String
+                message = args[3] as String
 
             } catch (e: JSONException) {
                 Log.e("LOG", e.message)
@@ -4155,7 +4174,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val btnThank = viewWarnSlowDownPopup.findViewById<Button>(R.id.btnThank_warn_slow_down_dialog)
                 val imImage = viewWarnSlowDownPopup.findViewById<ImageView>(R.id.imImage_warn_slow_down_dialog)
 
-                tvEmail.text = email
+                tvEmail.text = name
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
@@ -4174,7 +4193,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -4182,11 +4201,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptWarnSlowDown(email: String, receiveSocketID: String) {
+    private fun attemptWarnSlowDown(email: String, name: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_warn_slow_down_server", email, socket.id(), receiveSocketID, "slow down")
+        socket.emit("event_warn_slow_down_server", email, name, socket.id(), receiveSocketID, "slow down")
     }
 
     @SuppressLint("InflateParams")
@@ -4194,12 +4213,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
+            val name: String
             val sendID: String
             val message: String
             try {
                 email = args[0] as String
-                sendID = args[1] as String
-                message = args[2] as String
+                name = args[1] as String
+                sendID = args[2] as String
+                message = args[3] as String
 
             } catch (e: JSONException) {
                 Log.e("LOG", e.message)
@@ -4225,7 +4246,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val btnThank = viewWarnTurnAroundPopup.findViewById<Button>(R.id.btnThank_warn_turn_around_dialog)
                 val imImage = viewWarnTurnAroundPopup.findViewById<ImageView>(R.id.imImage_warn_turn_around_dialog)
 
-                tvEmail.text = email
+                tvEmail.text = name
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
@@ -4244,7 +4265,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -4252,11 +4273,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptWarnTurnAround(email: String, receiveSocketID: String) {
+    private fun attemptWarnTurnAround(email: String, name: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_warn_turn_around_server", email, socket.id(), receiveSocketID, "turn around")
+        socket.emit("event_warn_turn_around_server", email, name, socket.id(), receiveSocketID, "turn around")
     }
 
     @SuppressLint("InflateParams")
@@ -4264,12 +4285,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         this.runOnUiThread(Runnable {
             //            val data : JSONObject = args[0] as JSONObject
             val email: String
+            val name: String
             val sendID: String
             val message: String
             try {
                 email = args[0] as String
-                sendID = args[1] as String
-                message = args[2] as String
+                name = args[1] as String
+                sendID = args[2] as String
+                message = args[3] as String
 
             } catch (e: JSONException) {
                 Log.e("LOG", e.message)
@@ -4294,7 +4317,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val tvEmail = viewWarnThankPopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
                 val imImage = viewWarnThankPopup.findViewById<ImageView>(R.id.imImage_warn_thank_dialog)
 
-                tvEmail.text = email
+                tvEmail.text = name
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
                 imImage.startAnimation(animShake)
@@ -4311,11 +4334,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptWarnThank(email: String, receiveSocketID: String) {
+    private fun attemptWarnThank(email: String, name: String, receiveSocketID: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_warn_thank_server", email, socket.id(), receiveSocketID, "thank")
+        socket.emit("event_warn_thank_server", email, name, socket.id(), receiveSocketID, "thank")
     }
 
     @SuppressLint("InflateParams")
@@ -4324,16 +4347,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             //            val data : JSONObject = args[0] as JSONObject
 //            Toast.makeText(this, "Vô chỗ nhận rồi", Toast.LENGTH_SHORT).show()
             val email: String
+            val name: String
             val sendID: String
             val type: String
             val base64Image: String
             val licensePLate: String
             try {
                 email = args[0] as String
-                sendID = args[1] as String
-                type = args[2] as String
-                base64Image = args[3] as String
-                licensePLate = args[4] as String
+                name = args[1] as String
+                sendID = args[2] as String
+                type = args[3] as String
+                base64Image = args[4] as String
+                licensePLate = args[5] as String
 
             } catch (e: JSONException) {
                 Log.e("LOG", e.message)
@@ -4362,8 +4387,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val imPicture = viewReportOtherPopup.findViewById<ImageView>(R.id.imPicture_report_other_dialog)
                 val btnClose = viewReportOtherPopup.findViewById<Button>(R.id.btnClose_report_other_dialog)
 
-                tvEmail.text = email
-
+                tvEmail.text = name
                 btnLicensePlate.text = licensePLate
 
                 val animShake = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake)
@@ -4399,7 +4423,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val btnClose = viewReportOtherPopup.findViewById<Button>(R.id.btnClose_report_other_other_dialog)
                 val tvMess = viewReportOtherPopup.findViewById<TextView>(R.id.tvMess_report_other_other_dialog)
 
-                tvEmail.text = email
+                tvEmail.text = name
 
                 btnLicensePlate.text = licensePLate
 
@@ -4420,11 +4444,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
-    private fun attemptReportOther(email: String, receiveSocketID: String, type: String, base64Image: String, licensePlate: String) {
+    private fun attemptReportOther(email: String, name: String, receiveSocketID: String, type: String, base64Image: String, licensePlate: String) {
         if (!socket.connected()) return
 
         // perform the sending message attempt.
-        socket.emit("event_report_other_server", email, socket.id(), receiveSocketID, type, base64Image, licensePlate)
+        socket.emit("event_report_other_server", email, name, socket.id(), receiveSocketID, type, base64Image, licensePlate)
     }
 
     // ====================================================================================================================================================== //
