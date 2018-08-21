@@ -45,7 +45,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="109dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/layout1_marker_user_instruction_dialog_layout">
 
             <LinearLayout
                 android:layout_width="160dp"
@@ -96,7 +97,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="109dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/layout2_marker_user_instruction_dialog_layout">
 
             <LinearLayout
                 android:layout_width="160dp"
@@ -147,7 +149,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="109dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/layout3_marker_user_instruction_dialog_layout">
 
             <LinearLayout
                 android:layout_width="160dp"
@@ -198,7 +201,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="109dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/layout4_marker_user_instruction_dialog_layout">
 
             <LinearLayout
                 android:layout_width="160dp"
@@ -249,7 +253,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="109dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:id="@+id/layout5_marker_user_instruction_dialog_layout">
 
             <LinearLayout
                 android:layout_width="160dp"
