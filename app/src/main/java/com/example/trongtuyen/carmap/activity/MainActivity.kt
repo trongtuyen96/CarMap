@@ -1058,6 +1058,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     @SuppressLint("InflateParams")
     private fun onBtnStartNavigationClick(route: Route) {
         dismissPopupWindowDirectionInfo()
+        dismissPopupWindowNavigationInfo()
 
         if (::lastLocation.isInitialized) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lastLocation.latitude, lastLocation.longitude), 20f))
@@ -1189,7 +1190,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
         Log.d("ReDirection", "countOutOfRoute = " + countOutOfRoute.toString())
 
-        if (countOutOfRoute >= 3) {
+        if (countOutOfRoute >= 5) {
             val newRoute = ArrayList<SimplePlace>()
             newRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude, lastLocation.longitude)))
             for (i in 1 until currentDirectionRoute.size) {
@@ -1197,11 +1198,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             currentDirectionRoute.clear()
             currentDirectionRoute = newRoute
-
+            onBackPressed()
+            onBackPressed()
             onBtnStartDirectionClick(currentDirectionRoute)
 
             val currentChosenRoute = currentPolyline.tag as Route?
-            dismissPopupWindowNavigationInfo()
+
             if (currentChosenRoute != null) {
                 onBtnStartNavigationClick(currentChosenRoute)
             } else {
@@ -1210,6 +1212,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             Log.d("ReDirection", "ReDirection")
             countOutOfRoute = 0
+            return
         }
 
 
@@ -2787,7 +2790,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             tvType.text = "Nguy hiểm khác"
                             // Chạy audio
                             if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                                mAudioPlayer.play(this, R.raw.canh_bao_co_bo_cau)
+                                mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac)
                             }
                         }
                     }
@@ -4322,7 +4325,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                    mAudioPlayer.play(this, R.raw.canh_bao_co_bo_cau)
+                    mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac)
                 }
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
