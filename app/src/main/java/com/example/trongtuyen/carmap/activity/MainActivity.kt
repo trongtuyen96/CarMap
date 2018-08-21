@@ -28,6 +28,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.trongtuyen.carmap.R
+import com.example.trongtuyen.carmap.R.id.*
 import com.example.trongtuyen.carmap.activity.common.*
 import com.example.trongtuyen.carmap.adapters.CustomInfoWindowAdapter
 import com.example.trongtuyen.carmap.controllers.AppController
@@ -1417,7 +1418,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 addMarker(place)
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng,17f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17f))
 
                 showPlaceInfoPopup(place)
 
@@ -3279,7 +3280,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         mAudioPlayer.play(this, R.raw.gui_loi_chao)
                     }
 
-                    attemptHello(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    attemptHello(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
                     mPopupWindowUser!!.dismiss()
                     curMarkerUser = null
                     viewUserPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -3408,16 +3409,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                     when (mType) {
                         1 -> {
-                            attemptWarnStrongLight(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                            attemptWarnStrongLight(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
                         }
                         2 -> {
-                            attemptWarnSlowDown(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                            attemptWarnSlowDown(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
                         }
                         3 -> {
-                            attemptWarnWatcher(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                            attemptWarnWatcher(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
                         }
                         4 -> {
-                            attemptWarnTurnAround(AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                            attemptWarnTurnAround(AppController.userProfile?.email.toString(), dataUser.socketID.toString())
                         }
                     }
                     TastyToast.makeText(this, "Đã gửi cảnh báo cho tài xế", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
@@ -3897,6 +3898,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val tvEmail = viewHelloPopup.findViewById<TextView>(R.id.tvEmail_hello_dialog)
                 val btnHello = viewHelloPopup.findViewById<Button>(R.id.btnHello_hello_dialog)
                 val imImage = viewHelloPopup.findViewById<ImageView>(R.id.imImage_hello_dialog)
+                val btnOther = viewHelloPopup.findViewById<Button>(R.id.btnOther_hello_dialog)
 
                 tvEmail.text = email
 
@@ -3926,6 +3928,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
 
+                btnOther.setOnClickListener {
+                    it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                    var i = 0
+                    var isFinish = false
+                    while (isFinish == false && i < listUserMarker.size) {
+                        val data: User = listUserMarker[i].tag as User
+                        if (data.email == email) {
+                            isFinish = true
+                            onOpenReportMarker(listUserMarker[i])
+                        } else {
+                            i++
+                        }
+                    }
+                    Toast.makeText(this,isFinish.toString(),Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,email,Toast.LENGTH_SHORT).show()
+                }
 //                val factory = LayoutInflater.from(this)
 //                val customDialogView = factory.inflate(R.layout.hello_dialog_layout, null)
 //                val customDialog = AlertDialog.Builder(this).create()
@@ -3947,7 +3965,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                })
 //
 //                customDialogView.findViewById<Button>(R.id.btnHello_hello_dialog).setOnClickListener {
-//                    attemptHello(AppController.userProfile?.name.toString(), sendID)
+//                    attemptHello(AppController.userProfile?.email.toString(), sendID)
 //                    customDialog.dismiss()
 //                }
 //                customDialog.show()
@@ -4016,7 +4034,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -4086,7 +4104,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -4156,7 +4174,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
@@ -4226,7 +4244,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }.start()
 
                 btnThank.setOnClickListener {
-                    attemptWarnThank(AppController.userProfile?.name.toString(), sendID)
+                    attemptWarnThank(AppController.userProfile?.email.toString(), sendID)
                     mPopupWindowHello!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
