@@ -223,6 +223,7 @@ class ReportOtherActivity : AppCompatActivity() {
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
 //                    options.inSampleSize = calculateInSampleSize(options)
                     options.inSampleSize = 8
+                    // Bớt toast
                     Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
 //                    options.inDensity = 320
                     options.inJustDecodeBounds = false
@@ -233,7 +234,8 @@ class ReportOtherActivity : AppCompatActivity() {
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
+                    // Bớt toast
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
                     if (bitmap.density > 320) {
                         sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
                     } else {
