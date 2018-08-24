@@ -2711,12 +2711,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
                     imvRecord.setOnClickListener {
                         //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
-                        if (dataReport.byteAudioFile != "") {
-                            val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
-                            FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
-                        } else {
-                            TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                        }
+//                        if (dataReport.byteAudioFile != "") {
+//                            val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
+//                            FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
+//                        } else {
+//                            TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//                        }
+                        openVoiceOnReport(dataReport._id!!)
                     }
                     imvImage.setOnClickListener {
                         //                        if (dataReport.byteImageFile != "") {
@@ -3192,12 +3193,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
                 imvRecord.setOnClickListener {
                     //                val filePath = externalCacheDir!!.absolutePath + "/" + dataReport._id.toString() + ".3gp"
-                    if (dataReport.byteAudioFile != "") {
-                        val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
-                        FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
-                    } else {
-                        TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                    }
+//                    if (dataReport.byteAudioFile != "") {
+//                        val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
+//                        FileUtils.decodeAudioFile(dataReport.byteAudioFile!!, filePath)
+//                    } else {
+//                        TastyToast.makeText(this, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//                    }
+                    openVoiceOnReport(dataReport._id!!)
                 }
                 imvImage.setOnClickListener {
                     //                    if (dataReport.byteImageFile != "") {
@@ -3545,22 +3547,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun openVoiceOnReport(id: String) {
-        val progress = ProgressDialog.show(this, "Hình ảnh báo hiệu", "Đang tải...", true)
+        val progress = ProgressDialog.show(this, "Thu âm báo hiệu", "Đang tải...", true)
 
         AsyncTask.execute {
             try {
                 runOnUiThread {
                     val service = APIServiceGenerator.createService(ReportService::class.java)
-                    val call = service.getBase64ImageReport(id)
+                    val call = service.getBase64VoiceReport(id)
                     call.enqueue(object : Callback<ReportResponse> {
                         override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                             if (response.isSuccessful) {
-                                if (response.body()!!.report!!.byteImageFile == "") {
-                                    TastyToast.makeText(this@MainActivity, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                                if (response.body()!!.report!!.byteAudioFile == "") {
+                                    TastyToast.makeText(this@MainActivity, "Không có dữ liệu thu âm", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
                                 } else {
-                                    val intent = Intent(this@MainActivity, CustomCameraActivity::class.java)
-                                    intent.putExtra("base64Image", response.body()!!.report!!.byteImageFile!!)
-                                    startActivity(intent)
+                                    val filePath = externalCacheDir!!.absolutePath + "/audio_decoded.3gp"
+                                    FileUtils.decodeAudioFile(response.body()!!.report!!.byteAudioFile!!, filePath)
                                 }
                             } else {
                                 val apiError = ErrorUtils.parseError(response)
@@ -4778,6 +4779,36 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             return "0"
         } else {
             return response.report!!.byteImageFile!!
+        }
+    }
+
+    private fun onGetBase64VoiceReport(id: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.getBase64VoiceReport(id)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    onGetBase64VoiceSuccess(response.body()!!)
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                // Bỏ vì bớt toast
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun onGetBase64VoiceSuccess(response: ReportResponse): String {
+        if (response.report!!.byteAudioFile == "") {
+            return "0"
+        } else {
+            return response.report!!.byteAudioFile!!
         }
     }
 
