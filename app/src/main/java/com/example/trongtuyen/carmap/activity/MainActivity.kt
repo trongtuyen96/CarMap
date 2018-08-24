@@ -3,6 +3,7 @@ package com.example.trongtuyen.carmap.activity
 import `in`.championswimmer.sfg.lib.SimpleFingerGestures
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -13,10 +14,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Handler
+import android.os.*
 import android.provider.Settings
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -61,6 +59,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.maps.android.PolyUtil
 import com.sdsmdg.tastytoast.TastyToast
 import io.socket.client.Socket
@@ -69,6 +69,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import org.json.JSONException
+import org.openalpr.model.ResultsError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -1585,7 +1586,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //            Toast.makeText(this, "Vô chỗ gửi rồi", Toast.LENGTH_SHORT).show()
             for (i in 0 until listUser.size) {
                 if (listUser[i].email != AppController.userProfile!!.email) {
-                    attemptReportOther(AppController.userProfile!!.email!!, AppController.userProfile!!.name!!,listUser[i].socketID.toString(), AppController.typeReportOther, AppController.base64ImageReportOther, AppController.licensePlate)
+                    attemptReportOther(AppController.userProfile!!.email!!, AppController.userProfile!!.name!!, listUser[i].socketID.toString(), AppController.typeReportOther, AppController.base64ImageReportOther, AppController.licensePlate)
 //                    Log.e("SOCKET", AppController.userProfile!!.email!!)
 //                    Log.e("SOCKET", listUser[i].socketID.toString())
 //                    Log.e("SOCKET", AppController.typeReportOther)
@@ -2718,13 +2719,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                     }
                     imvImage.setOnClickListener {
-                        if (dataReport.byteImageFile != "") {
-                            val intent = Intent(this, CustomCameraActivity::class.java)
-                            intent.putExtra("base64Image", dataReport.byteImageFile)
-                            startActivity(intent)
-                        } else {
-                            TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                        }
+                        //                        if (dataReport.byteImageFile != "") {
+//                            val intent = Intent(this, CustomCameraActivity::class.java)
+//                            intent.putExtra("base64Image", dataReport.byteImageFile)
+//                            startActivity(intent)
+//                        } else {
+//                            TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//                        }
+                        openImageOnReport(dataReport._id!!)
                     }
                     imvCall.setOnClickListener {
                         if (dataReport.phoneNumber == AppController.userProfile!!.phoneNumber) {
@@ -2856,13 +2858,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                     }
                     imvImage.setOnClickListener {
-                        if (dataReport.byteImageFile != "") {
-                            val intent = Intent(this, CustomCameraActivity::class.java)
-                            intent.putExtra("base64Image", dataReport.byteImageFile)
-                            startActivity(intent)
-                        } else {
-                            TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                        }
+                        //                        if (dataReport.byteImageFile != "") {
+//                            val intent = Intent(this, CustomCameraActivity::class.java)
+//                            intent.putExtra("base64Image", dataReport.byteImageFile)
+//                            startActivity(intent)
+//                        } else {
+//                            TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//                        }
+                        openImageOnReport(dataReport._id!!)
                     }
                 }
             } else {
@@ -3197,13 +3200,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
                 }
                 imvImage.setOnClickListener {
-                    if (dataReport.byteImageFile != "") {
-                        val intent = Intent(this, CustomCameraActivity::class.java)
-                        intent.putExtra("base64Image", dataReport.byteImageFile)
-                        startActivity(intent)
-                    } else {
-                        TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
-                    }
+                    //                    if (dataReport.byteImageFile != "") {
+//                        val intent = Intent(this, CustomCameraActivity::class.java)
+//                        intent.putExtra("base64Image", dataReport.byteImageFile)
+//                        startActivity(intent)
+//                    } else {
+//                        TastyToast.makeText(this, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+//                    }
+                    openImageOnReport(dataReport._id!!)
                 }
             }
 
@@ -3280,7 +3284,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         mAudioPlayer.play(this, R.raw.gui_loi_chao)
                     }
 
-                    attemptHello(AppController.userProfile?.email.toString(),AppController.userProfile?.name.toString(), dataUser.socketID.toString())
+                    attemptHello(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), dataUser.socketID.toString())
                     mPopupWindowUser!!.dismiss()
                     curMarkerUser = null
                     viewUserPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
@@ -3494,6 +3498,92 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //                }
 //            })
 
+        }
+    }
+
+    private fun openImageOnReport(id: String) {
+        val progress = ProgressDialog.show(this, "Hình ảnh báo hiệu", "Đang tải...", true)
+
+        AsyncTask.execute {
+            try {
+                runOnUiThread {
+                    val service = APIServiceGenerator.createService(ReportService::class.java)
+                    val call = service.getBase64ImageReport(id)
+                    call.enqueue(object : Callback<ReportResponse> {
+                        override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                            if (response.isSuccessful) {
+                                if (response.body()!!.report!!.byteImageFile == "") {
+                                    TastyToast.makeText(this@MainActivity, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                                } else {
+                                    val intent = Intent(this@MainActivity, CustomCameraActivity::class.java)
+                                    intent.putExtra("base64Image", response.body()!!.report!!.byteImageFile!!)
+                                    startActivity(intent)
+                                }
+                            } else {
+                                val apiError = ErrorUtils.parseError(response)
+                                // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                            // Bỏ vì bớt toast
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                            t.printStackTrace()
+                        }
+                    })
+                }
+
+            } catch (exception: Exception) {
+                runOnUiThread {
+                    TastyToast.makeText(this, exception.toString(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            progress.dismiss()
+        }
+    }
+
+    private fun openVoiceOnReport(id: String) {
+        val progress = ProgressDialog.show(this, "Hình ảnh báo hiệu", "Đang tải...", true)
+
+        AsyncTask.execute {
+            try {
+                runOnUiThread {
+                    val service = APIServiceGenerator.createService(ReportService::class.java)
+                    val call = service.getBase64ImageReport(id)
+                    call.enqueue(object : Callback<ReportResponse> {
+                        override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                            if (response.isSuccessful) {
+                                if (response.body()!!.report!!.byteImageFile == "") {
+                                    TastyToast.makeText(this@MainActivity, "Không có dữ liệu hình ảnh", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                                } else {
+                                    val intent = Intent(this@MainActivity, CustomCameraActivity::class.java)
+                                    intent.putExtra("base64Image", response.body()!!.report!!.byteImageFile!!)
+                                    startActivity(intent)
+                                }
+                            } else {
+                                val apiError = ErrorUtils.parseError(response)
+                                // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                            // Bỏ vì bớt toast
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                            t.printStackTrace()
+                        }
+                    })
+                }
+
+            } catch (exception: Exception) {
+                runOnUiThread {
+                    TastyToast.makeText(this, exception.toString(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            progress.dismiss()
         }
     }
 
@@ -4660,6 +4750,37 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         })
     }
+
+    private fun onGetBase64ImageReport(id: String) {
+        val service = APIServiceGenerator.createService(ReportService::class.java)
+        val call = service.getBase64ImageReport(id)
+        call.enqueue(object : Callback<ReportResponse> {
+            override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
+                if (response.isSuccessful) {
+                    onGetBase64ImageSuccess(response.body()!!)
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ReportResponse>, t: Throwable) {
+                // Bỏ vì bớt toast
+//                TastyToast.makeText(this@MainActivity, "Không có kết nối Internet", TastyToast.LENGTH_SHORT, TastyToast.WARNING).show()
+                t.printStackTrace()
+            }
+        })
+    }
+
+    private fun onGetBase64ImageSuccess(response: ReportResponse): String {
+        if (response.report!!.byteImageFile == "") {
+            return "0"
+        } else {
+            return response.report!!.byteImageFile!!
+        }
+    }
+
 
     // ====================================================================================================================================================== //
     // ======== GESTURE DETECTOR ============================================================================================================================ //
