@@ -46,7 +46,7 @@ class CustomCameraActivity : AppCompatActivity() {
             val newBitmap = FileUtils.decodeImageFile(base64Image)
             imCamera.setImageBitmap(newBitmap)
 
-            var decodedFile : File = savebitmap(newBitmap)
+//            var decodedFile : File = savebitmap(newBitmap)
 
         }
         if (intent.getParcelableExtra<Uri>("imageUri") != null){
