@@ -109,14 +109,29 @@ class ReportHelpActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onSend()
         }
         btnCLose.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
         btnDismiss.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
 
