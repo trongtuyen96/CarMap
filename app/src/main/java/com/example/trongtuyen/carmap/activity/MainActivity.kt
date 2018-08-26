@@ -37,6 +37,7 @@ import com.example.trongtuyen.carmap.models.direction.*
 import com.example.trongtuyen.carmap.models.navigation.StepAdapter
 import com.example.trongtuyen.carmap.models.nearbyplaces.NearbyPlacesInterface
 import com.example.trongtuyen.carmap.models.nearbyplaces.NearbyPlacesResponse
+import com.example.trongtuyen.carmap.models.nearbyusers.NearbyUserAdapter
 import com.example.trongtuyen.carmap.services.*
 import com.example.trongtuyen.carmap.services.models.NearbyReportsResponse
 import com.example.trongtuyen.carmap.services.models.ReportResponse
@@ -125,6 +126,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private var mPopupWindowFilter: PopupWindow? = null
 
     private var mPopupWindowDelete: PopupWindow? = null
+
+    private var mPopupWindowChat: PopupWindow? = null
 
     // List of user of other cars
     private lateinit var listUser: List<User>
@@ -218,6 +221,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         tvPlaceAddress.text = place.address
 
         btnStartDirection.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.chi_dan_duong_di)
+            }
             currentDirectionRoute.clear()
             currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude, lastLocation.longitude)))
             currentDirectionRoute.add(SimplePlace(place.name.toString(), LatLng(place.latLng.latitude, place.latLng.longitude)))
@@ -375,6 +383,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         btnEdit.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.chinh_sua_lo_trinh)
+            }
             dismissPopupWindowDirectionInfo()
             showEditDirectionPopup()
         }
@@ -426,6 +439,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         btnDone.setOnClickListener {
             //            dismissPopupWindowEditDirection()
 //            onBtnStartDirectionClick(currentDirectionRoute)
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.lo_trinh_da_cap_nhat)
+            }
             onFinishEditDirection()
         }
     }
@@ -482,18 +500,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         })
         btnNearbyGasStations.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tram_xang_gan_day)
+            }
             getNearbyPlaces("gas_station", lastLocation, 1500)
             dismissAddPlacePopup()
         }
         btnNearbyParkings.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.noi_dau_xe_gan_day)
+            }
             getNearbyPlaces("parking", lastLocation, 1500)
             dismissAddPlacePopup()
         }
         btnNearbyCoffeeShops.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.coffee_gan_day)
+            }
             getNearbyPlaces("cafe", lastLocation, 1500)
             dismissAddPlacePopup()
         }
         btnNearbyRestaurants.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.nha_hang_gan_day)
+            }
             getNearbyPlaces("restaurant", lastLocation, 1500)
             dismissAddPlacePopup()
         }
@@ -592,6 +630,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         btnStartNavigation.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.bat_dau_di)
+            }
             onBtnStartNavigationClick(route)
         }
 
@@ -931,7 +974,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         tvReportType.text = "Đèn báo hư"
                         // Chạy audio
                         if (AppController.soundMode == 1 || AppController.soundMode == 2) {
-                            mAudioPlayer.play(this, R.raw.den_bao_hu)
+                            mAudioPlayer.play(this, R.raw.den_giao_thong_hu)
                         }
                     }
                     "pothole" -> {
@@ -1238,11 +1281,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         if (!::oldStep.isInitialized) {
             // NÓI
+            sayVoiceNavigation(currentStep)
             haveNotReadSecondTime = true
             oldStep = currentStep
         } else {
             if (currentStep != oldStep) {
                 // NÓI
+                sayVoiceNavigation(currentStep)
                 haveNotReadSecondTime = true
                 oldStep = currentStep
             } else {
@@ -1253,6 +1298,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
                 if (results[0] <= 100 && haveNotReadSecondTime) {
                     // NÓI
+                    sayVoiceNavigation(currentStep)
                     haveNotReadSecondTime = false
                 }
             }
@@ -1321,6 +1367,131 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             "uturn-right" -> {
                 imInstruction.setImageResource(R.drawable.uturn_right)
+            }
+        }
+    }
+
+    private fun sayVoiceNavigation(step: Step) {
+        when (step.maneuver) {
+            "ferry" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_qua_pha)
+                }
+            }
+            "ferry-train" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_qua_tau_pha)
+                }
+            }
+            "fork-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_trai_tai_nga_ba)
+                }
+            }
+            "fork-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_phai_tai_nga_ba)
+                }
+            }
+            "keep-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_giu_chay_lan_trai)
+                }
+            }
+            "keep-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_giu_chay_lan_phai)
+                }
+            }
+            "merge" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_chay_vao_duong_hop)
+                }
+            }
+            "ramp-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_trai_vao_duong_noi)
+                }
+            }
+            "ramp-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_phai_vao_duong_noi)
+                }
+            }
+            "roundabout-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_vao_vong_xoay_trai)
+                }
+            }
+            "roundabout-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_vao_vong_xoay_phai)
+                }
+            }
+            "straight" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_di_thang)
+                }
+            }
+            "turn-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_trai)
+                }
+            }
+            "turn-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_phai)
+                }
+            }
+            "turn-sharp-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_manh_trai)
+                }
+            }
+            "turn-sharp-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_manh_phai)
+                }
+            }
+            "turn-slight-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_nhe_trai)
+                }
+            }
+            "turn-slight-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_queo_nhe_phai)
+                }
+            }
+            "uturn-left" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_vong_chu_u_trai)
+                }
+            }
+            "uturn-right" -> {
+                // Chạy audio
+                if (AppController.soundMode == 1 || AppController.soundMode == 2) {
+                    mAudioPlayer.play(this, R.raw.tiep_theo_vong_chu_u_phai)
+                }
             }
         }
     }
@@ -1465,6 +1636,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // onClickListener cho các nút
         imvMyLoc.setOnClickListener(this)
         imvReport.setOnClickListener(this)
+        imvChat.setOnClickListener(this)
 //        imvHamburger.setOnClickListener(this)
 
         imvFilter.setOnClickListener(this)
@@ -1720,6 +1892,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     onFilterButtonClicked()
                 }
             }
+            R.id.imvChat -> {
+                if (mPopupWindowChat != null) {
+                    if (mPopupWindowChat!!.isShowing) {
+                        mPopupWindowChat!!.dismiss()
+                    } else {
+                        onChatButtonClicked()
+                    }
+                } else {
+                    onChatButtonClicked()
+                }
+            }
             R.id.layoutHomeMenu -> {
                 if (AppController.userProfile != null) {
                     if (AppController.userProfile!!.latHomeLocation != null && AppController.userProfile!!.longHomeLocation != null) {
@@ -1741,7 +1924,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         drawer_layout.closeDrawer(GravityCompat.START)
                         currentDirectionRoute.clear()
                         currentDirectionRoute.add(SimplePlace("Vị trí của bạn", LatLng(lastLocation.latitude, lastLocation.longitude)))
-                        currentDirectionRoute.add(SimplePlace("Nhà", LatLng(AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)))
+                        currentDirectionRoute.add(SimplePlace("Nơi làm việc", LatLng(AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!)))
                         onBtnStartDirectionClick(currentDirectionRoute)
                     } else {
                         Log.v("Direction", "User Work not set")
@@ -2243,6 +2426,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         btnClose.setOnClickListener {
             mPopupWindowFilter!!.dismiss()
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             if (AppController.settingFilterCar == "true") {
                 if (::listUser.isInitialized) {
                     if (listUser.isNotEmpty()) {
@@ -2306,6 +2490,34 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         layoutOutside.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             mPopupWindowFilter!!.dismiss()
+        }
+    }
+
+    @SuppressLint("InflateParams")
+    private fun onChatButtonClicked() {
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewChatPopup = inflater.inflate(R.layout.list_nearby_user_chat_dialog_layout, null)
+        // Dùng với layout cũ
+//        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
+
+        // Layout mới
+        mPopupWindowChat = PopupWindow(viewChatPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        mPopupWindowChat!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+        val btnClose = viewChatPopup.findViewById<ImageView>(R.id.imClose_list_nearby_user_chat_dialog)
+        val btnSendAll = viewChatPopup.findViewById<Button>(R.id.btnSendAll_list_nearby_user_chat_dialog)
+
+        var listUserExceptMe: MutableList<User> = ArrayList()
+        for (i in 0 until listUser.size) {
+            if (listUser[i].email != AppController.userProfile!!.email) {
+                listUserExceptMe.add(listUser[i])
+            }
+        }
+        initListNearbyUserRecyclerView(listUserExceptMe, viewChatPopup)
+
+        btnClose.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            mPopupWindowChat!!.dismiss()
         }
     }
 
@@ -4676,7 +4888,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@MainActivity, "Xoá báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    TastyToast.makeText(this@MainActivity, "Xoá báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     // Bỏ vì bớt toast
@@ -4898,33 +5110,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private lateinit var mItemTouchHelper: ItemTouchHelper
 
-    //<<<<<<< HEAD
     private lateinit var viewAdapterEditDirection: PlaceAdapter
-//=======
-//    private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: ImageView) {
-//        val viewManagerEditDirection = LinearLayoutManager(this)
-//        val viewAdapterEditDirection = PlaceAdapter(myDataSet, this)
-//
-//        val recyclerViewEditDirection = view.findViewById<RecyclerView>(R.id.recycler_view_edit_direction_layout).apply {
-//            // use this setting to improve performance if you know that changes
-//            // in content do not change the layout size of the RecyclerView
-//            setHasFixedSize(true)
-//
-//            // use a linear layout manager
-//            layoutManager = viewManagerEditDirection
-//
-//            // specify an viewAdapterStep (see also next example)
-//            adapter = viewAdapterEditDirection
-//        }
-//        val callback = SimpleItemTouchHelperCallback(viewAdapterEditDirection)
-//        mItemTouchHelper = ItemTouchHelper(callback)
-//        mItemTouchHelper.attachToRecyclerView(recyclerViewEditDirection)
-//
-//        btnAdd.setOnClickListener {
-//            showAddPlacePopup(myDataSet, viewAdapterEditDirection)
-//        }
-//    }
-//>>>>>>> e8cbadd32c29eacb3b8bd84c866e300385e38764
 
     private fun initDirectionRecyclerView(myDataSet: ArrayList<SimplePlace>, view: View, btnAdd: TextView) {
         val viewManagerEditDirection = LinearLayoutManager(this)
@@ -4946,6 +5132,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mItemTouchHelper.attachToRecyclerView(recyclerViewEditDirection)
 
         btnAdd.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.them_diem_dung)
+            }
             showAddPlacePopup(myDataSet, viewAdapterEditDirection)
         }
     }
@@ -5007,4 +5198,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         // Handle response
     }
+
+    private lateinit var viewAdapterNearbyUser: NearbyUserAdapter
+    private fun initListNearbyUserRecyclerView(myDataSet: MutableList<User>, view: View) {
+        val viewManagerEditDirection = LinearLayoutManager(this)
+        viewAdapterNearbyUser = NearbyUserAdapter(myDataSet)
+
+        val recyclerViewNearbyUser = view.findViewById<RecyclerView>(R.id.recycler_view_list_nearby_user_chat_dialog).apply {
+            // use this setting to improve performance if you know that changes
+            // in content do not change the layout size of the RecyclerView
+            setHasFixedSize(true)
+
+            // use a linear layout manager
+            layoutManager = viewManagerEditDirection
+
+            // specify an viewAdapterStep (see also next example)
+            adapter = viewAdapterNearbyUser
+
+        }
+    }
+
 }

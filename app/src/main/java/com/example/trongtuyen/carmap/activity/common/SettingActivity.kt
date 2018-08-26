@@ -325,7 +325,7 @@ class SettingActivity : AppCompatActivity() {
 
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this@SettingActivity, R.raw.ban_kinh_hien_thi_tai_xe)
+                mAudioPlayer.play(this@SettingActivity, R.raw.thong_tin_ve_xe_cua_ban)
             }
 
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
