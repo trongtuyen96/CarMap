@@ -62,14 +62,6 @@
     <!--app:bmb_use3DTransformAnimation="true">-->
     <!--</com.nightonke.boommenu.BoomMenuButton>-->
 
-    <ImageView
-        android:id="@+id/imvReport"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imvMyLoc"
-        app:srcCompat="@drawable/ic_car_report" />
 
     <ImageView
         android:id="@+id/imvFilter"
@@ -79,5 +71,23 @@
         app:layout_constraintEnd_toEndOf="@+id/imvMyLoc"
         app:layout_constraintTop_toBottomOf="@+id/imvMyLoc"
         app:srcCompat="@drawable/ic_pickup_filter" />
+
+    <ImageView
+        android:id="@+id/imvChat"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/imvFilter"
+        app:layout_constraintTop_toBottomOf="@+id/imvFilter"
+        app:srcCompat="@drawable/ic_btn_chat" />
+
+    <ImageView
+        android:id="@+id/imvReport"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/imvMyLoc"
+        app:srcCompat="@drawable/ic_car_report" />
 
 </android.support.constraint.ConstraintLayout>
