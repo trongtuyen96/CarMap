@@ -70,6 +70,7 @@ class SignInActivity : AppCompatActivity() {
         AppController.settingFilterCar = "true"
         AppController.settingFilterReport = "true"
         AppController.soundMode = 1
+        AppController.voiceType = 1
         AppController.settingInvisible = "false"
         AppController.settingSocket = "true"
         AppController.settingUserRadius = 5000

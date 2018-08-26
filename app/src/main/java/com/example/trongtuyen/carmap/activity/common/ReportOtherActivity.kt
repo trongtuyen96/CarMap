@@ -274,7 +274,14 @@ class ReportOtherActivity : AppCompatActivity() {
 
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@ReportOtherActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@ReportOtherActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@ReportOtherActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                            }
+                        }
                     }
                     TastyToast.makeText(this@ReportOtherActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()

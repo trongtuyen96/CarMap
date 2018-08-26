@@ -87,7 +87,14 @@ class ReportCrashActivity : AppCompatActivity() {
         btnCrashMinor.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.tai_nan_nho)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.tai_nan_nho)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.tai_nan_nho_2)
+                    }
+                }
             }
             subType1 = "minor"
             btnCrashMinor.background = getDrawable(R.color.button_bg_inactive)
@@ -98,7 +105,14 @@ class ReportCrashActivity : AppCompatActivity() {
         btnCrashMajor.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.tai_nan_nghiem_trong_2)
+                    }
+                }
             }
             subType1 = "major"
             btnCrashMajor.background = getDrawable(R.color.button_bg_inactive)
@@ -109,7 +123,14 @@ class ReportCrashActivity : AppCompatActivity() {
         btnCrashOtherSide.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.tai_nan_ben_duong)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.tai_nan_ben_duong_2)
+                    }
+                }
             }
             subType1 = "other_side"
             btnCrashOtherSide.background = getDrawable(R.color.button_bg_inactive)
@@ -236,7 +257,14 @@ class ReportCrashActivity : AppCompatActivity() {
                     } else {
                         // Chạy audio
                         if (AppController.soundMode == 1) {
-                            mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            when (AppController.voiceType) {
+                                1 -> {
+                                    mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                                }
+                                2 -> {
+                                    mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                                }
+                            }
                         }
                         TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
@@ -257,7 +285,14 @@ class ReportCrashActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@ReportCrashActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                            }
+                        }
                     }
                     TastyToast.makeText(this@ReportCrashActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
 //                    Toast.makeText(this@ReportCrashActivity, "XOng 2", Toast.LENGTH_SHORT).show()

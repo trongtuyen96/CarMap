@@ -35,12 +35,16 @@ class SettingActivity : AppCompatActivity() {
     lateinit var btnReportRadius: Button
     @BindView(R.id.btnSound_setting)
     lateinit var btnSound: Button
+    @BindView(R.id.btnVoice_setting)
+    lateinit var btnVoice: Button
     @BindView(R.id.layoutMyCar_setting)
     lateinit var layoutMyCar: LinearLayout
 
     private var mPopupRadiusWindow: PopupWindow? = null
 
     private var mPopupSoundWindow: PopupWindow? = null
+
+    private var mPopupVoiceWindow: PopupWindow? = null
 
     private var mPopupMyCarWindow: PopupWindow? = null
 
@@ -113,18 +117,43 @@ class SettingActivity : AppCompatActivity() {
             }
         }
 
+        when (AppController.voiceType) {
+            1 -> {
+                btnVoice.background = getDrawable(R.drawable.bg_btn_send)
+                btnVoice.text = "CHUẨN"
+            }
+            2 -> {
+                btnVoice.background = getDrawable(R.drawable.bg_btn_dismiss)
+                btnVoice.text = "NỮ"
+            }
+        }
+
         switchInvisible.setOnToggledListener(object : OnToggledListener {
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
                 if (isOn) {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@SettingActivity, R.raw.an_danh_voi_tai_xe_khac)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.an_danh_voi_tai_xe_khac)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.an_danh_voi_tai_xe_khac_2)
+                            }
+                        }
                     }
                     AppController.settingInvisible = "invisible"
                 } else {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@SettingActivity, R.raw.hien_thi_voi_tai_xe_khac)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.hien_thi_voi_tai_xe_khac)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.hien_thi_voi_tai_xe_khac_2)
+                            }
+                        }
                     }
                     AppController.settingInvisible = "visible"
                 }
@@ -136,13 +165,27 @@ class SettingActivity : AppCompatActivity() {
                 if (isOn) {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@SettingActivity, R.raw.giao_tiep_voi_tai_xe_khac)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.giao_tiep_voi_tai_xe_khac)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.giao_tiep_voi_tai_xe_khac_2)
+                            }
+                        }
                     }
                     AppController.settingSocket = "true"
                 } else {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@SettingActivity, R.raw.khong_giao_tiep_voi_tai_xe_khac)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.khong_giao_tiep_voi_tai_xe_khac)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@SettingActivity, R.raw.khong_giao_tiep_voi_tai_xe_khac_2)
+                            }
+                        }
                     }
                     AppController.settingSocket = "false"
                 }
@@ -160,7 +203,15 @@ class SettingActivity : AppCompatActivity() {
 
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this@SettingActivity, R.raw.ban_kinh_hien_thi_tai_xe)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.ban_kinh_hien_thi_tai_xe)
+                    }
+                    2 -> {
+                        //CHƯA THAY
+                        mAudioPlayer.play(this, R.raw.ban_kinh_hien_thi_tai_xe)
+                    }
+                }
             }
 
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -215,7 +266,14 @@ class SettingActivity : AppCompatActivity() {
 
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this@SettingActivity, R.raw.ban_kinh_hien_thi_bao_hieu)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.ban_kinh_hien_thi_bao_hieu)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.ban_kinh_hien_thi_bao_hieu_2)
+                    }
+                }
             }
 
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -285,7 +343,14 @@ class SettingActivity : AppCompatActivity() {
             layoutSoundOn.setOnClickListener {
                 // Chạy audio
                 if (AppController.soundMode == 1) {
-                    mAudioPlayer.play(this@SettingActivity, R.raw.am_thanh_mo)
+                    when (AppController.voiceType) {
+                        1 -> {
+                            mAudioPlayer.play(this, R.raw.am_thanh_mo)
+                        }
+                        2 -> {
+                            mAudioPlayer.play(this, R.raw.am_thanh_mo_2)
+                        }
+                    }
                 }
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnSound.text = "MỞ"
@@ -296,7 +361,14 @@ class SettingActivity : AppCompatActivity() {
             layoutSoundAlert.setOnClickListener {
                 // Chạy audio
                 if (AppController.soundMode == 1) {
-                    mAudioPlayer.play(this@SettingActivity, R.raw.am_thanh_chi_bao_hieu)
+                    when (AppController.voiceType) {
+                        1 -> {
+                            mAudioPlayer.play(this, R.raw.am_thanh_chi_bao_hieu)
+                        }
+                        2 -> {
+                            mAudioPlayer.play(this, R.raw.am_thanh_chi_bao_hieu_2)
+                        }
+                    }
                 }
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnSound.text = "BÁO HIỆU"
@@ -307,7 +379,14 @@ class SettingActivity : AppCompatActivity() {
             layoutSoundOff.setOnClickListener {
                 // Chạy audio
                 if (AppController.soundMode == 1) {
-                    mAudioPlayer.play(this@SettingActivity, R.raw.am_thanh_tat)
+                    when (AppController.voiceType) {
+                        1 -> {
+                            mAudioPlayer.play(this, R.raw.am_thanh_tat)
+                        }
+                        2 -> {
+                            mAudioPlayer.play(this, R.raw.am_thanh_tat_2)
+                        }
+                    }
                 }
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 btnSound.text = "TẮT"
@@ -321,11 +400,66 @@ class SettingActivity : AppCompatActivity() {
             }
         }
 
+        btnVoice.setOnClickListener {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewPopup = inflater.inflate(R.layout.setting_voice_dialog_layout, null)
+            // Dùng với layout cũ
+//            mPopupSoundWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//            mPopupSoundWindow!!.showAtLocation(it, Gravity.NO_GRAVITY, (btnReportRadius.x.toInt() / 2) + 10, (maxY / 2) - (maxY /10))
+
+            // Layout mới
+            mPopupVoiceWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            mPopupVoiceWindow!!.showAtLocation(it, Gravity.CENTER, 0, 0)
+            val layoutVoiceStandard = viewPopup.findViewById<LinearLayout>(R.id.layoutVoiceStandard_setting_voice_dialog_layout)
+            val layoutVoiceGirl = viewPopup.findViewById<LinearLayout>(R.id.layoutVoiceGirl_setting_voice_dialog_layout)
+            val layoutOutside = viewPopup.findViewById<LinearLayout>(R.id.bg_to_remove_setting_voice_dialog_layout)
+
+            layoutVoiceStandard.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                btnVoice.text = "CHUẨN"
+                AppController.voiceType = 1
+                btnVoice.background = getDrawable(R.drawable.bg_btn_send)
+                if (AppController.soundMode == 1) {
+                    when (AppController.voiceType) {
+                        1 -> {
+                            mAudioPlayer.play(this, R.raw.chao_ban_den_voi_car_map)
+                        }
+                    }
+                }
+                mPopupVoiceWindow!!.dismiss()
+            }
+            layoutVoiceGirl.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                btnVoice.text = "NỮ"
+                AppController.voiceType = 2
+                btnVoice.background = getDrawable(R.drawable.bg_btn_dismiss)
+                if (AppController.soundMode == 1) {
+                    when (AppController.voiceType) {
+                        2 -> {
+                            mAudioPlayer.play(this, R.raw.chao_ban_den_voi_car_map_2)
+                        }
+                    }
+                }
+                mPopupVoiceWindow!!.dismiss()
+            }
+            layoutOutside.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                mPopupVoiceWindow!!.dismiss()
+            }
+        }
+
         layoutMyCar.setOnClickListener {
 
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this@SettingActivity, R.raw.thong_tin_ve_xe_cua_ban)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.thong_tin_ve_xe_cua_ban)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.thong_tin_ve_xe_cua_ban_2)
+                    }
+                }
             }
 
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -426,7 +560,7 @@ class SettingActivity : AppCompatActivity() {
             if (AppController.userProfile!!.colorCar != "") {
                 imColor.setBackgroundColor(Color.parseColor(AppController.userProfile!!.colorCar))
             }
-            
+
 
             var typeCar = AppController.userProfile!!.typeCar
             btnCon.setOnClickListener {

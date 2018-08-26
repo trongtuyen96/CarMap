@@ -43,227 +43,267 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_carpool_together" />
-
-        <TextView
-            android:layout_width="160dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:text="Ẩn với tài xế khác"
-            android:textSize="14sp" />
-
-        <com.github.angads25.toggle.LabeledSwitch
-            android:id="@+id/switchInvisible_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:textSize="14sp"
-            app:colorBorder="@color/colorAccent"
-            app:on="false" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_report_chitchat_44dp" />
-
-        <TextView
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:text="Giao tiếp với tài xế khác"
-            android:textSize="14sp" />
-
-        <com.github.angads25.toggle.LabeledSwitch
-            android:id="@+id/switchSocket_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:textSize="14sp"
-            app:colorBorder="@color/colorAccent"
-            app:on="false" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_user_radius_44dp" />
-
-        <TextView
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:text="Bán kính hiển thị tài xế"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/btnUserRadius_setting"
-            android:layout_width="70dp"
-            android:layout_height="44dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/bg_btn_gray_dark"
-            android:text="2 km" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_report_map_issue_44dp" />
-
-        <TextView
-            android:layout_width="164dp"
-            android:layout_height="wrap_content"
-
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:text="Bán kính hiển thị báo hiệu"
-            android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/btnReportRadius_setting"
-            android:layout_width="70dp"
-            android:layout_height="44dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/bg_btn_gray_dark"
-            android:text="2 km" />
-
-    </LinearLayout>
+            android:orientation="vertical">
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_carpool_together" />
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_sound_on" />
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="Ẩn với tài xế khác"
+                    android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:text="Âm thanh"
-            android:textSize="14sp" />
+                <com.github.angads25.toggle.LabeledSwitch
+                    android:id="@+id/switchInvisible_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:textSize="14sp"
+                    app:colorBorder="@color/colorAccent"
+                    app:on="false" />
 
-        <Button
-            android:id="@+id/btnSound_setting"
-            android:layout_width="70dp"
-            android:layout_height="44dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/bg_btn_gray_dark"
-            android:text="TẮT"
-            android:textColor="@color/background_front" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/layoutMyCar_setting"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_report_chitchat_44dp" />
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:src="@drawable/ic_report_other" />
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="Giao tiếp với tài xế khác"
+                    android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="20dp"
-            android:text="Thông tin về xe của bạn"
-            android:textSize="14sp" />
+                <com.github.angads25.toggle.LabeledSwitch
+                    android:id="@+id/switchSocket_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:textSize="14sp"
+                    app:colorBorder="@color/colorAccent"
+                    app:on="false" />
 
-        <!--<Button-->
-        <!--android:id="@+id/btnSound_setting"-->
-        <!--android:layout_width="70dp"-->
-        <!--android:layout_height="40dp"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginStart="16dp"-->
-        <!--android:background="@drawable/bg_btn_gray_dark"-->
-        <!--android:text="TẮT"-->
-        <!--android:textColor="@color/background_front" />-->
+            </LinearLayout>
 
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_user_radius_44dp" />
+
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="Bán kính hiển thị tài xế"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnUserRadius_setting"
+                    android:layout_width="70dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/bg_btn_gray_dark"
+                    android:text="2 km" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_report_map_issue_44dp" />
+
+                <TextView
+                    android:layout_width="164dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="Bán kính hiển thị báo hiệu"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnReportRadius_setting"
+                    android:layout_width="70dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/bg_btn_gray_dark"
+                    android:text="2 km" />
+
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
+
+
+            <LinearLayout
+                android:id="@+id/layoutMyCar_setting"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_report_other" />
+
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="Thông tin về xe của bạn"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_basic_profile" />
+
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="Giọng nói hướng dẫn"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnVoice_setting"
+                    android:layout_width="70dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/bg_btn_gray_dark"
+                    android:text="CHUẨN"
+                    android:textColor="@color/background_front" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_sound_on" />
+
+                <TextView
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="Âm thanh"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnSound_setting"
+                    android:layout_width="70dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/bg_btn_gray_dark"
+                    android:text="TẮT"
+                    android:textColor="@color/background_front" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
