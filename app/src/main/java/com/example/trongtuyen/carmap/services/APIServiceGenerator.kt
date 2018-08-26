@@ -28,6 +28,7 @@ object APIServiceGenerator {
 
         val request = original.newBuilder()
                 .header("x-access-token", AppController.accessToken)
+//                .header("Content-Encoding", "gzip")
                 .method(original.method(), original.body())
                 .build()
         chain.proceed(request)
