@@ -497,18 +497,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         })
         btnNearbyGasStations.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.tram_xang_gan_day)
+            }
             getNearbyPlaces("gas_station", lastLocation, 1500)
             dismissAddPlacePopup()
         }
         btnNearbyParkings.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.noi_dau_xe_gan_day)
+            }
             getNearbyPlaces("parking", lastLocation, 1500)
             dismissAddPlacePopup()
         }
         btnNearbyCoffeeShops.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.coffee_gan_day)
+            }
             getNearbyPlaces("cafe", lastLocation, 1500)
             dismissAddPlacePopup()
         }
         btnNearbyRestaurants.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                mAudioPlayer.play(this, R.raw.nha_hang_gan_day)
+            }
             getNearbyPlaces("restaurant", lastLocation, 1500)
             dismissAddPlacePopup()
         }
