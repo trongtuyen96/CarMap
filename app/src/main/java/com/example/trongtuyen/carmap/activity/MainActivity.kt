@@ -1805,8 +1805,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
 
-        // Lần đầu chạy sau 5s
-        handler.postDelayed(runnable, 3000)  //the time is in miliseconds
+        // Lần đầu chạy sau 1s
+        handler.postDelayed(runnable, 1000)  //the time is in miliseconds
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
             // Khởi tạo sound và vibrate
@@ -2495,29 +2495,34 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     @SuppressLint("InflateParams")
     private fun onChatButtonClicked() {
-        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewChatPopup = inflater.inflate(R.layout.list_nearby_user_chat_dialog_layout, null)
-        // Dùng với layout cũ
+        val listUserExceptMe: MutableList<User> = ArrayList()
+        if (::listUser.isInitialized) {
+            for (i in 0 until listUser.size) {
+                if (listUser[i].email != AppController.userProfile!!.email) {
+                    listUserExceptMe.add(listUser[i])
+                }
+            }
+        }
+        if (listUserExceptMe.isEmpty()) {
+            TastyToast.makeText(this, "Không có tài xế nào gần bạn", TastyToast.LENGTH_SHORT, TastyToast.INFO).show()
+        } else {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewChatPopup = inflater.inflate(R.layout.list_nearby_user_chat_dialog_layout, null)
+            // Dùng với layout cũ
 //        mPopupWindowFilter = PopupWindow(viewFilterPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 //        mPopupWindowFilter!!.showAtLocation(this.currentFocus, Gravity.NO_GRAVITY, (imvFilter.x.toInt() / 2) - (imvFilter.x.toInt() / 6), imvFilter.y.toInt())
 
-        // Layout mới
-        mPopupWindowChat = PopupWindow(viewChatPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        mPopupWindowChat!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
-        val btnClose = viewChatPopup.findViewById<ImageView>(R.id.imClose_list_nearby_user_chat_dialog)
-        val btnSendAll = viewChatPopup.findViewById<Button>(R.id.btnSendAll_list_nearby_user_chat_dialog)
+            // Layout mới
+            mPopupWindowChat = PopupWindow(viewChatPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            mPopupWindowChat!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+            val btnClose = viewChatPopup.findViewById<ImageView>(R.id.imClose_list_nearby_user_chat_dialog)
+            val btnSendAll = viewChatPopup.findViewById<Button>(R.id.btnSendAll_list_nearby_user_chat_dialog)
+            initListNearbyUserRecyclerView(listUserExceptMe, viewChatPopup)
 
-        var listUserExceptMe: MutableList<User> = ArrayList()
-        for (i in 0 until listUser.size) {
-            if (listUser[i].email != AppController.userProfile!!.email) {
-                listUserExceptMe.add(listUser[i])
+            btnClose.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                mPopupWindowChat!!.dismiss()
             }
-        }
-        initListNearbyUserRecyclerView(listUserExceptMe, viewChatPopup)
-
-        btnClose.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            mPopupWindowChat!!.dismiss()
         }
     }
 
