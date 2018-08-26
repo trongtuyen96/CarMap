@@ -4676,7 +4676,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         call.enqueue(object : Callback<ReportResponse> {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
-                    TastyToast.makeText(this@MainActivity, "Xoá báo cáo thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
+                    TastyToast.makeText(this@MainActivity, "Xoá báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 } else {
                     val apiError = ErrorUtils.parseError(response)
                     // Bỏ vì bớt toast
