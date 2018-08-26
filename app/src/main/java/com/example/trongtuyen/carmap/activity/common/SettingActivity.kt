@@ -430,7 +430,7 @@ class SettingActivity : AppCompatActivity() {
             }
             layoutVoiceGirl.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-                btnSound.text = "NỮ"
+                btnVoice.text = "NỮ"
                 AppController.voiceType = 2
                 btnVoice.background = getDrawable(R.drawable.bg_btn_dismiss)
                 if (AppController.soundMode == 1) {
