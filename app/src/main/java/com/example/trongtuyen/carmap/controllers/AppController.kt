@@ -20,6 +20,7 @@ object AppController {
     internal var SETTINGS_FILTER_CAR = "setting_filter_car"
     internal var SETTINGS_FILTER_REPORT = "setting_filter_report"
     internal var SETTINGS_SOUND_MODE = "setting_sound_mode"
+    internal var SETTINGS_VOICE_TYPE = "setting_voice_type"
     internal var SETTINGS_INVISIBLE = "setting_invisible"
     internal var SETTINGS_SOCKET = "setting_socket"
     internal var SETTINGS_USER_RADIUS = "setting_user_radius"
@@ -73,6 +74,12 @@ object AppController {
         get() = SharePrefs.instance?.GetInt(SETTINGS_SOUND_MODE)
         set(value) {
             SharePrefs.instance?.SetInt(SETTINGS_SOUND_MODE, value!!)
+        }
+
+    var voiceType: Int?
+        get() = SharePrefs.instance?.GetInt(SETTINGS_VOICE_TYPE)
+        set(value) {
+            SharePrefs.instance?.SetInt(SETTINGS_VOICE_TYPE, value!!)
         }
 
     var settingInvisible: String?

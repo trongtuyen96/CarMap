@@ -89,7 +89,14 @@ class ReportTrafficActivity : AppCompatActivity() {
         btnTrafficModerate.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.ket_xe_vua)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.ket_xe_vua)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.ket_xe_vua_2)
+                    }
+                }
             }
             subType1 = "moderate"
             btnTrafficModerate.background = getDrawable(R.color.button_bg_inactive)
@@ -100,7 +107,14 @@ class ReportTrafficActivity : AppCompatActivity() {
         btnTrafficHeavy.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.ket_xe_nang)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.ket_xe_nang)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.ket_xe_nang_2)
+                    }
+                }
             }
             subType1 = "heavy"
             btnTrafficHeavy.background = getDrawable(R.color.button_bg_inactive)
@@ -111,7 +125,14 @@ class ReportTrafficActivity : AppCompatActivity() {
         btnTrafficStandstill.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.ket_xe_cung)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.ket_xe_cung)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.ket_xe_cung_2)
+                    }
+                }
             }
             subType1 = "standstill"
             btnTrafficStandstill.background = getDrawable(R.color.button_bg_inactive)
@@ -239,7 +260,14 @@ class ReportTrafficActivity : AppCompatActivity() {
                     } else {
                         // Chạy audio
                         if (AppController.soundMode == 1) {
-                            mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            when (AppController.voiceType) {
+                                1 -> {
+                                    mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong)
+                                }
+                                2 -> {
+                                    mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                                }
+                            }
                         }
                         TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
@@ -260,7 +288,14 @@ class ReportTrafficActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@ReportTrafficActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                            }
+                        }
                     }
                     TastyToast.makeText(this@ReportTrafficActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
 //                    Toast.makeText(this@ReportTrafficActivity, "Xong 2", Toast.LENGTH_SHORT).show()
