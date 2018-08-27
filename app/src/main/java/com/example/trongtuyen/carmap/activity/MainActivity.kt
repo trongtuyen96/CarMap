@@ -2175,7 +2175,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
         // Lần đầu chạy sau 1s
-        handler.postDelayed(runnable, 1000)  //the time is in miliseconds
+        handler.postDelayed(runnable, 2000)  //the time is in miliseconds
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
             // Khởi tạo sound và vibrate
@@ -2269,6 +2269,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
             R.id.imvChat -> {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    when (AppController.voiceType) {
+                        1 -> {
+                            mAudioPlayer.play(this, R.raw.giao_tiep_voi_tai_xe_gan_day)
+                        }
+                        2 -> {
+                            mAudioPlayer.play(this, R.raw.giao_tiep_voi_tai_xe_gan_day_2)
+                        }
+                    }
+                }
                 if (mPopupWindowChat != null) {
                     if (mPopupWindowChat!!.isShowing) {
                         mPopupWindowChat!!.dismiss()
@@ -3491,7 +3502,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                                     }
                                     2 -> {
                                         // CHƯA THAY
-                                        mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac)
+                                        mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac_2)
                                     }
                                 }
                             }
@@ -5415,7 +5426,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         2 -> {
                             //CHƯA THAY
-                            mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac)
+                            mAudioPlayer.play(this, R.raw.canh_bao_co_nguy_hiem_khac_2)
                         }
                     }
                 }
