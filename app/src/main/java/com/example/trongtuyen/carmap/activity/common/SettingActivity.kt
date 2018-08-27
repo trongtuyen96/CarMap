@@ -209,7 +209,7 @@ class SettingActivity : AppCompatActivity() {
                     }
                     2 -> {
                         //CHƯA THAY
-                        mAudioPlayer.play(this, R.raw.ban_kinh_hien_thi_tai_xe)
+                        mAudioPlayer.play(this, R.raw.ban_kinh_hien_thi_tai_xe_2)
                     }
                 }
             }
@@ -401,6 +401,18 @@ class SettingActivity : AppCompatActivity() {
         }
 
         btnVoice.setOnClickListener {
+            // Chạy audio
+            if (AppController.soundMode == 1) {
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.giong_noi_huong_dan)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.giong_noi_huong_dan_2)
+                    }
+                }
+            }
+
             val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val viewPopup = inflater.inflate(R.layout.setting_voice_dialog_layout, null)
             // Dùng với layout cũ
