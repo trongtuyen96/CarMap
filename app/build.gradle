@@ -9,7 +9,7 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.example.trongtuyen.carmap"
+        applicationId "com.ttcompany.trongtuyen.carmap"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1

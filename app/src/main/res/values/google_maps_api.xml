@@ -4,7 +4,7 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=83:F0:E8:77:15:57:5F:2C:E6:E8:2A:15:85:21:9C:3F:9F:25:78:FC%3Bcom.example.nvkha.waze
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=83:F0:E8:77:15:57:5F:2C:E6:E8:2A:15:85:21:9C:3F:9F:25:78:FC%3Bcom.ttcompany.nvkha.waze
 
     You can also add your credentials to an existing key, using these values:
 

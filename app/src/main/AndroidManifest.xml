@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.trongtuyen.carmap">
+    package="com.ttcompany.trongtuyen.carmap">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!--
@@ -81,7 +81,7 @@
         <activity android:name=".activity.common.HomeSettingActivity" />
         <activity android:name=".activity.common.WorkSettingActivity" />
         <activity android:name=".activity.common.HistorySettingActivity" />
-        <activity android:name=".activity.common.SettingActivity"></activity>
+        <activity android:name=".activity.common.SettingActivity"/>
     </application>
 
 </manifest>
