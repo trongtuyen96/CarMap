@@ -5147,7 +5147,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         }
                         2 -> {
                             //CHƯA THAY
-                            mAudioPlayer.play(this, R.raw.canh_bao_nguy_hiem_nen_giam_toc_do)
+                            mAudioPlayer.play(this, R.raw.canh_bao_nguy_hiem_nen_giam_toc_do_2)
                         }
                     }
                 }
