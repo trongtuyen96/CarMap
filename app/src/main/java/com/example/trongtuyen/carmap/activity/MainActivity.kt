@@ -123,6 +123,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private var mPopupWindowHello: PopupWindow? = null
 
+    private var mPopupWindowStrongLight: PopupWindow? = null
+
+    private var mPopupWindowWatcher: PopupWindow? = null
+
+    private var mPopupWindowSlowDown: PopupWindow? = null
+
+    private var mPopupWindowTurnAround: PopupWindow? = null
+
+    private var mPopupWindowOther: PopupWindow? = null
+
+    private var mPopupWindowThank: PopupWindow? = null
+
     private var mPopupWindowFilter: PopupWindow? = null
 
     private var mPopupWindowDelete: PopupWindow? = null
@@ -493,18 +505,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun showAddPlacePopup(myDataSet: ArrayList<SimplePlace>, adapter: PlaceAdapter) {
         val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         if (!::viewAddPlacePopup.isInitialized) {
-            viewAddPlacePopup = inflater.inflate(R.layout.place_picker_layout, null)
+            viewAddPlacePopup = inflater.inflate(R.layout.place_picker_layout_new, null)
         }
         mPopupWindowAddPlace = PopupWindow(viewAddPlacePopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         mPopupWindowAddPlace!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
         isAddPlaceWindowUp = true
 
-        val placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete_place_picker_layout)
+        val placeAutoComplete = fragmentManager.findFragmentById(R.id.place_autocomplete_place_picker_layout_new)
                 as PlaceAutocompleteFragment
-        val btnNearbyGasStations = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByGasStations_place_picker_layout)
-        val btnNearbyParkings = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByParkings_place_picker_layout)
-        val btnNearbyCoffeeShops = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByCoffeeShops_place_picker_layout)
-        val btnNearbyRestaurants = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByRestaurants_place_picker_layout)
+        val btnNearbyGasStations = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByGasStations_place_picker_layout_new)
+        val btnNearbyParkings = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByParkings_place_picker_layout_new)
+        val btnNearbyCoffeeShops = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByCoffeeShops_place_picker_layout_new)
+        val btnNearbyRestaurants = viewAddPlacePopup.findViewById<LinearLayout>(R.id.btnNearByRestaurants_place_picker_layout_new)
 
         placeAutoComplete.setText(null)
         placeAutoComplete.setOnPlaceSelectedListener(object : PlaceSelectionListener {
@@ -4837,7 +4849,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "hello") {
-
+                if (mPopupWindowHello != null) {
+                    mPopupWindowHello?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -4970,7 +4984,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "strong light") {
-
+               if(mPopupWindowStrongLight != null){
+                   mPopupWindowStrongLight?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -4986,11 +5002,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnStrongLightPopup = inflater.inflate(R.layout.warn_strong_light_dialog_layout, null)
                 // Dùng với layout cũ
-//                mPopupWindowHello = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                mPopupWindowStrongLight = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
                 // Layout mới
-                mPopupWindowHello = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                mPopupWindowStrongLight = PopupWindow(viewWarnStrongLightPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                mPopupWindowStrongLight!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnStrongLightPopup.findViewById<TextView>(R.id.tvEmail_warn_strong_light_dialog)
                 val btnThank = viewWarnStrongLightPopup.findViewById<Button>(R.id.btnThank_warn_strong_light_dialog)
@@ -5020,13 +5036,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
 
                     override fun onFinish() {
-                        mPopupWindowHello!!.dismiss()
+                        mPopupWindowStrongLight!!.dismiss()
                     }
                 }.start()
 
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
-                    mPopupWindowHello!!.dismiss()
+                    mPopupWindowStrongLight!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
@@ -5059,7 +5075,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "watcher") {
-
+                if(mPopupWindowWatcher != null){
+                    mPopupWindowWatcher?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -5075,11 +5093,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnWatcherPopup = inflater.inflate(R.layout.warn_watcher_dialog_layout, null)
                 // Dùng với layout cũ
-//                mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                mPopupWindowWatcher = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
                 // Layout mới
-                mPopupWindowHello = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                mPopupWindowWatcher = PopupWindow(viewWarnWatcherPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                mPopupWindowWatcher!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnWatcherPopup.findViewById<TextView>(R.id.tvEmail_warn_watcher_dialog)
                 val btnThank = viewWarnWatcherPopup.findViewById<Button>(R.id.btnThank_warn_watcher_dialog)
@@ -5099,13 +5117,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
 
                     override fun onFinish() {
-                        mPopupWindowHello!!.dismiss()
+                        mPopupWindowWatcher!!.dismiss()
                     }
                 }.start()
 
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
-                    mPopupWindowHello!!.dismiss()
+                    mPopupWindowWatcher!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
@@ -5138,7 +5156,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "slow down") {
-
+                if(mPopupWindowSlowDown != null){
+                    mPopupWindowSlowDown?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -5155,11 +5175,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnSlowDownPopup = inflater.inflate(R.layout.warn_slow_down_dialog_layout, null)
                 // Dùng với layout cũ
-//                mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                mPopupWindowSlowDown = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
                 // Layout mới
-                mPopupWindowHello = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                mPopupWindowSlowDown = PopupWindow(viewWarnSlowDownPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                mPopupWindowSlowDown!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnSlowDownPopup.findViewById<TextView>(R.id.tvEmail_warn_slow_down_dialog)
                 val btnThank = viewWarnSlowDownPopup.findViewById<Button>(R.id.btnThank_warn_slow_down_dialog)
@@ -5179,13 +5199,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
 
                     override fun onFinish() {
-                        mPopupWindowHello!!.dismiss()
+                        mPopupWindowSlowDown!!.dismiss()
                     }
                 }.start()
 
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
-                    mPopupWindowHello!!.dismiss()
+                    mPopupWindowSlowDown!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
@@ -5218,7 +5238,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "turn around") {
-
+                if(mPopupWindowTurnAround != null){
+                    mPopupWindowTurnAround?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -5234,11 +5256,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnTurnAroundPopup = inflater.inflate(R.layout.warn_turn_around_dialog_layout, null)
                 // Dùng với layout cũ
-//                mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                mPopupWindowTurnAround = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
                 // Layout mới
-                mPopupWindowHello = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                mPopupWindowTurnAround = PopupWindow(viewWarnTurnAroundPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                mPopupWindowTurnAround!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnTurnAroundPopup.findViewById<TextView>(R.id.tvEmail_warn_turn_around_dialog)
                 val btnThank = viewWarnTurnAroundPopup.findViewById<Button>(R.id.btnThank_warn_turn_around_dialog)
@@ -5258,13 +5280,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
 
                     override fun onFinish() {
-                        mPopupWindowHello!!.dismiss()
+                        mPopupWindowTurnAround!!.dismiss()
                     }
                 }.start()
 
                 btnThank.setOnClickListener {
                     attemptWarnThank(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), sendID)
-                    mPopupWindowHello!!.dismiss()
+                    mPopupWindowTurnAround!!.dismiss()
                     it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 }
             }
@@ -5297,7 +5319,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "thank") {
-
+                if(mPopupWindowThank != null){
+                    mPopupWindowThank?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -5313,11 +5337,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewWarnThankPopup = inflater.inflate(R.layout.warn_thank_dialog_layout, null)
                 // Dùng với layout cũ
-//                mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                mPopupWindowThank = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
                 // Layout mới
-                mPopupWindowHello = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                mPopupWindowThank = PopupWindow(viewWarnThankPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                mPopupWindowThank!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewWarnThankPopup.findViewById<TextView>(R.id.tvEmail_warn_thank_dialog)
                 val imImage = viewWarnThankPopup.findViewById<ImageView>(R.id.imImage_warn_thank_dialog)
@@ -5332,7 +5356,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     }
 
                     override fun onFinish() {
-                        mPopupWindowHello!!.dismiss()
+                        mPopupWindowThank!!.dismiss()
                     }
                 }.start()
             }
@@ -5371,7 +5395,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             if (type == "careless_driver") {
 //                Toast.makeText(this, "Đã vào", Toast.LENGTH_SHORT).show()
-
+                if(mPopupWindowOther != null){
+                    mPopupWindowOther?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -5387,11 +5413,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewReportOtherPopup = inflater.inflate(R.layout.report_other_dialog_layout, null)
                 // Dùng với layout cũ
-//                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                mPopupWindowOther = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
                 // Layout mới
-                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                mPopupWindowOther = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                mPopupWindowOther!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewReportOtherPopup.findViewById<TextView>(R.id.tvEmail_report_other_dialog)
                 val imImage = viewReportOtherPopup.findViewById<ImageView>(R.id.imImage_report_other_dialog)
@@ -5413,11 +5439,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
 
                 btnClose.setOnClickListener {
-                    mPopupWindowHello!!.dismiss()
+                    mPopupWindowOther!!.dismiss()
                 }
             }
             if (type == "piggy") {
-
+                if(mPopupWindowOther != null){
+                    mPopupWindowOther?.dismiss()
+                }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
                     when (AppController.voiceType) {
@@ -5433,8 +5461,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val viewReportOtherPopup = inflater.inflate(R.layout.report_other_other_dialog_layout, null)
-                mPopupWindowHello = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                mPopupWindowHello!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+                mPopupWindowOther = PopupWindow(viewReportOtherPopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                mPopupWindowOther!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
 
                 val tvEmail = viewReportOtherPopup.findViewById<TextView>(R.id.tvEmail_report_other_other_dialog)
                 val imImage = viewReportOtherPopup.findViewById<ImageView>(R.id.imImage_report_other_other_dialog)
@@ -5458,7 +5486,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
 
                 btnClose.setOnClickListener {
-                    mPopupWindowHello!!.dismiss()
+                    mPopupWindowOther!!.dismiss()
                 }
             }
         })

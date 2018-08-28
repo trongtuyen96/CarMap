@@ -25,13 +25,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_place_picker_layout"
+                android:id="@+id/toolbar_place_picker_layout_new"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff">
 
                 <fragment
-                    android:id="@+id/place_autocomplete_place_picker_layout"
+                    android:id="@+id/place_autocomplete_place_picker_layout_new"
                     android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -39,7 +39,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <LinearLayout
-            android:id="@+id/rowButton1_place_picker_layout"
+            android:id="@+id/rowButton1_place_picker_layout_new"
             android:layout_width="match_parent"
             android:layout_height="127dp"
             android:layout_marginEnd="8dp"
@@ -50,7 +50,7 @@
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
             <LinearLayout
-                android:id="@+id/btnNearByGasStations_place_picker_layout"
+                android:id="@+id/btnNearByGasStations_place_picker_layout_new"
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_place_gas_station"
@@ -61,8 +61,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="7.5"
-                    android:padding="20dp"
-                    android:src="@drawable/ic_gas_station" />
+                    android:padding="14dp"
+                    android:src="@drawable/ic_gas_station_trans" />
 
                 <View
                     android:layout_width="match_parent"
@@ -72,11 +72,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:text="TRẠM XĂNG"
                     android:textColor="@color/background_front"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <View
@@ -86,7 +87,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btnNearByParkings_place_picker_layout"
+                android:id="@+id/btnNearByParkings_place_picker_layout_new"
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="9dp"
@@ -100,8 +101,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="7.5"
-                    android:padding="20dp"
-                    android:src="@drawable/ic_parking" />
+                    android:padding="14dp"
+                    android:src="@drawable/ic_parking_trans" />
 
                 <View
                     android:layout_width="match_parent"
@@ -111,11 +112,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:text="BÃI ĐỖ XE"
                     android:textColor="@color/background_front"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <View
@@ -126,7 +128,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/rowButton2_place_picker_layout"
+            android:id="@+id/rowButton2_place_picker_layout_new"
             android:layout_width="match_parent"
             android:layout_height="127dp"
             android:layout_marginEnd="8dp"
@@ -137,7 +139,7 @@
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
             <LinearLayout
-                android:id="@+id/btnNearByCoffeeShops_place_picker_layout"
+                android:id="@+id/btnNearByCoffeeShops_place_picker_layout_new"
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_place_coffee"
@@ -148,8 +150,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="7.5"
-                    android:padding="20dp"
-                    android:src="@drawable/ic_coffee" />
+                    android:padding="14dp"
+                    android:src="@drawable/ic_coffee_trans" />
 
                 <View
                     android:layout_width="match_parent"
@@ -159,21 +161,22 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:text="CÀ PHÊ"
                     android:textColor="@color/background_front"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0.5"/>
+                    android:layout_weight="0.5" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btnNearByRestaurants_place_picker_layout"
+                android:id="@+id/btnNearByRestaurants_place_picker_layout_new"
                 android:layout_width="167dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="9dp"
@@ -187,8 +190,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="7.5"
-                    android:padding="20dp"
-                    android:src="@drawable/ic_restaurant" />
+                    android:padding="14dp"
+                    android:src="@drawable/ic_restaurant_trans" />
 
                 <View
                     android:layout_width="match_parent"
@@ -198,17 +201,18 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:text="NHÀ HÀNG"
                     android:textColor="@color/background_front"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0.5"/>
+                    android:layout_weight="0.5" />
             </LinearLayout>
         </LinearLayout>
 
