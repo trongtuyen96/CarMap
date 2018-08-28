@@ -170,7 +170,7 @@ class ReportCrashActivity : AppCompatActivity() {
                 // Create the File where the photo should go
                 var photoFile: File? = null
                 try {
-                    photoFile = createImageFile();
+                    photoFile = createImageFile()
                 } catch (e: IOException) {
                     // Error occurred while creating the File
                 }
@@ -178,9 +178,9 @@ class ReportCrashActivity : AppCompatActivity() {
                 if (photoFile != null) {
                     photoURI = FileProvider.getUriForFile(this,
                             "com.example.android.fileprovider",
-                            photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, 1);
+                            photoFile)
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(takePictureIntent, 1)
                 }
             }
 
