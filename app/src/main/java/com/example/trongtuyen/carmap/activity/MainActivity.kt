@@ -3212,7 +3212,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 removeCurrentSelectedPlace()
                 return
             }
+            mPopupWindowUser!=null&&mPopupWindowUser!!.isShowing->{
+                mPopupWindowUser?.dismiss()
+                return
+            }
             else -> {
+
                 mPopupWindowDirectionInfo = null
                 dismissPopupWindowNavigationInfo()
                 val builder = android.support.v7.app.AlertDialog.Builder(this)
@@ -4271,6 +4276,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         }
         if (marker.title == "user") {
+            mPopupWindowUser?.dismiss()
 //            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 //            val viewUserPopup = inflater.inflate(R.layout.marker_user_layout, null)
 //            mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -4567,7 +4573,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun openImageOnReport(id: String) {
-        val progress = ProgressDialog.show(this, "Hình ảnh báo hiệu", "Đang tải...", true)
+        val progress = ProgressDialog.show(this, null, "Đang tải hình ảnh...", true)
 
         AsyncTask.execute {
             try {
@@ -4604,13 +4610,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     TastyToast.makeText(this, exception.toString(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
                 }
             }
-
             progress.dismiss()
         }
     }
 
     private fun openVoiceOnReport(id: String) {
-        val progress = ProgressDialog.show(this, "Thu âm báo hiệu", "Đang tải...", true)
+        val progress = ProgressDialog.show(this, null, "Đang tải âm thanh...", true)
 
         AsyncTask.execute {
             try {
@@ -6109,6 +6114,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         call.enqueue(object : Callback<NearbyPlacesResponse> {
             override fun onFailure(call: Call<NearbyPlacesResponse>?, t: Throwable?) {
                 Log.d("onFailure", t.toString())
+                progressDialog.dismiss()
             }
 
             override fun onResponse(call: Call<NearbyPlacesResponse>?, response: Response<NearbyPlacesResponse>) {
@@ -6143,7 +6149,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var viewAdapterNearbyUser: NearbyUserAdapter
     private fun initListNearbyUserRecyclerView(myDataSet: MutableList<User>, view: View) {
         val viewManagerEditDirection = LinearLayoutManager(this)
-        viewAdapterNearbyUser = NearbyUserAdapter(myDataSet)
+        viewAdapterNearbyUser = NearbyUserAdapter(myDataSet) {
+            userItem : User ->
+            run {
+                for (userMarker in listUserMarker) {
+                    if (userItem.email == (userMarker.tag as User).email) {
+                        onOpenReportMarker(userMarker)
+                        break
+                    }
+                }
+            }
+        }
 
         val recyclerViewNearbyUser = view.findViewById<RecyclerView>(R.id.recycler_view_list_nearby_user_chat_dialog).apply {
             // use this setting to improve performance if you know that changes
