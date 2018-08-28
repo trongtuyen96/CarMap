@@ -11,9 +11,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.trongtuyen.carmap.R
 import com.example.trongtuyen.carmap.models.User
+import com.google.android.gms.maps.model.Marker
 import java.util.ArrayList
 
-class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>) :
+class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>, val clickListener: (User) -> Unit):
         RecyclerView.Adapter<NearbyUserAdapter.ViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -82,9 +83,10 @@ class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>) :
             imvColor.setBackgroundColor(Color.parseColor(myNearbyUserSet[position].colorCar))
         }
 
-        layoutNearbyUser.setOnClickListener {
-            onNearbyUserClick(position)
-        }
+//        layoutNearbyUser.setOnClickListener {
+//
+//        }
+        holder.view.setOnClickListener { clickListener(myNearbyUserSet[position])}
     }
 
     // Return the size of your dataset (invoked by the layout manager)

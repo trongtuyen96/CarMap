@@ -16,6 +16,7 @@
     <include layout="@layout/report_detail_layout" />
 
     <LinearLayout
+        android:id="@+id/llRouteInfo_route_info_layout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="@color/divider"
