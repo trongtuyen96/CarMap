@@ -2972,9 +2972,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             mPopupWindowChat!!.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
             val btnClose = viewChatPopup.findViewById<ImageView>(R.id.imClose_list_nearby_user_chat_dialog)
             val btnSendAll = viewChatPopup.findViewById<Button>(R.id.btnSendAll_list_nearby_user_chat_dialog)
+            val layoutOutside = viewChatPopup.findViewById<LinearLayout>(R.id.bg_to_remove_list_nearby_user_chat_dialog)
+
             initListNearbyUserRecyclerView(listUserExceptMe, viewChatPopup)
 
             btnClose.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                mPopupWindowChat!!.dismiss()
+            }
+
+            layoutOutside.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 mPopupWindowChat!!.dismiss()
             }
