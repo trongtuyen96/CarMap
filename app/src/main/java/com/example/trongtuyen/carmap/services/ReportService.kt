@@ -39,7 +39,12 @@ interface ReportService {
     @DELETE("report/{id}/delete")
     fun deleteReport(@Path("id") id: String): Call<ReportResponse>
 
-//    @DELETE("report/{id}/delete")
+    //    @DELETE("report/{id}/delete")
 //    fun deleteReport(@Path("id") id: String): Call<SampleResponse>
 
+    @GET("report/{id}/getBase64Image")
+    fun getBase64ImageReport(@Path("id") id: String): Call<ReportResponse>
+
+    @GET("report/{id}/getBase64Voice")
+    fun getBase64VoiceReport(@Path("id") id: String): Call<ReportResponse>
 }

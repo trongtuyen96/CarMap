@@ -109,14 +109,29 @@ class ReportHelpActivity : AppCompatActivity() {
         }
         btnSend.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onSend()
         }
         btnCLose.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
         btnDismiss.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            // Xoá ảnh cũ
+            if (mCurrentPhotoPath != "") {
+                val oldFile = File(mCurrentPhotoPath)
+                oldFile.delete()
+            }
             onClose()
         }
 
@@ -216,8 +231,15 @@ class ReportHelpActivity : AppCompatActivity() {
                         finish()
                     } else {
                         // Chạy audio
-                        if (AppController.soundMode == 1) {
-                            mAudioPlayer.play(this@ReportHelpActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        if (AppController.soundMode == 1 ) {
+                            when (AppController.voiceType) {
+                                1 -> {
+                                    mAudioPlayer.play(this@ReportHelpActivity, R.raw.gui_bao_hieu_thanh_cong)
+                                }
+                                2 -> {
+                                    mAudioPlayer.play(this@ReportHelpActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                                }
+                            }
                         }
                         TastyToast.makeText(this@ReportHelpActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
@@ -278,8 +300,15 @@ class ReportHelpActivity : AppCompatActivity() {
         bottomSheetDialog.setContentView(customBottomSheetView)
         btnNoGas.setOnClickListener {
             // Chạy audio
-            if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.het_xang)
+            if (AppController.soundMode == 1 ) {
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.het_xang)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.het_xang_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "no_gas"
@@ -287,8 +316,15 @@ class ReportHelpActivity : AppCompatActivity() {
         }
         btnFlatTire.setOnClickListener {
             // Chạy audio
-            if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.xep_lop_xe)
+            if (AppController.soundMode == 1 ) {
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.xep_lop_xe)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.xep_lop_xe_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "flat_tire"
@@ -296,8 +332,15 @@ class ReportHelpActivity : AppCompatActivity() {
         }
         btnBattery.setOnClickListener {
             // Chạy audio
-            if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.het_binh)
+            if (AppController.soundMode == 1 ) {
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.het_binh)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.het_binh_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "no_battery"
@@ -305,8 +348,15 @@ class ReportHelpActivity : AppCompatActivity() {
         }
         btnMedical.setOnClickListener {
             // Chạy audio
-            if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.cham_soc_y_te)
+            if (AppController.soundMode == 1 ) {
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.cham_soc_y_te)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.cham_soc_y_te_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "medical_care"
@@ -348,8 +398,15 @@ class ReportHelpActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ReportResponse>, response: Response<ReportResponse>) {
                 if (response.isSuccessful) {
                     // Chạy audio
-                    if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@ReportHelpActivity, R.raw.gui_bao_hieu_thanh_cong)
+                    if (AppController.soundMode == 1 ) {
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@ReportHelpActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@ReportHelpActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                            }
+                        }
                     }
                     TastyToast.makeText(this@ReportHelpActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
 //                    Toast.makeText(this@ReportTrafficActivity, "Xong 2", Toast.LENGTH_SHORT).show()

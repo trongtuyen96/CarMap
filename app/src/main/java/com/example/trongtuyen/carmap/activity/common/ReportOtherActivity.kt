@@ -223,7 +223,8 @@ class ReportOtherActivity : AppCompatActivity() {
                     BitmapFactory.decodeFile(mCurrentPhotoPath, options)
 //                    options.inSampleSize = calculateInSampleSize(options)
                     options.inSampleSize = 8
-                    Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
+                    // Bỏ vì thừa Toast
+//                    Toast.makeText(this, "SAMPLE: " + options.inSampleSize.toString(), Toast.LENGTH_SHORT).show()
 //                    options.inDensity = 320
                     options.inJustDecodeBounds = false
                     val imageStream = contentResolver.openInputStream(photoURI)
@@ -233,7 +234,8 @@ class ReportOtherActivity : AppCompatActivity() {
                     val matrix = Matrix()
                     matrix.postRotate(90f)
                     val newBitmap: Bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
+                    // Bỏ vì thừa Toast
+//                    Toast.makeText(this, "AFTER: " + newBitmap.density.toString() + " " + newBitmap.width.toString() + " " + newBitmap.height.toString(), Toast.LENGTH_LONG).show()
                     if (bitmap.density > 320) {
                         sBase64Image = FileUtils.encodeImageFile(newBitmap, "large")
                     } else {
@@ -272,7 +274,14 @@ class ReportOtherActivity : AppCompatActivity() {
 
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@ReportOtherActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@ReportOtherActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@ReportOtherActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                            }
+                        }
                     }
                     TastyToast.makeText(this@ReportOtherActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                     finish()

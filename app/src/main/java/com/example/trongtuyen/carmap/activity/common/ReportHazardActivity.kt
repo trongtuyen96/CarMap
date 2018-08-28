@@ -328,7 +328,14 @@ class ReportHazardActivity : AppCompatActivity() {
                     } else {
                         // Chạy audio
                         if (AppController.soundMode == 1) {
-                            mAudioPlayer.play(this@ReportHazardActivity, R.raw.gui_bao_hieu_thanh_cong)
+                            when (AppController.voiceType) {
+                                1 -> {
+                                    mAudioPlayer.play(this@ReportHazardActivity, R.raw.gui_bao_hieu_thanh_cong)
+                                }
+                                2 -> {
+                                    mAudioPlayer.play(this@ReportHazardActivity, R.raw.gui_bao_hieu_thanh_cong_2)
+                                }
+                            }
                         }
                         TastyToast.makeText(this@ReportHazardActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                         finish()
@@ -356,7 +363,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnObject.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.vat_can)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.vat_can)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.vat_can_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "object"
@@ -365,7 +379,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnConstruction.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.cong_trinh)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.cong_trinh)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.cong_trinh_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "construction"
@@ -374,7 +395,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnBrokenLight.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.den_bao_hu)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.den_giao_thong_hu)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.den_giao_thong_hu_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "broken_light"
@@ -383,7 +411,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnPothole.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.ho_voi)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.ho_voi)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.ho_voi_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "pothole"
@@ -392,7 +427,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnVehicleStop.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.xe_dau)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.xe_dau)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.xe_dau_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "vehicle_stop"
@@ -401,7 +443,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnRoadkill.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.dong_vat_chet_tren_duong_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "road_kill"
@@ -471,7 +520,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnVehicleStop.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.xe_dau_ben_le)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.xe_dau_ben_le)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.xe_dau_ben_le_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "vehicle_stop"
@@ -480,7 +536,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnAnimal.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.dong_vat_nguy_hiem_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "animal"
@@ -489,7 +552,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnMissingSign.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.thieu_bien_bao)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.thieu_bien_bao)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.thieu_bien_bao_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "missing_sign"
@@ -565,7 +635,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnFog.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.suong_mu)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.suong_mu)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.suong_mu_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "fog"
@@ -574,7 +651,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnHail.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.mua_da)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.mua_da)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.mua_da_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "hail"
@@ -583,7 +667,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnFlood.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.lu_lut)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.lu_lut)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.lu_lut_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "flood"
@@ -592,7 +683,14 @@ class ReportHazardActivity : AppCompatActivity() {
         btnIce.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
-                mAudioPlayer.play(this, R.raw.da_tron_tren_duong)
+                when (AppController.voiceType) {
+                    1 -> {
+                        mAudioPlayer.play(this, R.raw.da_tron_tren_duong)
+                    }
+                    2 -> {
+                        mAudioPlayer.play(this, R.raw.da_tron_tren_duong_2)
+                    }
+                }
             }
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             subType2 = "ice"
@@ -631,7 +729,14 @@ class ReportHazardActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     // Chạy audio
                     if (AppController.soundMode == 1) {
-                        mAudioPlayer.play(this@ReportHazardActivity, R.raw.gui_bao_hieu_thanh_cong)
+                        when (AppController.voiceType) {
+                            1 -> {
+                                mAudioPlayer.play(this@ReportHazardActivity, R.raw.ket_xe_vua)
+                            }
+                            2 -> {
+                                mAudioPlayer.play(this@ReportHazardActivity, R.raw.ket_xe_vua_2)
+                            }
+                        }
                     }
                     TastyToast.makeText(this@ReportHazardActivity, "Gửi báo hiệu thành công!", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS).show()
                 } else {

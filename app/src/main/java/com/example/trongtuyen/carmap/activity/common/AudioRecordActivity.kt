@@ -140,7 +140,14 @@ class AudioRecordActivity : AppCompatActivity() {
 
                 // Chạy audio
                 if (AppController.soundMode == 1) {
-                    mAudioPlayer.play(this, R.raw.ghi_am_thanh_cong)
+                    when (AppController.voiceType) {
+                        1 -> {
+                            mAudioPlayer.play(this, R.raw.ghi_am_thanh_cong)
+                        }
+                        2 -> {
+                            mAudioPlayer.play(this, R.raw.ghi_am_thanh_cong_2)
+                        }
+                    }
                 }
             }
             mStartRecording = !mStartRecording
