@@ -45,14 +45,23 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvLicensePlate_nearby_user_chat_adapter_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:text="Biển số"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
+                android:textColor="@color/black_de"
+                android:textSize="18sp" />
+            <TextView
                 android:id="@+id/tvName_nearby_user_chat_adapter_layout"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:gravity="bottom"
                 android:text="Tên"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textColor="@color/black_de"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvTypeCar_nearby_user_chat_adapter_layout"

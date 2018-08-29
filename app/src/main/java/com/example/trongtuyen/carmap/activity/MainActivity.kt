@@ -298,7 +298,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         progressDialog = ProgressDialog.show(this, null, "Đang tìm kiếm...", true)
     }
 
-    private lateinit var progressDialog:ProgressDialog
+    private lateinit var progressDialog: ProgressDialog
 
     private lateinit var viewDirectionPopup: View
 
@@ -825,7 +825,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
-    private var currentReportIndex:Int = 0
+    private var currentReportIndex: Int = 0
 
     private fun updateUIRouteInfoPopup(route: Route) {
         if (!isRouteInfoWindowUp || !::viewRoutePopup.isInitialized)
@@ -1363,42 +1363,42 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val routeInfoLayout = viewRoutePopup.findViewById<LinearLayout>(R.id.llRouteInfo_route_info_layout)
         val dividerAboveReportDetail = viewRoutePopup.findViewById<LinearLayout>(R.id.report_detail_divider_route_info_layout)
         val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
-        routeInfoLayout.visibility=View.GONE
+        routeInfoLayout.visibility = View.GONE
         dividerAboveReportDetail.visibility = View.INVISIBLE
-        if (layoutReport.visibility==View.VISIBLE){
+        if (layoutReport.visibility == View.VISIBLE) {
 //            Log.d("UpdateListReport","layoutReport visible")
             val progressBar = viewRoutePopup.findViewById<ProgressBar>(R.id.progressBar_report_detail)
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
-            btnPreviousReport.visibility=View.INVISIBLE
-            btnNextReport.visibility=View.INVISIBLE
+            btnPreviousReport.visibility = View.INVISIBLE
+            btnNextReport.visibility = View.INVISIBLE
             progressBar.visibility = View.INVISIBLE
 
-                updateListReportMarkerCurrentRoute()
-                currentReportIndex = 0
-                progressBar.progress = 1
-                listReportMarkerCurrentRoute.sortedWith(compareBy { (it.tag as Report).distance })
-                if (listReportMarkerCurrentRoute.size>0){
-                    Log.d("UpdateListReport","List size > 0")
-                    if (!::nextReportMarkerPopupOnNavigation.isInitialized){
-                        nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[0]
-                        nextReportPopupOnNavigation = listReportMarkerCurrentRoute[0].tag as Report
-                        Log.d("UpdateListReport","nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[0]")
-                    }
-                    updateUIReportDetail(nextReportPopupOnNavigation, viewRoutePopup)
-                } else {
-                    Log.d("UpdateListReport","List size = 0")
+            updateListReportMarkerCurrentRoute()
+            currentReportIndex = 0
+            progressBar.progress = 1
+            listReportMarkerCurrentRoute.sortedWith(compareBy { (it.tag as Report).distance })
+            if (listReportMarkerCurrentRoute.size > 0) {
+                Log.d("UpdateListReport", "List size > 0")
+                if (!::nextReportMarkerPopupOnNavigation.isInitialized) {
+                    nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[0]
+                    nextReportPopupOnNavigation = listReportMarkerCurrentRoute[0].tag as Report
+                    Log.d("UpdateListReport", "nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[0]")
                 }
+                updateUIReportDetail(nextReportPopupOnNavigation, viewRoutePopup)
+            } else {
+                Log.d("UpdateListReport", "List size = 0")
+            }
         } else {
 //            Log.d("UpdateListReport","layoutReport not show")
         }
 
 
         fusedLocationClient.lastLocation.addOnSuccessListener {
-            if (it!=null) {
+            if (it != null) {
                 lastLocation = it
             }
-            if (::lastLocation.isInitialized){
+            if (::lastLocation.isInitialized) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(lastLocation.latitude, lastLocation.longitude)))
                 // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
                 // moveCamera cho điểm, animateCamera cho CameraPosition
@@ -1522,13 +1522,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     @SuppressLint("MissingPermission")
     private fun updateUINavigation(route: Route) {
         if (!mPopupWindowNavigationInfo!!.isShowing || !::viewNavigationPopup.isInitialized || !::lastLocation.isInitialized) {
-            Log.d("TestCam","Called but fail")
+            Log.d("TestCam", "Called but fail")
             return
         }
-        Log.d("TestCam","Called success")
+        Log.d("TestCam", "Called success")
         val routeInfoLayout = viewRoutePopup.findViewById<LinearLayout>(R.id.llRouteInfo_route_info_layout)
         val dividerAboveReportDetail = viewRoutePopup.findViewById<LinearLayout>(R.id.report_detail_divider_route_info_layout)
-        routeInfoLayout.visibility=View.GONE
+        routeInfoLayout.visibility = View.GONE
         dividerAboveReportDetail.visibility = View.INVISIBLE
 
         if (isOutOfRoute(route)) {
@@ -1541,38 +1541,38 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 //        if (listReportMarkerPassedCurrentRoute.size>=listReportMarkerCurrentRoute)
         val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
         var passedAllReport = true
-        for (reportMarker in listReportMarkerCurrentRoute){
-            if (!listReportMarkerPassedCurrentRoute.contains(reportMarker)){
-                passedAllReport=false
+        for (reportMarker in listReportMarkerCurrentRoute) {
+            if (!listReportMarkerPassedCurrentRoute.contains(reportMarker)) {
+                passedAllReport = false
                 break
             }
         }
         if (passedAllReport)
-            layoutReport.visibility=View.GONE
+            layoutReport.visibility = View.GONE
 
-        if (layoutReport.visibility==View.VISIBLE) {
+        if (layoutReport.visibility == View.VISIBLE) {
 //            Log.d("UpdateListReport","layoutReport visible")
             val progressBar = viewRoutePopup.findViewById<ProgressBar>(R.id.progressBar_report_detail)
             val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
             val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
-            btnPreviousReport.visibility=View.INVISIBLE
-            btnNextReport.visibility=View.INVISIBLE
+            btnPreviousReport.visibility = View.INVISIBLE
+            btnNextReport.visibility = View.INVISIBLE
             progressBar.visibility = View.INVISIBLE
             if (::nextReportMarkerPopupOnNavigation.isInitialized) {
                 updateUIReportDetail(nextReportPopupOnNavigation, viewRoutePopup)
             } else {
                 updateListReportMarkerCurrentRoute()
                 listReportMarkerCurrentRoute.sortedWith(compareBy { (it.tag as Report).distance })
-                if (listReportMarkerCurrentRoute.size>0){
-                    Log.d("UpdateListReport","List size > 0")
-                    if (!::nextReportMarkerPopupOnNavigation.isInitialized){
+                if (listReportMarkerCurrentRoute.size > 0) {
+                    Log.d("UpdateListReport", "List size > 0")
+                    if (!::nextReportMarkerPopupOnNavigation.isInitialized) {
                         nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[0]
                         nextReportPopupOnNavigation = listReportMarkerCurrentRoute[0].tag as Report
-                        Log.d("UpdateListReport","nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[0]")
+                        Log.d("UpdateListReport", "nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[0]")
                     }
                     updateUIReportDetail(nextReportPopupOnNavigation, viewRoutePopup)
                 } else {
-                    Log.d("UpdateListReport","List size = 0")
+                    Log.d("UpdateListReport", "List size = 0")
                 }
             }
         }
@@ -1603,11 +1603,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             return
         }
 
-        Log.d("TestCam","Success")
+        Log.d("TestCam", "Success")
         fusedLocationClient.lastLocation.addOnSuccessListener {
-            if (it!=null)
-                lastLocation=it
-            if (::lastLocation.isInitialized){
+            if (it != null)
+                lastLocation = it
+            if (::lastLocation.isInitialized) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(lastLocation.latitude, lastLocation.longitude)))
                 // Phải cách trong code vì nếu để cùng loại animate, và gần nhau thì 1 trong 2 cái ko kịp thực hiện làm ko thể cập nhật vị trí theo thời gian
                 // moveCamera cho điểm, animateCamera cho CameraPosition
@@ -2038,14 +2038,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             mPopupWindowDirectionInfo!!.showAtLocation(this.currentFocus, Gravity.TOP, 0, 0)
             isDirectionInfoWindowUp = true
             val routeInfoLayout = viewRoutePopup.findViewById<LinearLayout>(R.id.llRouteInfo_route_info_layout)
-            routeInfoLayout.visibility=View.VISIBLE
+            routeInfoLayout.visibility = View.VISIBLE
             val layoutReport = viewRoutePopup.findViewById<LinearLayout>(R.id.layoutReport_detail)
-            if (layoutReport.visibility==View.VISIBLE) {
+            if (layoutReport.visibility == View.VISIBLE) {
                 val progressBar = viewRoutePopup.findViewById<ProgressBar>(R.id.progressBar_report_detail)
                 val btnPreviousReport = viewRoutePopup.findViewById<ImageView>(R.id.btnPrevious_report_detail)
                 val btnNextReport = viewRoutePopup.findViewById<ImageView>(R.id.btnNext_report_detail)
-                btnPreviousReport.visibility=View.VISIBLE
-                btnNextReport.visibility=View.VISIBLE
+                btnPreviousReport.visibility = View.VISIBLE
+                btnNextReport.visibility = View.VISIBLE
                 progressBar.visibility = View.VISIBLE
             }
         }
@@ -2286,7 +2286,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Cập nhật địa điểm hiện tại
                     val listGeo: List<Double> = listOf(lastLocation.longitude, lastLocation.latitude)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "", "")
                     onUpdateCurrentLocation(user)
 
                     // Cập nhật người dùng xung quanh
@@ -2431,7 +2431,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             R.id.layoutHomeMenu -> {
                 mLocationPermission.execute()
                 fusedLocationClient.lastLocation.addOnSuccessListener {
-                    if (it!=null){
+                    if (it != null) {
                         lastLocation = it
                         if (AppController.userProfile != null) {
                             if (AppController.userProfile!!.latHomeLocation != null && AppController.userProfile!!.longHomeLocation != null) {
@@ -2452,7 +2452,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             R.id.layoutWorkMenu -> {
                 mLocationPermission.execute()
                 fusedLocationClient.lastLocation.addOnSuccessListener {
-                    if (it!=null){
+                    if (it != null) {
                         lastLocation = it
                         if (AppController.userProfile != null) {
                             if (AppController.userProfile!!.latWorkLocation != null && AppController.userProfile!!.longWorkLocation != null) {
@@ -2473,7 +2473,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             R.id.layoutHistoryMenu -> {
                 mLocationPermission.execute()
                 fusedLocationClient.lastLocation.addOnSuccessListener {
-                    if (it!=null){
+                    if (it != null) {
                         lastLocation = it
                     }
                 }
@@ -2572,7 +2572,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressHome_menu.text = data!!.getStringExtra("home_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0, "", "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, AppController.userProfile!!.latHomeLocation!!, AppController.userProfile!!.longHomeLocation!!, 0.0, 0.0, "", "", "", "", "", "")
                     onUpdateHomeLocation(user)
                 }
             }
@@ -2581,7 +2581,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     tvAddressWork_menu.text = data!!.getStringExtra("work_location_new")
                     val listGeo: List<Double> = listOf(0.0, 0.0)
                     val newGeo = Geometry("Point", listGeo)
-                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!, "", "", "", "", "")
+                    val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, AppController.userProfile!!.latWorkLocation!!, AppController.userProfile!!.longWorkLocation!!, "", "", "", "", "", "")
                     onUpdateWorkLocation(user)
                 }
             }
@@ -2617,7 +2617,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.settingInvisible == "invisible") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "invisible", "")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "invisible", "", "")
                         onUpdateStatus(user)
 //                        currentStatusSetting = AppController.settingInvisible
                     }
@@ -2626,7 +2626,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.settingInvisible == "visible") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "visible", "")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "visible", "", "")
                         onUpdateStatus(user)
 //                        currentStatusSetting = AppController.settingInvisible
                     }
@@ -2634,8 +2634,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     if (AppController.userProfile!!.typeCar != "" || AppController.userProfile!!.modelCar != "" || AppController.userProfile!!.colorCar != "") {
                         val listGeo: List<Double> = listOf(0.0, 0.0)
                         val newGeo = Geometry("Point", listGeo)
-                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString(), "", "")
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, AppController.userProfile!!.typeCar.toString(), AppController.userProfile!!.modelCar.toString(), AppController.userProfile!!.colorCar.toString(), "", "", "")
                         onUpdateMyCar(user)
+                    }
+
+                    if (AppController.userProfile!!.licensePlate != "") {
+                        val listGeo: List<Double> = listOf(0.0, 0.0)
+                        val newGeo = Geometry("Point", listGeo)
+                        val user = User("", "", "", "", "", "", "", newGeo, 0.0, 0.0, 0.0, 0.0, "", "", "", "", "", AppController.userProfile!!.licensePlate.toString())
+                        onUpdateLicensePlate(user)
                     }
                 }
             }
@@ -2795,8 +2802,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         // Define the location update callback
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
-                if (locationResult==null){
-                    Log.d("TestCam","Location null")
+                if (locationResult == null) {
+                    Log.d("TestCam", "Location null")
                     return
                 }
 //                super.onLocationResult(locationResult)
@@ -2810,57 +2817,56 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
 
                 // Update Navigation UI
-                if (mPopupWindowNavigationInfo!=null && mPopupWindowNavigationInfo!!.isShowing) {
-                    Log.d("TestCam","mPopupWindowNavigationInfo success")
+                if (mPopupWindowNavigationInfo != null && mPopupWindowNavigationInfo!!.isShowing) {
+                    Log.d("TestCam", "mPopupWindowNavigationInfo success")
                     val currentRoute = currentPolyline.tag as Route
                     fusedLocationClient.lastLocation.addOnSuccessListener {
-                        if (it!=null)
-                            lastLocation=it
+                        if (it != null)
+                            lastLocation = it
                     }
                     if (::nextReportMarkerPopupOnNavigation.isInitialized)
-                        Log.d("UpdateListReport","nextReportMarkerPopupOnNavigation inited")
+                        Log.d("UpdateListReport", "nextReportMarkerPopupOnNavigation inited")
                     else
-                        Log.d("UpdateListReport","nextReportMarkerPopupOnNavigation not inited")
+                        Log.d("UpdateListReport", "nextReportMarkerPopupOnNavigation not inited")
                     updateUINavigation(currentRoute)
                     updateListReportMarkerCurrentRoute()
                     listReportMarkerCurrentRoute.sortedWith(compareBy { (it.tag as Report).distance })
 
-                    Log.d("UpdateListReport",listReportMarkerCurrentRoute.size.toString())
+                    Log.d("UpdateListReport", listReportMarkerCurrentRoute.size.toString())
                     for (i in 0 until listReportMarkerCurrentRoute.size) {
                         val location = Location("tempLocation")
                         location.latitude = listReportMarkerCurrentRoute[i].position.latitude
                         location.longitude = listReportMarkerCurrentRoute[i].position.longitude
-                        Log.d("UpdateListReport",lastLocation.distanceTo(location).toString()+" m")
+                        Log.d("UpdateListReport", lastLocation.distanceTo(location).toString() + " m")
                         if (lastLocation.distanceTo(location) <= REPORT_ON_ROUTE_DISTANCE_NAVIGATION) {
-                            Log.d("UpdateListReport","distance success")
-                            if (currentReportMarkerPopupOnNavigation==null
-                                    || listReportMarkerCurrentRoute[i]!=currentReportMarkerPopupOnNavigation){
+                            Log.d("UpdateListReport", "distance success")
+                            if (currentReportMarkerPopupOnNavigation == null
+                                    || listReportMarkerCurrentRoute[i] != currentReportMarkerPopupOnNavigation) {
                                 currentReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[i]
                                 listReportMarkerPassedCurrentRoute.add(currentReportMarkerPopupOnNavigation!!)
                                 onOpenReportMarker(currentReportMarkerPopupOnNavigation!!)
-                                if (i+1<listReportMarkerCurrentRoute.size&&!listReportMarkerPassedCurrentRoute.contains(listReportMarkerCurrentRoute[i+1])){
-                                    nextReportMarkerPopupOnNavigation=listReportMarkerCurrentRoute[i+1]
-                                    nextReportPopupOnNavigation = listReportMarkerCurrentRoute[i+1].tag as Report
-                                    Log.d("UpdateListReport","nextReportMarkerPopupOnNavigation=listReportMarkerCurrentRoute[i+1]")
+                                if (i + 1 < listReportMarkerCurrentRoute.size && !listReportMarkerPassedCurrentRoute.contains(listReportMarkerCurrentRoute[i + 1])) {
+                                    nextReportMarkerPopupOnNavigation = listReportMarkerCurrentRoute[i + 1]
+                                    nextReportPopupOnNavigation = listReportMarkerCurrentRoute[i + 1].tag as Report
+                                    Log.d("UpdateListReport", "nextReportMarkerPopupOnNavigation=listReportMarkerCurrentRoute[i+1]")
                                 } else {
-                                    Log.d("UpdateListReport","ListReport reached max")
+                                    Log.d("UpdateListReport", "ListReport reached max")
                                 }
-                            } else{
-                                Log.d("UpdateListReport","currentReportMarkerPopupOnNavigation fail")
+                            } else {
+                                Log.d("UpdateListReport", "currentReportMarkerPopupOnNavigation fail")
                             }
                             break
                         } else {
-                            Log.d("UpdateListReport","distance fail")
-                            if (currentReportMarkerPopupOnNavigation!=null){
-                                if (currentReportMarkerPopupOnNavigation==listReportMarkerCurrentRoute[i]){
+                            Log.d("UpdateListReport", "distance fail")
+                            if (currentReportMarkerPopupOnNavigation != null) {
+                                if (currentReportMarkerPopupOnNavigation == listReportMarkerCurrentRoute[i]) {
                                     mPopupWindowReport?.dismiss()
                                 }
                             }
                         }
                     }
-                }
-                else {
-                    Log.d("TestCam","mPopupWindowNavigationInfo fail")
+                } else {
+                    Log.d("TestCam", "mPopupWindowNavigationInfo fail")
                 }
             }
         }
@@ -2868,17 +2874,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         createLocationRequest()
     }
 
-    private lateinit var currentRoute:Route
-    private lateinit var nextReportMarkerPopupOnNavigation:Marker
-    private lateinit var nextReportPopupOnNavigation:Report
+    private lateinit var currentRoute: Route
+    private lateinit var nextReportMarkerPopupOnNavigation: Marker
+    private lateinit var nextReportPopupOnNavigation: Report
     private var listReportMarkerPassedCurrentRoute: MutableList<Marker> = ArrayList()
 
-    private fun updateListReportMarkerCurrentRoute(){
+    private fun updateListReportMarkerCurrentRoute() {
         listReportMarkerCurrentRoute = ArrayList()
         for (i in 0 until listReportMarker.size) {
             if (PolyUtil.isLocationOnPath(LatLng(listReportMarker[i].position.latitude, listReportMarker[i].position.longitude), currentRoute.points, true, REPORT_ON_ROUTE_DISTANCE_DIRECTION)) {
                 listReportMarkerCurrentRoute.add(listReportMarker[i])
-                listReportMarkerCurrentRoute[listReportMarkerCurrentRoute.size-1].tag = listReportMarker[i].tag as Report
+                listReportMarkerCurrentRoute[listReportMarkerCurrentRoute.size - 1].tag = listReportMarker[i].tag as Report
             }
         }
 //        listReportMarkerCurrentRoute.sortedWith(compareBy { (it.tag as Report).distance })
@@ -3219,7 +3225,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 removeCurrentSelectedPlace()
                 return
             }
-            mPopupWindowUser!=null&&mPopupWindowUser!!.isShowing->{
+            mPopupWindowUser != null && mPopupWindowUser!!.isShowing -> {
                 mPopupWindowUser?.dismiss()
                 return
             }
@@ -3424,16 +3430,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         return false
     }
 
-    private fun updateDistanceReportMarkerPopup(report: Report){
-        if (mPopupWindowReport==null){
+    private fun updateDistanceReportMarkerPopup(report: Report) {
+        if (mPopupWindowReport == null) {
             return
         }
-        if (!mPopupWindowReport!!.isShowing||!::viewReportPopup.isInitialized){
+        if (!mPopupWindowReport!!.isShowing || !::viewReportPopup.isInitialized) {
             return
         }
     }
 
-    private lateinit var viewReportPopup:View
+    private lateinit var viewReportPopup: View
 
     @SuppressLint("InflateParams", "SetTextI18n")
     private fun onOpenReportMarker(marker: Marker) {
@@ -4315,6 +4321,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val tvName = viewUserPopup.findViewById<TextView>(R.id.tvName_marker_user)
             val tvTypeCar = viewUserPopup.findViewById<TextView>(R.id.tvTypeCar_marker_user)
             val btnHello = viewUserPopup.findViewById<Button>(R.id.btnHello_marker_user)
+            val tvLicensePlate = viewUserPopup.findViewById<TextView>(R.id.tvLicensePlate_marker_user)
 
             val btnConfirm = viewUserPopup.findViewById<LinearLayout>(R.id.layoutConfirm_marker_user)
             val imvType = viewUserPopup.findViewById<ImageView>(R.id.imvType_marker_user)
@@ -4323,6 +4330,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             val dataUser: User = marker.tag as User
             tvName.text = dataUser.name.toString()
+            tvLicensePlate.text = dataUser.licensePlate.toString()
 
             if (dataUser.typeCar != "") {
                 when (dataUser.typeCar) {
@@ -4952,6 +4960,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         })
     }
 
+    private fun onUpdateLicensePlate(user: User) {
+        val service = APIServiceGenerator.createService(UserService::class.java)
+        val call = service.updateLicensePlate(user)
+        call.enqueue(object : Callback<UserProfileResponse> {
+            override fun onResponse(call: Call<UserProfileResponse>, response: Response<UserProfileResponse>) {
+                if (response.isSuccessful) {
+
+                } else {
+                    val apiError = ErrorUtils.parseError(response)
+                    // Bỏ vì bớt toast
+//                    TastyToast.makeText(this@MainActivity, "Lỗi: " + apiError.message(), TastyToast.LENGTH_SHORT, TastyToast.ERROR).show()
+                }
+            }
+
+            override fun onFailure(call: Call<UserProfileResponse>, t: Throwable) {
+                Log.e("Failure", "Error: " + t.message)
+            }
+        })
+    }
+
     // ======================================================================================================================================================== //
     // ======== SOCKET EVENT ================================================================================================================================== //
     // ======================================================================================================================================================== //
@@ -5183,8 +5211,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "strong light") {
-               if(mPopupWindowStrongLight != null){
-                   mPopupWindowStrongLight?.dismiss()
+                if (mPopupWindowStrongLight != null) {
+                    mPopupWindowStrongLight?.dismiss()
                 }
                 // Chạy audio
                 if (AppController.soundMode == 1 || AppController.soundMode == 2) {
@@ -5274,7 +5302,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "watcher") {
-                if(mPopupWindowWatcher != null){
+                if (mPopupWindowWatcher != null) {
                     mPopupWindowWatcher?.dismiss()
                 }
                 // Chạy audio
@@ -5355,7 +5383,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "slow down") {
-                if(mPopupWindowSlowDown != null){
+                if (mPopupWindowSlowDown != null) {
                     mPopupWindowSlowDown?.dismiss()
                 }
                 // Chạy audio
@@ -5437,7 +5465,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "turn around") {
-                if(mPopupWindowTurnAround != null){
+                if (mPopupWindowTurnAround != null) {
                     mPopupWindowTurnAround?.dismiss()
                 }
                 // Chạy audio
@@ -5518,7 +5546,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 return@Runnable
             }
             if (message == "thank") {
-                if(mPopupWindowThank != null){
+                if (mPopupWindowThank != null) {
                     mPopupWindowThank?.dismiss()
                 }
                 // Chạy audio
@@ -5594,7 +5622,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
             if (type == "careless_driver") {
 //                Toast.makeText(this, "Đã vào", Toast.LENGTH_SHORT).show()
-                if(mPopupWindowOther != null){
+                if (mPopupWindowOther != null) {
                     mPopupWindowOther?.dismiss()
                 }
                 // Chạy audio
@@ -5642,7 +5670,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
             if (type == "piggy") {
-                if(mPopupWindowOther != null){
+                if (mPopupWindowOther != null) {
                     mPopupWindowOther?.dismiss()
                 }
                 // Chạy audio
@@ -6156,8 +6184,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var viewAdapterNearbyUser: NearbyUserAdapter
     private fun initListNearbyUserRecyclerView(myDataSet: MutableList<User>, view: View) {
         val viewManagerEditDirection = LinearLayoutManager(this)
-        viewAdapterNearbyUser = NearbyUserAdapter(myDataSet) {
-            userItem : User ->
+        viewAdapterNearbyUser = NearbyUserAdapter(myDataSet) { userItem: User ->
             run {
                 for (userMarker in listUserMarker) {
                     if (userItem.email == (userMarker.tag as User).email) {
