@@ -39,6 +39,8 @@ class SettingActivity : AppCompatActivity() {
     lateinit var btnVoice: Button
     @BindView(R.id.layoutMyCar_setting)
     lateinit var layoutMyCar: LinearLayout
+    @BindView(R.id.editLicensePlate_setting)
+    lateinit var editLicensePlate: EditText
 
     private var mPopupRadiusWindow: PopupWindow? = null
 
@@ -128,6 +130,7 @@ class SettingActivity : AppCompatActivity() {
             }
         }
 
+        editLicensePlate.setText(AppController.userProfile!!.licensePlate.toString(), TextView.BufferType.EDITABLE)
         switchInvisible.setOnToggledListener(object : OnToggledListener {
             override fun onSwitched(labeledSwitch: LabeledSwitch?, isOn: Boolean) {
                 if (isOn) {
@@ -400,6 +403,7 @@ class SettingActivity : AppCompatActivity() {
             }
         }
 
+
         btnVoice.setOnClickListener {
             // Chạy audio
             if (AppController.soundMode == 1) {
@@ -645,6 +649,7 @@ class SettingActivity : AppCompatActivity() {
             }
         }
         btnBack.setOnClickListener {
+            AppController.userProfile!!.licensePlate = editLicensePlate.text.toString()
             setResult(Activity.RESULT_OK, intent)
             finish()
         }

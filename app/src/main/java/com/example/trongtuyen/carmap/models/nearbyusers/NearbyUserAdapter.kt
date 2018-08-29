@@ -14,7 +14,7 @@ import com.example.trongtuyen.carmap.models.User
 import com.google.android.gms.maps.model.Marker
 import java.util.ArrayList
 
-class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>, val clickListener: (User) -> Unit):
+class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>, val clickListener: (User) -> Unit) :
         RecyclerView.Adapter<NearbyUserAdapter.ViewHolder>() {
 
     // Provide a reference to the views for each data item
@@ -45,6 +45,7 @@ class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>, val clic
         val layoutNearbyUser = holder.view.findViewById<LinearLayout>(R.id.layoutUser_nearby_user_chat_adapter_layout)
         val imvTypeCar = holder.view.findViewById<ImageView>(R.id.imTypeCar_nearby_user_chat_adapter_layout)
         val tvName = holder.view.findViewById<TextView>(R.id.tvName_nearby_user_chat_adapter_layout)
+        val tvLicensePlate = holder.view.findViewById<TextView>(R.id.tvLicensePlate_nearby_user_chat_adapter_layout)
         val tvTypeCar = holder.view.findViewById<TextView>(R.id.tvTypeCar_nearby_user_chat_adapter_layout)
         val imvColor = holder.view.findViewById<ImageView>(R.id.imColor_nearby_user_chat_adapter_layout_new)
 
@@ -64,18 +65,19 @@ class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>, val clic
             else -> imvTypeCar.setImageResource(R.drawable.ic_other_car)
         }
         tvName.text = myNearbyUserSet[position].name
+        tvLicensePlate.text = myNearbyUserSet[position].licensePlate
         when (myNearbyUserSet[position].typeCar) {
             "xe con" -> {
-                tvTypeCar.text = "Xe con"
+                tvTypeCar.text = "Xe con " + myNearbyUserSet[position].modelCar
             }
             "xe tai" -> {
-                tvTypeCar.text = "Xe tải"
+                tvTypeCar.text = "Xe tải " + myNearbyUserSet[position].modelCar
             }
             "xe khach" -> {
-                tvTypeCar.text = "Xe khách"
+                tvTypeCar.text = "Xe khách " + myNearbyUserSet[position].modelCar
             }
             "xe container" -> {
-                tvTypeCar.text = "Xe container"
+                tvTypeCar.text = "Xe container " + myNearbyUserSet[position].modelCar
             }
         }
 
@@ -86,13 +88,13 @@ class NearbyUserAdapter(private val myNearbyUserSet: MutableList<User>, val clic
 //        layoutNearbyUser.setOnClickListener {
 //
 //        }
-        holder.view.setOnClickListener { clickListener(myNearbyUserSet[position])}
+        holder.view.setOnClickListener { clickListener(myNearbyUserSet[position]) }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = myNearbyUserSet.size
 
-    private fun onNearbyUserClick(position : Int): Int{
+    private fun onNearbyUserClick(position: Int): Int {
         return position
     }
 
