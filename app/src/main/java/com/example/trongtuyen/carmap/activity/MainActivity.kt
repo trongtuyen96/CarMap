@@ -2322,7 +2322,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             val intent: Intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
             intent.data = Uri.parse("package:" + this.packageName)
             startActivity(intent)
-            TastyToast.makeText(this, "Cho phép chỉnh sửa cài đặt hệ thống", TastyToast.LENGTH_LONG, TastyToast.DEFAULT)
+            TastyToast.makeText(this, "Cho phép chỉnh sửa cài đặt hệ thống", TastyToast.LENGTH_SHORT, TastyToast.DEFAULT)
         }
     }
 
@@ -3127,6 +3127,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         layoutOutside.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             mPopupWindowFilter!!.dismiss()
+            if (AppController.settingFilterCar == "true") {
+                if (::listUser.isInitialized) {
+                    if (listUser.isNotEmpty()) {
+                        drawValidUsers()
+                    }
+                }
+            } else {
+                for (i in 0 until listUserMarker.size) {
+                    listUserMarker[i].remove()
+                }
+            }
+            if (AppController.settingFilterReport == "true") {
+                if (::listReport.isInitialized) {
+                    if (listReport.isNotEmpty()) {
+                        drawValidReports()
+                    }
+                }
+            } else {
+                for (i in 0 until listReportMarker.size) {
+                    listReportMarker[i].remove()
+                }
+            }
         }
     }
 
@@ -3167,8 +3189,258 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 mPopupWindowChat!!.dismiss()
             }
+            btnSendAll.setOnClickListener {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                mPopupWindowChat!!.dismiss()
+                onOpenChatAll(listUserExceptMe)
+            }
         }
     }
+
+    private fun onOpenChatAll(listUser: List<User>) {
+        mPopupWindowUser?.dismiss()
+
+        val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewUserPopup = inflater.inflate(R.layout.marker_user_layout_all, null)
+        mPopupWindowUser = PopupWindow(viewUserPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mPopupWindowUser!!.showAtLocation(this.currentFocus, Gravity.BOTTOM, 0, 0)
+
+        val btnHello = viewUserPopup.findViewById<Button>(R.id.btnHello_marker_user_all)
+
+        val btnConfirm = viewUserPopup.findViewById<LinearLayout>(R.id.layoutConfirm_marker_user_all)
+        val imvType = viewUserPopup.findViewById<ImageView>(R.id.imvType_marker_user_all)
+        val tvType = viewUserPopup.findViewById<TextView>(R.id.tvType_marker_user_all)
+        val imvInstruction = viewUserPopup.findViewById<ImageView>(R.id.imInstruction_marker_user_all)
+
+        btnConfirm.visibility = View.INVISIBLE
+
+        btnHello.setOnClickListener {
+            if (AppController.settingSocket == "true") {
+                // Chạy audio
+                if (AppController.soundMode == 1) {
+                    when (AppController.voiceType) {
+                        1 -> {
+                            mAudioPlayer.play(this, R.raw.gui_loi_chao)
+                        }
+                        2 -> {
+                            mAudioPlayer.play(this, R.raw.gui_loi_chao_2)
+                        }
+                    }
+                }
+                for (i in 0 until listUser.size) {
+                    attemptHello(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), listUser[i].socketID.toString())
+                }
+                mPopupWindowUser!!.dismiss()
+                viewUserPopup.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            } else {
+                TastyToast.makeText(this, "Bạn phải bật chết độ giao tiếp với tài xế để có thể thực hiện thao tác này!", TastyToast.LENGTH_LONG, TastyToast.INFO).show()
+            }
+        }
+
+        // Lấy view của viewTouch
+        val viewTouch = viewUserPopup.findViewById<View>(R.id.viewTouch_maker_user)
+        val sfg = SimpleFingerGestures()
+        sfg.setDebug(true)
+        sfg.consumeTouchEvents = true
+
+        var mType: Number = 0
+
+        sfg.setOnFingerGestureListener(object : SimpleFingerGestures.OnFingerGestureListener {
+            override fun onDoubleTap(fingers: Int): Boolean {
+//                    Toast.makeText(this@MainActivity, "You double tap", Toast.LENGTH_SHORT).show()
+                btnConfirm.visibility = View.VISIBLE
+                //==== Ban ngày
+                // Chưa biết
+
+                //==== Ban đêm
+                // Nháy báo hiệu xe ngược chiều giảm độ sáng đèn pha
+                mType = 1
+                imvType.setImageResource(R.drawable.ic_headlights_on_44dp)
+                tvType.text = "HẠ ĐỘ SÁNG ĐÈN PHA"
+//                    btnConfirm.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_headlights_on_44dp,0, 0)
+
+                // return true thì sẽ cho phép các gesture khác cũng bắt được sự kiện đó
+                // return false thì chỉ sự kiện nào bắt được đúng sự iện đó và không gửi đi tiếp
+                return false
+            }
+
+            override fun onPinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+//                    Toast.makeText(this@MainActivity, "You pinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+                return false
+            }
+
+            override fun onUnpinch(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+//                    Toast.makeText(this@MainActivity, "You unpinched " + fingers + " fingers " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+                return false
+            }
+
+            override fun onSwipeDown(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  down " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers down " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
+
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+                if (fingers == 2 && gestureDistance >= 120) {
+                    // Báo giảm tốc độ
+                    btnConfirm.visibility = View.VISIBLE
+                    mType = 2
+                    imvType.setImageResource(R.drawable.ic_report_hazard_44dp)
+                    tvType.text = "NGUY HIỂM NÊN GIẢM TỐC ĐỘ"
+                }
+                if (fingers == 3 && gestureDistance >= 120) {
+                    // Báo có giám sát
+                    btnConfirm.visibility = View.VISIBLE
+                    mType = 3
+//                        imvType.setImageResource(R.drawable.ic_report_watcher_44dp)
+                    imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
+                    tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
+                }
+//                    if (fingers == 4 && gestureDistance >= 120) {
+//                        // Báo nên quay đầu
+//                        btnConfirm.visibility = View.VISIBLE
+//                        mType = 4
+//                        imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
+//                        tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
+//                    }
+                return false
+            }
+
+            override fun onSwipeUp(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  up " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+                if (fingers == 2 && gestureDistance >= 120) {
+                    // Báo nên quay đầu
+                    btnConfirm.visibility = View.VISIBLE
+                    mType = 4
+                    imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
+                    tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
+                }
+                return false
+            }
+
+            override fun onSwipeLeft(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  left " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+                return false
+            }
+
+            override fun onSwipeRight(fingers: Int, gestureDuration: Long, gestureDistance: Double): Boolean {
+//                    Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  right " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    if(fingers == 2 && gestureDistance <= 100){
+//                        Toast.makeText(this@MainActivity, "You swiped " + fingers + " fingers  right " + gestureDuration + " milliseconds " + gestureDistance + " pixels far", Toast.LENGTH_SHORT).show()
+//                    }
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+                return false
+            }
+        })
+
+        viewTouch.setOnTouchListener(sfg)
+
+        btnConfirm.setOnClickListener {
+            if (AppController.settingSocket == "true") {
+                it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+                when (mType) {
+                    1 -> {
+                        for (i in 0 until listUser.size) {
+                            attemptWarnStrongLight(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), listUser[i].socketID.toString())
+                        }
+                    }
+                    2 -> {
+                        for (i in 0 until listUser.size) {
+                            attemptWarnSlowDown(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), listUser[i].socketID.toString())
+                        }
+                    }
+                    3 -> {
+                        for (i in 0 until listUser.size) {
+                            attemptWarnWatcher(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), listUser[i].socketID.toString())
+                        }
+                    }
+                    4 -> {
+                        for (i in 0 until listUser.size) {
+                            attemptWarnTurnAround(AppController.userProfile?.email.toString(), AppController.userProfile?.name.toString(), listUser[i].socketID.toString())
+                        }
+                    }
+                }
+                TastyToast.makeText(this, "Đã gửi cảnh báo cho tài xế", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).show()
+                btnConfirm.visibility = View.INVISIBLE
+                mType = 0
+            } else {
+                TastyToast.makeText(this, "Bạn phải bật chết độ giao tiếp với tài xế để có thể thực hiện thao tác này!", TastyToast.LENGTH_LONG, TastyToast.INFO).show()
+            }
+        }
+
+        imvInstruction.setOnClickListener {
+            val inflater = this.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val viewPopup = inflater.inflate(R.layout.marker_user_instruction_dialog_layout, null)
+
+            val mPopupWindow = PopupWindow(viewPopup, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            mPopupWindow.showAtLocation(this.currentFocus, Gravity.CENTER, 0, 0)
+
+            val btnClose = viewPopup.findViewById<ImageView>(R.id.btnClose_marker_user_instruction_dialog_layout)
+            val layout1 = viewPopup.findViewById<LinearLayout>(R.id.layout1_marker_user_instruction_dialog_layout)
+            val layout2 = viewPopup.findViewById<LinearLayout>(R.id.layout2_marker_user_instruction_dialog_layout)
+            val layout3 = viewPopup.findViewById<LinearLayout>(R.id.layout3_marker_user_instruction_dialog_layout)
+            val layout4 = viewPopup.findViewById<LinearLayout>(R.id.layout4_marker_user_instruction_dialog_layout)
+            val layout5 = viewPopup.findViewById<LinearLayout>(R.id.layout5_marker_user_instruction_dialog_layout)
+
+            layout1.setOnClickListener {
+                mPopupWindow.dismiss()
+                // Báo hạ độ sáng đèn pha
+                btnConfirm.visibility = View.VISIBLE
+                mType = 1
+                imvType.setImageResource(R.drawable.ic_headlights_on_44dp)
+                tvType.text = "HẠ ĐỘ SÁNG ĐÈN PHA"
+            }
+            layout2.setOnClickListener {
+                mPopupWindow.dismiss()
+                // Báo giảm tốc độ
+                btnConfirm.visibility = View.VISIBLE
+                mType = 2
+                imvType.setImageResource(R.drawable.ic_report_hazard_44dp)
+                tvType.text = "NGUY HIỂM NÊN GIẢM TỐC ĐỘ"
+            }
+            layout3.setOnClickListener {
+                mPopupWindow.dismiss()
+                // Báo có giám sát
+                btnConfirm.visibility = View.VISIBLE
+                mType = 3
+                imvType.setImageResource(R.drawable.ic_report_camera_trafficlight_44dp)
+                tvType.text = "CÓ GIÁM SÁT GẦN ĐÓ"
+            }
+            layout4.setOnClickListener {
+                mPopupWindow.dismiss()
+                // Báo nên quay đầu
+                btnConfirm.visibility = View.VISIBLE
+                mType = 4
+                imvType.setImageResource(R.drawable.ic_report_turn_around_44dp)
+                tvType.text = "NGUY HIỂM NÊN QUAY ĐẦU"
+            }
+            layout5.setOnClickListener {
+                mPopupWindow.dismiss()
+                btnHello.performClick()
+            }
+            btnClose.setOnClickListener {
+                mPopupWindow.dismiss()
+            }
+        }
+    }
+
 
     override fun onBackPressed() {
         when {
@@ -3326,8 +3598,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     // ================================================================================================================================================= //
-    // ======== VỀ THÔNG TIN NGƯỜI DÙNG USER =========================================================================================================== //
-    // ================================================================================================================================================= //
+// ======== VỀ THÔNG TIN NGƯỜI DÙNG USER =========================================================================================================== //
+// ================================================================================================================================================= //
     private fun loadUserProfile() {
         if (AppController.accessToken != null && AppController.accessToken.toString().isNotEmpty()) {
             val service = APIServiceGenerator.createService(UserService::class.java)
@@ -3407,8 +3679,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     // ================================================================================================================================================= //
-    // ======== VỂ CLICK MARKER ======================================================================================================================== //
-    // ================================================================================================================================================= //
+// ======== VỂ CLICK MARKER ======================================================================================================================== //
+// ================================================================================================================================================= //
     override fun onMarkerClick(p0: Marker): Boolean {
 //        p0.showInfoWindow()
 
@@ -4717,8 +4989,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 
     // ====================================================================================================================================================== //
-    // ======== VỀ GỌI API VÀ LISTENER USER ================================================================================================================= //
-    // ====================================================================================================================================================== //
+// ======== VỀ GỌI API VÀ LISTENER USER ================================================================================================================= //
+// ====================================================================================================================================================== //
     private fun onGetAllUser() {
         val service = APIServiceGenerator.createService(UserService::class.java)
         val call = service.allUserProfile
@@ -4981,8 +5253,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     // ======================================================================================================================================================== //
-    // ======== SOCKET EVENT ================================================================================================================================== //
-    // ======================================================================================================================================================== //
+// ======== SOCKET EVENT ================================================================================================================================== //
+// ======================================================================================================================================================== //
     private fun initSocket() {
         socket = SocketService().getSocket()
         socket.on(Socket.EVENT_CONNECT, onConnect)
@@ -5727,8 +5999,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     // ====================================================================================================================================================== //
-    // ======== VỀ GỌI API VÀ LISTENER REPORT =============================================================================================================== //
-    // ====================================================================================================================================================== //
+// ======== VỀ GỌI API VÀ LISTENER REPORT =============================================================================================================== //
+// ====================================================================================================================================================== //
     private fun onGetAllReport() {
         val service = APIServiceGenerator.createService(ReportService::class.java)
         val call = service.allReport
@@ -5997,9 +6269,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
 
-    // ====================================================================================================================================================== //
-    // ======== GESTURE DETECTOR ============================================================================================================================ //
-    // ====================================================================================================================================================== //
+// ====================================================================================================================================================== //
+// ======== GESTURE DETECTOR ============================================================================================================================ //
+// ====================================================================================================================================================== //
 //    private lateinit var mContext: Context
 
     class CustomGestureDetector : GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
@@ -6189,6 +6461,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 for (userMarker in listUserMarker) {
                     if (userItem.email == (userMarker.tag as User).email) {
                         onOpenReportMarker(userMarker)
+                        mPopupWindowChat?.dismiss()
                         break
                     }
                 }
