@@ -3127,6 +3127,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         layoutOutside.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             mPopupWindowFilter!!.dismiss()
+            if (AppController.settingFilterCar == "true") {
+                if (::listUser.isInitialized) {
+                    if (listUser.isNotEmpty()) {
+                        drawValidUsers()
+                    }
+                }
+            } else {
+                for (i in 0 until listUserMarker.size) {
+                    listUserMarker[i].remove()
+                }
+            }
+            if (AppController.settingFilterReport == "true") {
+                if (::listReport.isInitialized) {
+                    if (listReport.isNotEmpty()) {
+                        drawValidReports()
+                    }
+                }
+            } else {
+                for (i in 0 until listReportMarker.size) {
+                    listReportMarker[i].remove()
+                }
+            }
         }
     }
 
