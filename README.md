@@ -5,6 +5,10 @@ An Android map-based app using Kotlin
 
 Open project with Android Studio
 
+## Demo
+
+https://youtu.be/tlP6vl6yTSw
+
 ## Contributing
 
 1. Fork it!
