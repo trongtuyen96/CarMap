@@ -1,6 +1,6 @@
 <p align="center">
   <a href="CarMap">
-    <img src="https://drive.google.com/open?id=1AFUm9XZo9cn5lFG9Iud5f9aj92zQzuMt" alt="CarMap logo" width="72" height="72">
+    <img src="https://imgur.com/a/KT5XM3J" alt="CarMap logo" width="72" height="72">
   </a>
 </p>
 # CarMap
