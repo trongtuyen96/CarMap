@@ -1,8 +1,9 @@
 <p align="center">
   <a href="CarMap">
-    <img src="https://imgur.com/a/KT5XM3J" alt="CarMap logo" width="72" height="72">
+    <img src="https://github.com/trongtuyen96/CarMap/blob/master/app/src/main/res/drawable/ic_logo.png" alt="CarMap logo" width="72" height="72">
   </a>
 </p>
+
 # CarMap
 An Android map-based app using Kotlin
 
