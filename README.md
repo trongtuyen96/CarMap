@@ -49,26 +49,42 @@
 </p>
 
 ![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.gif)
+<p align="center">
+  <a alt="Background">
+  <img src="https://drive.google.com/uc?export=view&id=1-3X7Fr3zDt5bVRwm4xg1Kaqy8wAuLhVK"  width="700">
+  </a>
+</p>
 
 ## Key Features
-
-* LivePreview - Make changes, See changes
-  - Instantly see what your Markdown documents look like in HTML as you create them.
-* Sync Scrolling
-  - While you type, LivePreview will automatically scroll to the current location you're editing.
-* GitHub Flavored Markdown  
-* Syntax highlighting
-* [KaTeX](https://khan.github.io/KaTeX/) Support
-* Dark/Light mode
-* Toolbar for basic Markdown formatting
-* Supports multiple cursors
-* Save the Markdown preview as PDF
-* Emoji support in preview :tada:
-* App will keep alive in tray for quick usage
-* Full screen mode
-  - Write distraction free.
-* Cross platform
-  - Windows, macOS and Linux ready.
+<h3 align="center">
+	Avoid accidents, traffic jams and other problems when driving
+	</h3>
+  <p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=10hvgPVtRPDXuMRhs9kbRqt2FLJZxCiS6"  width="400">
+<h3 align="center">
+	Send and share alerts with everyone
+	</h3>
+  <p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1-M2jlDkhaoI10flD8LSJADamkIJT1aZe"  width="400">
+</p>
+<h3 align="center">
+	Say hi and communicate via hand gestures
+	</h3>
+  <p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=16_80CVO99VrRlLkvdLo3lKHjNQzBhj8B"  width="400">
+</p>
+<h3 align="center">
+	Direct a route quickly, notify dangers
+	</h3>
+  <p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1bz-2crYhxT8OQXSRU3IyHawh9R5np3KF"  width="400">
+</p>
+<h3 align="center">
+	Find gas staions, parkings, coffee shops and restaurants nearby
+	</h3>
+  <p align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1G9weaZ4K8Wc34yBkpo_pRHYC2GoVDiQD"  width="400">
+</p>
 
 ## How To Use
 
