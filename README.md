@@ -48,7 +48,6 @@
   <a href="#license">License</a>
 </p>
 
-![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.gif)
 <p align="center">
   <a alt="Background">
   <img src="https://drive.google.com/uc?export=view&id=1-3X7Fr3zDt5bVRwm4xg1Kaqy8wAuLhVK"  width="700">
