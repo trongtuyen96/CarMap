@@ -127,7 +127,7 @@ This software uses the following open source packages:
 	Tuyen Nguyen - QA automation
 	</h4>
 	<h5 align="center">
-	trongtuyen96@gmail.com
+	<a href="trongtuyen96@gmail.com">trongtuyen96@gmail.com</a>
 	</h5>
 <p align="center">
 	 <a alt="Github" href="https://github.com/trongtuyen96">
