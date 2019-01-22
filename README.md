@@ -44,7 +44,6 @@
   <a href="#how-to-use">How To Use</a> •
   <a href="#download">Download</a> •
   <a href="#credits">Credits</a> •
-  <a href="#related">Related</a> •
   <a href="#license">License</a>
 </p>
 
@@ -68,6 +67,13 @@
  </p>
   <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=1G9weaZ4K8Wc34yBkpo_pRHYC2GoVDiQD"  width="400">
+</p>
+
+## Demo
+<p align="center">
+  <a href="https://youtu.be/tlP6vl6yTSw">
+  <img src="https://drive.google.com/uc?export=view&id=1m_zZBeAN4pWivN941UpMKkRsek6NagvD" width="600">
+  </a>
 </p>
 
 ## How To Use
@@ -107,10 +113,6 @@ This software uses the following open source packages:
 - [CodeMirror](http://codemirror.net/)
 - Emojis are taken from [here](https://github.com/arvida/emoji-cheat-sheet.com)
 - [highlight.js](https://highlightjs.org/)
-
-## Related
-
-[markdownify-web](https://github.com/amitmerchant1990/markdownify-web) - Web version of Markdownify
 
 ## Support
 
@@ -168,16 +170,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ~~~~
-
-
-## Demo
-
-https://youtu.be/tlP6vl6yTSw
-
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request
