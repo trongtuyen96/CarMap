@@ -56,35 +56,21 @@
 </p>
 
 ## Key Features
-<h3 align="center">
-	Avoid accidents, traffic jams and other problems when driving
-	</h3>
+- Avoid accidents, traffic jams and other problems when driving
   <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=10hvgPVtRPDXuMRhs9kbRqt2FLJZxCiS6"  width="400">
-<h3 align="center">
-	Send and share alerts with everyone
-	</h3>
+- Send and share alerts with everyone
   <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=1-M2jlDkhaoI10flD8LSJADamkIJT1aZe"  width="400">
-</p>
-<h3 align="center">
-	Say hi and communicate via hand gestures
-	</h3>
+- Say hi and communicate via hand gestures
   <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=16_80CVO99VrRlLkvdLo3lKHjNQzBhj8B"  width="400">
-</p>
-<h3 align="center">
-	Direct a route quickly, notify dangers
-	</h3>
+- Direct a route quickly, notify dangers
   <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=1bz-2crYhxT8OQXSRU3IyHawh9R5np3KF"  width="400">
-</p>
-<h3 align="center">
-	Find gas staions, parkings, coffee shops and restaurants nearby
-	</h3>
+- Find gas staions, parkings, coffee shops and restaurants nearby
   <p align="center">
   <img src="https://drive.google.com/uc?export=view&id=1G9weaZ4K8Wc34yBkpo_pRHYC2GoVDiQD"  width="400">
-</p>
 
 ## How To Use
 
