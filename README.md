@@ -137,17 +137,34 @@ MIT
 
 ---
 
-> [amitmerchant.com](https://www.amitmerchant.com) &nbsp;&middot;&nbsp;
-> GitHub [@amitmerchant1990](https://github.com/amitmerchant1990) &nbsp;&middot;&nbsp;
-> Twitter [@amit_merchant](https://twitter.com/amit_merchant)
+## Author
+<h4 align="center">
+	Tuyen Nguyen - QA automation
+	</h4>
+	<h5 align="center">
+	trongtuyen96@gmail.com
+	</h5>
+<p align="center">
+	 <a alt="Github" href="https://github.com/trongtuyen96">
+    <img src="https://user-images.githubusercontent.com/25218255/47360756-794c1f00-d6fa-11e8-86fa-7b1c2e4dda92.png" width="50">
+  </a>
+		 <a alt="LinkedIn" href="https://www.linkedin.com/in/tuyen-nguyen-trong-516a69121/">
+    <img src="https://user-images.githubusercontent.com/25218255/47360366-8583ac80-d6f9-11e8-8871-219802a9a162.png" width="50">
+  </a>
+		 <a alt="Facebook" href="https://www.facebook.com/tuyen.trong.3">
+    <img src="https://user-images.githubusercontent.com/25218255/47360363-84eb1600-d6f9-11e8-8029-818481536200.png" width="50">
+  </a>
+</p>
 
+---
 
-# CarMap
-An Android map-based app using Kotlin
-
-## Installation
-
-Open project with Android Studio
+<h4 align="center">
+	Khang Nguyen
+	</h4>
+	<h5 align="center">
+	nvkhang96@gmail.com
+	</h5>
+<p align="center">
 
 ## Demo
 
@@ -161,15 +178,19 @@ https://youtu.be/tlP6vl6yTSw
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request
 
-## History
-
-- 27/04/2018: First commit
-
-## Author
-* **Tuyen Nguyen Trong** - *Initial work* - [nQueens-Python](https://github.com/trongtuyen96/NQueens) 
-- *Email* - trongtuyen96@gmail.com
-
-* **Nguyen Vinh Khang** 
-- *Email* - 
-
 ## License
+~~~~
+Copyright 2018 Tuyen Nguyen
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+~~~~
