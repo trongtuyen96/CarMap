@@ -18,15 +18,26 @@
   <a href="https://paypal.me/trongtuyen96">
     <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
   </a>
+	<br>
+	 <a alt="Kotlin">
+    <img src="https://img.shields.io/badge/Kotlin-1.2-orange.svg">
+  </a>
+	 <a href="https://travis-ci.org/anfederico/Clairvoyant">
+    <img src="https://travis-ci.org/anfederico/Clairvoyant.svg?branch=master">
+  </a>
+	 <a alt="Dependencies">
+    <img src="https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg">
+  </a>
+	 <a alt="Github Issues" href="https://github.com/trongtuyen96/CarMap/issues">
+    <img src="https://img.shields.io/codeclimate/issues/https://github.com/trongtuyen96/CarMap.svg">
+  </a>
+	 <a alt="Contribution">
+    <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
+  </a>
+	<a alt="License" href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+  </a>
 </p>
-
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-![Kotlin](https://img.shields.io/badge/Kotlin-1.2-orange.svg)
-[![Build Status](https://travis-ci.org/anfederico/Clairvoyant.svg?branch=master)](https://travis-ci.org/anfederico/Clairvoyant)
-![Dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg)
-[![GitHub Issues](https://img.shields.io/codeclimate/issues/https://github.com/trongtuyen96/CarMap.svg)](https://github.com/trongtuyen96/CarMap/issues)
-![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
