@@ -46,7 +46,7 @@
   </a>
 </p>
 
-## Table of contents
+## Table of Contents
 
 - [Key Features](#key-features)
 - [How To Use](#how-to-use)
