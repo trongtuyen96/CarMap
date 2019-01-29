@@ -57,7 +57,7 @@
 
 ## Key Features
 
-- Avoid accidents, traffic jams and other problems when driving
+- Avoid real-time accidents, traffic jams and other problems when driving
 - Send and share alerts with everyone
 - Say hi and communicate via hand gestures
 - Direct a route quickly, notify dangers
