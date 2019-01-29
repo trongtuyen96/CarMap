@@ -6,7 +6,7 @@
   <br>
 </h1>
 
-<h4 align="center">An convenient and intelligent map for car drivers building on the top of <a href="https://kotlinlang.org/" target="_blank">Kotlin</a> and <a href="https://developers.google.com/maps/documentation" target="_blank">Google Maps API</a>.</h4>
+<h3 align="center">An convenient, intelligent and real-time map for car drivers building on the top of <a href="https://kotlinlang.org/" target="_blank">Kotlin</a> and <a href="https://developers.google.com/maps/documentation" target="_blank">Google Maps API</a>.</h3>
 
 <p align="center">
   <a href="https://gitter.im/trongtuyen96/CarMap_Android">
@@ -164,7 +164,7 @@ This software uses the following open source packages:
 ## License
 
 ~~~~
-Copyright @2019 Tuyen Nguyen
+Copyright (c) 2019 Tuyen Nguyen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software
 and associated documentation files (the "Software"), to deal in the Software without restriction, 
