@@ -39,13 +39,6 @@
   </a>
 </p>
 
-<p align="center">
-  <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#download">Download</a> •
-  <a href="#credits">Credits</a> •
-  <a href="#license">License</a>
-</p>
 
 <p align="center">
   <a alt="Background">
@@ -53,7 +46,17 @@
   </a>
 </p>
 
+## Table of contents
+
+- [Key Features](#key-features)
+- [How To Use](#how-to-use)
+- [Download](#download)
+- [Credits](#credits)
+- [License](#license)
+
+
 ## Key Features
+
 - Avoid accidents, traffic jams and other problems when driving
 - Send and share alerts with everyone
 - Say hi and communicate via hand gestures
@@ -69,12 +72,14 @@
   <img src="https://drive.google.com/uc?export=view&id=1G9weaZ4K8Wc34yBkpo_pRHYC2GoVDiQD"  width="400">
 </p>
 
+
 ## Demo
 <p align="center">
   <a href="https://youtu.be/tlP6vl6yTSw">
   <img src="https://drive.google.com/uc?export=view&id=1m_zZBeAN4pWivN941UpMKkRsek6NagvD" width="600">
   </a>
 </p>
+
 
 ## How To Use
 
@@ -114,6 +119,7 @@ This software uses the following open source packages:
 - Emojis are taken from [here](https://github.com/arvida/emoji-cheat-sheet.com)
 - [highlight.js](https://highlightjs.org/)
 
+
 ## Support
 
 <a href="https://www.buymeacoffee.com/5Zn8Xh3l9" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
@@ -123,6 +129,7 @@ This software uses the following open source packages:
 <a href="https://www.patreon.com/amitmerchant">
 	<img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
 </a>
+
 
 ## Author
 <h4 align="center">
@@ -152,6 +159,7 @@ This software uses the following open source packages:
 	nvkhang96@gmail.com
 	</h5>
 <p align="center">
+
 
 ## License
 
