@@ -34,8 +34,8 @@
 	 <a alt="Contribution">
     <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
   </a>
-	<a alt="License" href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+	<a alt="License" href="https://www.apache.org/licenses/LICENSE-2.0">
+    <img src="https://img.shields.io/badge/Apache-2.0-blue.svg">
   </a>
 </p>
 
