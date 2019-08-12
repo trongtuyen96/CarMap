@@ -96,7 +96,7 @@ Note: If you're using Linux Bash for Windows, [see this guide](https://www.howto
 
 ## Download
 
-You can [download](https://github.com/amitmerchant1990/electron-markdownify/releases/tag/v1.2.0) the latest installable version of Markdownify for Windows, macOS and Linux.
+You can [download](https://github.com/) the latest installable version of CarMap for Android.
 
 
 ## Credits
@@ -105,11 +105,7 @@ This software uses the following open source packages:
 
 - [Electron](http://electron.atom.io/)
 - [Node.js](https://nodejs.org/)
-- [Marked - a markdown parser](https://github.com/chjj/marked)
-- [showdown](http://showdownjs.github.io/showdown/)
-- [CodeMirror](http://codemirror.net/)
 - Emojis are taken from [here](https://github.com/arvida/emoji-cheat-sheet.com)
-- [highlight.js](https://highlightjs.org/)
 
 
 ## Support
