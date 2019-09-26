@@ -103,9 +103,13 @@ You can [download](https://github.com/) the latest installable version of CarMap
 
 This software uses the following open source packages:
 
-- [Electron](http://electron.atom.io/)
-- [Node.js](https://nodejs.org/)
-- Emojis are taken from [here](https://github.com/arvida/emoji-cheat-sheet.com)
+- [Butterknife](https://github.com/JakeWharton/butterknife)
+- [Retrofit](https://github.com/square/retrofit)
+- [OkHTTP](https://github.com/square/okhttp)
+- [socket.io](https://socket.io/)
+- [SimpleFingerGestures](https://github.com/championswimmer/SimpleFingerGestures_Android_Library)
+- [TastyToast](https://github.com/yadav-rahul/TastyToast)
+- [OpenALPR](https://github.com/yadav-rahul/TastyToast)
 
 
 ## Support
