@@ -29,7 +29,7 @@
     <img src="https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg">
   </a>
 	 <a alt="Github Issues" href="https://github.com/trongtuyen96/CarMap/issues">
-    <img src="https://img.shields.io/codeclimate/issues/https://github.com/trongtuyen96/CarMap.svg">
+    <img src="https://img.shields.io/github/issues/trongtuyen96/CarMap?color=red">
   </a>
 	 <a alt="Contribution">
     <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
