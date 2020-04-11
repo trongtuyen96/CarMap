@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="CapMap"><img src="https://github.com/trongtuyen96/CarMap/blob/master/app/src/main/res/drawable/ic_logo.png" alt="CarMap" width="200"></a>
+  <a href="CapMap"><img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/ic_logo.png" alt="CarMap" width="200"></a>
   <br>
   CarMap
   <br>
@@ -42,7 +42,7 @@
 
 <p align="center">
   <a alt="Background">
-  <img src="https://drive.google.com/uc?export=view&id=1-3X7Fr3zDt5bVRwm4xg1Kaqy8wAuLhVK"  width="700">
+  <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/background.PNG"  width="700">
   </a>
 </p>
 
@@ -63,20 +63,22 @@
 - Direct a route quickly, notify dangers
 - Find gas staions, parkings, coffee shops and restaurants nearby
   <p align="center">
-  <img src="https://drive.google.com/uc?export=view&id=10hvgPVtRPDXuMRhs9kbRqt2FLJZxCiS6"  width="400"> <img src="https://drive.google.com/uc?export=view&id=1-M2jlDkhaoI10flD8LSJADamkIJT1aZe"  width="400">
+  <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step1.PNG"  width="400"> 
+<img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step2.PNG"  width="400">
   </p>
   <p align="center">
-  <img src="https://drive.google.com/uc?export=view&id=16_80CVO99VrRlLkvdLo3lKHjNQzBhj8B"  width="400">  <img src="https://drive.google.com/uc?export=view&id=1bz-2crYhxT8OQXSRU3IyHawh9R5np3KF"  width="400">
+  <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step3.PNG"  width="400">  
+	<img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step4.PNG"  width="400">
  </p>
   <p align="center">
-  <img src="https://drive.google.com/uc?export=view&id=1G9weaZ4K8Wc34yBkpo_pRHYC2GoVDiQD"  width="400">
+  <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step5.PNG"  width="400">
 </p>
 
 
 ## Demo
 <p align="center">
   <a href="https://youtu.be/tlP6vl6yTSw">
-  <img src="https://drive.google.com/uc?export=view&id=1m_zZBeAN4pWivN941UpMKkRsek6NagvD" width="600">
+  <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/video.PNG" width="600">
   </a>
 </p>
 
