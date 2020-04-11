@@ -64,15 +64,17 @@
 - Find gas staions, parkings, coffee shops and restaurants nearby
   <p align="center">
   <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step1.PNG"  width="400"> 
-<img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step2.PNG"  width="400">
+  <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step2.PNG"  width="400">
   </p>
+  
   <p align="center">
   <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step3.PNG"  width="400">  
-	<img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step4.PNG"  width="400">
- </p>
+  <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step4.PNG"  width="400">
+  </p>
+  
   <p align="center">
   <img src="https://github.com/trongtuyen96/CarMap/blob/master/Upload/step5.PNG"  width="400">
-</p>
+  </p>
 
 
 ## Demo
