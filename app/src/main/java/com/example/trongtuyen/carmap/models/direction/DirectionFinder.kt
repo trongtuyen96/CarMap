@@ -22,7 +22,8 @@ import java.util.ArrayList
 class DirectionFinder(private val listener: DirectionListener, private val origin: String, private val destination: String, private var waypoints: ArrayList<SimplePlace>) {
     companion object {
         private const val DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?"
-        private const val GOOGLE_API_KEY = "AIzaSyDTWxpGP0Zjgifxrau0BrNdzebFmuUKEpI"
+        // API key can be used same among other places  - which needs to enable Maps SDK Android, Places API, Places SDK for Android and Directions API
+        private const val GOOGLE_API_KEY = "your API key"
         private const val TAG = "DirectionFinder"
     }
 
