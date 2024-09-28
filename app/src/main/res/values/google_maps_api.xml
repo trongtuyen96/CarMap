@@ -19,6 +19,8 @@
 
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
+
+    // API key can be used same among other places  - which needs to enable Maps SDK Android, Places API, Places SDK for Android and Directions API
     -->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDTWxpGP0Zjgifxrau0BrNdzebFmuUKEpI</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">your API key</string>
 </resources>
