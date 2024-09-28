@@ -25,7 +25,7 @@ class NearbyPlacesLocationResponse(
 // HTTP to Interface using Retrofit
 
 interface NearbyPlacesInterface{
-    // API key can be used same among other places  - which needs to enable Máp SDK Android, Places API, Places SDK for Android and Directions API
+    // API key can be used same among other places  - which needs to enable Maps SDK Android, Places API, Places SDK for Android and Directions API
     @GET("api/place/nearbysearch/json?key=<your API key>")
     fun getNearbyPlaces(@Query("type") type: String,
                         @Query("location") location: String,
